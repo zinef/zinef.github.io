@@ -10,7 +10,7 @@ Welcome to my personal blog repository! Here, I share my work, insights, and art
 - 📝 **Personal Projects & Research**: Hands-on projects, code implementations, and experimental ideas.
 
 ## 🌍 Where to Follow My Work
-- **LinkedIn**: [Connect with me](https://www.linkedin.com/in/zine-eddine-fodil/)
+- **LinkedIn**: [Connect with me](https://www.linkedin.com/in/zinef/)
 - **GitHub**: [Check out my repositories](https://github.com/zinef)
 - **Medium** [Check out my articles](https://medium.com/@z1z0u)
 
