@@ -76,7 +76,7 @@ And the common DevOps cycle that includes all these pillars looks like this:
 
 ## Comparison 
 
-## Cycle 
+### Cycle 
 
 A code-validate-deploy cycle is included in both DevOps and MLOps pipelines. However, the MLOps pipeline also includes data and model stages that are necessary to create and train a machine learning model (see diagram below). As a result, MLOps has a few differences from traditional DevOps for each component of the workflow.
 
@@ -96,11 +96,11 @@ The experimentation phase is unique to the data science lifecycle, which reflect
 
 ![Data Science Life Cycle](DataScience_lifeCycle.png)
 
-## Development and CI/CD 
+### Development and CI/CD 
 
 The "development" takes two different meanings in each concept. In DevOps, by development we mean the code that creates an application or interface of some sort. The code is then wrapped up in an executable (artifact) that is deployed and validated against a series of tests. This cycle is ideally automated and continues until you have a final product. However, in MLOps the code is building/training a ML model. The output artifact here is a serialized file that can have data fed into it and produce inferences. The validation would be checking how well the trained model does against test data. Similarly, this is a cycle that continues until the model performs at a certain threshold.
 
-## Version control 
+### Version control 
 
 In a DevOps pipeline, version control is usually limited to tracking changes to code and artifacts. There are more things to track in an MLOps pipeline.
 
@@ -108,7 +108,7 @@ As mentioned before, the code in MLOps is building/training the ML model and it 
 
 When compared to standard software systems, this may appear to be a lot of information to keep track of. Fortunately, we have model registry tools (https://www.phdata.io/blog/what-is-a-model-registry/) as a tailor-made solution for versioning ML models.
 
-## Monitoring 
+### Monitoring 
 
 Model drift is an additional component to monitor in MLOps, in addition to the application itself. Because data is continuously changing, your model must as well. Models trained on older data may or may not perform well on new data, particularly if the data is seasonal.
 
