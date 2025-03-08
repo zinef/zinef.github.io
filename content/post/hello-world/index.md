@@ -1,11 +1,12 @@
 ---
 title: "Unleash Limitless Possibilities: Harness the Power of Generative AI to Meet Market Demands and Delight Your Clients"
 description: "Explore the transformative potential of Generative AI and discover how it can revolutionize your business."
-slug: hello-world
-date: 2022-03-06
+slug: GenAI_6_22
+date: 2023-06-04
 image: cover.jpg
 categories:
     - Data Science
+    - AI
 tags:
     - GenAI
 weight: 1       # You can add weight to some posts to override the default sorting (date descending)

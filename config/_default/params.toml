@@ -5,7 +5,7 @@ rssFullContent = true
 favicon = "/Mugiwara.png"
 
 [footer]
-since = 2020
+since = 2023
 customText = ""
 
 [dateFormat]
