@@ -12,9 +12,10 @@ tags:
     - MLOps
     - DevOps
     - CI/CD
+weight: 2
 ---
 
-# Introduction
+## Introduction
 
 We hear more and more about MLOps. This practice, inspired by DevOps, aims to unify the tasks of developing Machine Learning applications with those of operations.
 
@@ -28,7 +29,7 @@ Similar challenges occurred in the past when we tried to grow traditional softwa
 
 That bring us to MLOps. It was formed at the junction of DevOps, Data Engineering, and Machine Learning, and while the concept is similar to DevOps, the implementation differs. ML systems are more experimental in nature, with additional components that are far more difficult to develop and run.
 
-# What is MLOps?
+## What is MLOps?
 
 MLOps is the operationalization of Machine Learning model management. This aims to create an end-to-end process for creating, implementing and managing repeatable, testable and scalable machine learning models. MLOps aims to:
 
@@ -54,7 +55,7 @@ The key phases of MLOps are:
 
 ![MLOps cycle](mlops_cycle.jpg)
 
-## DevOps & MLOps
+### DevOps & MLOps
 
 DevOps is a set of activities aimed at shortening the development life of a system and providing continuous delivery of high quality software. DevOps and MLOps both aim to bring software into a repeatable and fault tolerant workflow, but in MLOps that software also has a machine learning component.
 
@@ -74,9 +75,9 @@ And the common DevOps cycle that includes all these pillars looks like this:
 
 ![Dev + Ops = DevOps!](devops.png)
 
-## Comparison 
+### Comparison 
 
-### Cycle 
+#### Cycle 
 
 A code-validate-deploy cycle is included in both DevOps and MLOps pipelines. However, the MLOps pipeline also includes data and model stages that are necessary to create and train a machine learning model (see diagram below). As a result, MLOps has a few differences from traditional DevOps for each component of the workflow.
 
@@ -96,11 +97,11 @@ The experimentation phase is unique to the data science lifecycle, which reflect
 
 ![Data Science Life Cycle](DataScience_lifeCycle.png)
 
-### Development and CI/CD 
+#### Development and CI/CD 
 
 The "development" takes two different meanings in each concept. In DevOps, by development we mean the code that creates an application or interface of some sort. The code is then wrapped up in an executable (artifact) that is deployed and validated against a series of tests. This cycle is ideally automated and continues until you have a final product. However, in MLOps the code is building/training a ML model. The output artifact here is a serialized file that can have data fed into it and produce inferences. The validation would be checking how well the trained model does against test data. Similarly, this is a cycle that continues until the model performs at a certain threshold.
 
-### Version control 
+#### Version control 
 
 In a DevOps pipeline, version control is usually limited to tracking changes to code and artifacts. There are more things to track in an MLOps pipeline.
 
@@ -108,7 +109,7 @@ As mentioned before, the code in MLOps is building/training the ML model and it 
 
 When compared to standard software systems, this may appear to be a lot of information to keep track of. Fortunately, we have model registry tools (https://www.phdata.io/blog/what-is-a-model-registry/) as a tailor-made solution for versioning ML models.
 
-### Monitoring 
+#### Monitoring 
 
 Model drift is an additional component to monitor in MLOps, in addition to the application itself. Because data is continuously changing, your model must as well. Models trained on older data may or may not perform well on new data, particularly if the data is seasonal.
 
@@ -116,7 +117,7 @@ In order to keep your model up to date, it will need to be re-trained regularly 
 
 ![Monitoring](monitoring.png)
 
-# Why MLOps?
+## Why MLOps?
 
 The importance of MLOps cannot be overstated. By establishing more efficient processes, utilizing data analytics for decision-making, and enhancing customer experience, machine learning helps individuals and enterprises deploy solutions that uncover previously untapped streams of revenue, save time, and decrease cost.
 
@@ -126,11 +127,11 @@ MLOps provides as a road map for individuals, small teams, and even enterprises 
 
 Because MLOps are not set in stone, you may choose the size of your map. You may try out various options and keep only what works for you.
 
-# Best Practices
+## Best Practices
 
 In this section, we will see the best practices for different parts of an ML project, Team, DATA, Metrics&KPI, Model, Code and the Deployment.
 
-## Team 
+### Team 
 
 - **Use A collaborative Development Platform:** by making consistent use of a collaborative dev platform teams can work together more effectively. All this is possible because dev platforms provides easy access to data, code, information and other tools. One other interesting thing is that platforms help teams to work together asynchronously or remotely. Collaborative development environments include GitHub, GitLab, BitBucket, and Azure DevOps Server.
 
@@ -138,7 +139,7 @@ In this section, we will see the best practices for different parts of an ML pro
 
 - **Communicate and Collaborate with others:** The system that your team develops is meant to integrate with other systems within the context of a wider organization. this requires communication, alignment, and collaboration with others outside the team.
 
-## Data  
+### Data  
 
 - **Use Sanity Checks for All External Data Sources:** Avoid invalid or incomplete data being processed because data errors is crucial for model quality
 
@@ -148,7 +149,7 @@ In this section, we will see the best practices for different parts of an ML pro
 
 - **Make Data Sets Available on Shared Infrastructure (private or public):** Avoid data duplication, data bottlenecks, or unnecessary transfer of large data sets.
 
-## Metrics & KPI 
+### Metrics & KPI 
 
 - **At first, track multiple metrics, not necessarily the best one:** You want to make money, make your users happy, and make the world a better place. There are tons of metrics that you care about, and you should measure them all. However, early in the machine learning process, you will notice them all going up, even those that you do not directly optimize.
 
@@ -156,7 +157,7 @@ In this section, we will see the best practices for different parts of an ML pro
 
 - **Enforce Fairness and Privacy:** Avoid irresponsible use of machine learning and decisions with negative societal impact.
 
-## Model  
+### Model  
 
 The first thing to do with the model is to get it simple, interpretable and get the infrastructure right, that what makes debugging easier
 
@@ -172,7 +173,7 @@ The first thing to do with the model is to get it simple, interpretable and get 
 
 - **Use Versioning for Data, Model, Configurations and Training Scripts**
 
-## Code 
+### Code 
 
 - **Run Automated Regression Tests:** Avoid the introduction of bugs in code. When making changes, new defects can easily be introduced in existing code. A suite of automated regression tests helps to spot such defects as early as possible.
 
@@ -180,7 +181,7 @@ The first thing to do with the model is to get it simple, interpretable and get 
 
 - **Assure Application Security**: to Prevent attackers from stealing or corrupting data, or from disrupting the availability of an application. Security incidents can lead to public data leaks, financial losses, or disrupt the availability of an application.
 
-## Deployment 
+### Deployment 
 
 - **Automate Model Deployment:** Increase the ability to deploy models on demand, which increases availability and scalability. Deploying and orchestrating different components of an application can be a tedious task. Instead of manually packaging and delivering models, and in order to avoid manual interventions or errors, one can automate this task.
 
@@ -190,7 +191,7 @@ The first thing to do with the model is to get it simple, interpretable and get 
 
 - **Log Production Predictions with the Model's Version and Input Data:** To Enhance debugging, enable traceability, reproducibility, compliance and incident management. Tracing decisions back to the input data and the model's version can be difficult. It is therefore recommended to log production predictions together with the model's version and input data.
 
-# Machine Learning Operations Maturity Model 
+## Machine Learning Operations Maturity Model 
 
 The purpose of this maturity model is to help clarify the principles and practices of Machine Learning Operations (MLOps). The maturity model shows continuous improvement in the creation and operation of a production-level machine learning application environment. You can use it as a metric to establish the incremental requirements needed to measure the maturity of a machine learning production environment and its associated processes.
 
@@ -208,14 +209,14 @@ The MLOps maturity model encompasses five levels of technical capability:
 
 For more information on each level, please click on the link in the description.
 
-# Types of MLOps solutions 
+## Types of MLOps solutions 
 
 Depending on your needs, the choice of the MLOps solution can be made on the following two types:
 
 1. End to end MLOps solution
 2. Custom build MLOps solution
 
-## End to end MLOps solution
+### End to end MLOps solution
 
 These type of solution provides data scientists the ability to build, train and deploy ML models quickly, the solutions are fully managed services. And the best solutions for this type could be:
 
@@ -236,7 +237,7 @@ These type of solution provides data scientists the ability to build, train and 
   - **Azure Pipelines:** Continuously build, test, and deploy to any platform and cloud.
   - **Azure Monitor:** Azure Monitor helps you maximize the availability and performance of your applications and services.
 
-## Custom built MLOps solution 
+### Custom built MLOps solution 
 
 For making the pipeline robust, the custom-built solution is the best for you, this approach can help you avoid a single point of failure and makes your pipeline easier to audit, debug and more customizable. There are many tools available for this approach:
 
@@ -249,11 +250,11 @@ For making the pipeline robust, the custom-built solution is the best for you, t
 - **Optuna:** An open source hyperparameter optimization framework to automate hyperparameter search
 - **Cortex:** Deploy, manage, and scale machine learning models in production.
 
-# Conclusion
+## Conclusion
 
 Now that you have in mind all the definitions and best practices of MLOps, you can chose one of the two solutions and go for it. Even better I invite you to consult my next article where I will present a solution and implementation of a MLOps pipeline.
 
-# References
+## References
 
 - [https://se-ml.github.io/practices/](https://se-ml.github.io/practices/)
 - [https://developers.google.com/machine-learning/guides/rules-of-ml](https://developers.google.com/machine-learning/guides/rules-of-ml)
