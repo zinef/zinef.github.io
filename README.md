@@ -5,8 +5,6 @@ Welcome to my personal blog repository! Here, I share my work, insights, and art
 ## 📌 What You'll Find Here
 - 📊 **Data Science & Machine Learning**: Articles on practical applications, algorithms, and techniques.
 - 🤖 **Artificial Intelligence**: Insights into deep learning, NLP, and LLMs.
-- 📈 **Finance & Trading**: My journey into understanding stock markets, crypto, and investment strategies.
-- 🛠 **Technical How-Tos**: Tutorials on tools, frameworks, and best practices.
 - 📝 **Personal Projects & Research**: Hands-on projects, code implementations, and experimental ideas.
 
 ## 🌍 Where to Follow My Work
