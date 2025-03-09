@@ -71,6 +71,8 @@ An ideal DevOps cycle will include the following five important pillars for a su
 - Leverage tooling and automation
 - Measure everything
 
+{{< youtube uTEL8Ff1Zvk >}}
+
 And the common DevOps cycle that includes all these pillars looks like this:
 
 ![Dev + Ops = DevOps!](schema-devops.webp)
