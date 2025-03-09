@@ -9,7 +9,7 @@ categories:
     - AI
 tags:
     - GenAI
-weight: 1       # You can add weight to some posts to override the default sorting (date descending)
+weight: 3       # You can add weight to some posts to override the default sorting (date descending)
 ---
 
 Have you ever struggled with the daunting task of code migration? Whether it’s moving from SAS to Python or Snowflake or BigQuery, C# to Python, PL/SQL to Snow SQL, or migrating ETL processes from Informatica to Snowflake, the challenges can be overwhelming. Not to mention the complexities involved in converting reports from Tableau to Power BI or Qlik to Power BI. However, with the groundbreaking capabilities of generative AI, these seemingly Herculean tasks can now be accomplished effortlessly and affordably. Say goodbye to traditional, time-consuming workflows and embrace the transformative power of generative AI in your migration endeavors.
@@ -34,7 +34,7 @@ GANs employ a two-part network comprising a generator and a discriminator, which
 
 Diffusion models are powerful generative AI techniques that excel in generating high-quality, realistic samples. These models learn the underlying probability distribution of a dataset and can then generate new samples that resemble the original data. They have shown great potential in fields such as image synthesis, medical anomaly detection, and data augmentation.
 
-4.** Large Language Models (LLMs):**
+4. **Large Language Models (LLMs):**
 
 Among the various subtypes of Generative AI models, Large Language Models (LLMs) have been trending in recent years. These models are trained on vast amounts of text data and can generate coherent and contextually relevant text responses. With the advancements in LLMs, numerous applications have emerged, including language translation, chatbots, content generation, and even code completion. In this article, we will primarily focus on the intriguing use cases of LLMs.
 
