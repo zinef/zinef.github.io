@@ -3,7 +3,7 @@ title: "MLOps: Introduction, Definitions and Best Practices"
 description: "Dive into the world of MLOps with this comprehensive guide, covering its foundational concepts, key definitions, and industry best practices."
 slug: mlops_6_23
 date: 2023-06-19
-image: ml_dev_ops.png
+image: MLOps-DevOps.webp
 categories:
     - Data Science
     - Data Engineering
@@ -53,7 +53,7 @@ The key phases of MLOps are:
 - Model monitoring
 - Model re-training.
 
-![MLOps cycle](mlops_cycle.jpg)
+![MLOps cycle](mlops_cycle.png)
 
 ### DevOps & MLOps
 
@@ -73,7 +73,7 @@ An ideal DevOps cycle will include the following five important pillars for a su
 
 And the common DevOps cycle that includes all these pillars looks like this:
 
-![Dev + Ops = DevOps!](devops.png)
+![Dev + Ops = DevOps!](schema-devops.webp)
 
 ### Comparison 
 
@@ -81,7 +81,7 @@ And the common DevOps cycle that includes all these pillars looks like this:
 
 A code-validate-deploy cycle is included in both DevOps and MLOps pipelines. However, the MLOps pipeline also includes data and model stages that are necessary to create and train a machine learning model (see diagram below). As a result, MLOps has a few differences from traditional DevOps for each component of the workflow.
 
-![ML + Dev + Ops](ml_dev_ops.png)
+![ML + Dev + Ops](MLOps-DevOps.webp)
 
 "data" and "model" here represent, in most cases, the data labeling, data transformation or feature engineering and algorithm selection process which we can call the experiment phase.
 
