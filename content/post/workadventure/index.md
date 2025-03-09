@@ -3,7 +3,7 @@ title: "Welcome to my Work Adventure"
 description: "Step into my virtual workspace!"
 slug: myworkadventure
 image: wa.png
-
+date: 2024-05-14
 weight: 1       
 ---
 
