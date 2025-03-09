@@ -97,7 +97,7 @@ The "Dev" and "Ops" parts are mostly the same at a high level.
 
 The experimentation phase is unique to the data science lifecycle, which reflects how data scientists traditionally do their work. This differs from the way code developers do their work. The following diagram illustrates this life cycle in more detail.
 
-![Data Science Life Cycle](DataScience_lifeCycle.png)
+![Data Science Life Cycle](tdsp-lifecycle.png)
 
 #### Development and CI/CD 
 
@@ -117,7 +117,7 @@ Model drift is an additional component to monitor in MLOps, in addition to the a
 
 In order to keep your model up to date, it will need to be re-trained regularly (https://www.phdata.io/blog/when-to-retrain-machine-learning-models/) to gain consistent value from it.
 
-![Monitoring](monitoring.png)
+![Monitoring](monitoring.webp)
 
 ## Why MLOps?
 
@@ -203,11 +203,11 @@ The MLOps maturity model encompasses five levels of technical capability:
 
 | **Level** | **Description** | **Key points** | **Technology** |
 |-----------|----------------|----------------|----------------|
-| 0 | No MLOps | - Difficulty in managing the full life cycle of machine learning models<br>- Teams are heterogeneous and releases are painful<br>- Most systems exist as "black boxes", little feedback during/after deployment | - Manual builds and deployments<br>- Manual model and application testing<br>- No centralized monitoring of model performance<br>- Model training is manual |
-| 1 | DevOps but no MLOps | - Production releases are less painful than non-MLOps, but rely on the data team for each new model<br>- Feedback on model performance in production is always limited<br>- Difficult trace/reproduction results | - Automated Builds<br>- Automated tests for the application code |
-| 2 | Automated Training | - The training environment is fully managed and traceable<br>- Easy to reproduce model<br>- Versions are manual, but low friction | - Automated model learning<br>- Centralized tracking of training model performance<br>- Model management |
-| 3 | Automated Model Deployment | - Low-friction, automatic releases<br>- Full traceability from deployment to source data<br>- Entire environment managed: training > testing > production | - Integrated A/B testing of model performance for deployment<br>- Automated testing for all code<br>- Centralized tracking of training model performance |
-| 4 | Full MLOps Automated Operations | - Complete automated and easily monitored system<br>- Production systems provide information on how to improve and, in some cases, automatically, new models<br>- Approach of a system without dead time | - Automated training and testing of models<br>- Feedback, centralized metrics from a deployed model |
+| 0 | [No MLOps](https://docs.microsoft.com/en-ie/azure/architecture/example-scenario/mlops/mlops-maturity-model#level-0-no-mlops) | - Difficulty in managing the full life cycle of machine learning models<br>- Teams are heterogeneous and releases are painful<br>- Most systems exist as "black boxes", little feedback during/after deployment | - Manual builds and deployments<br>- Manual model and application testing<br>- No centralized monitoring of model performance<br>- Model training is manual |
+| 1 | [DevOps but no MLOps](https://docs.microsoft.com/en-ie/azure/architecture/example-scenario/mlops/mlops-maturity-model#level-1-devops-no-mlops) | - Production releases are less painful than non-MLOps, but rely on the data team for each new model<br>- Feedback on model performance in production is always limited<br>- Difficult trace/reproduction results | - Automated Builds<br>- Automated tests for the application code |
+| 2 | [Automated Training](https://docs.microsoft.com/en-ie/azure/architecture/example-scenario/mlops/mlops-maturity-model#level-2-automated-training) | - The training environment is fully managed and traceable<br>- Easy to reproduce model<br>- Versions are manual, but low friction | - Automated model learning<br>- Centralized tracking of training model performance<br>- Model management |
+| 3 | [Automated Model Deployment](https://docs.microsoft.com/en-ie/azure/architecture/example-scenario/mlops/mlops-maturity-model#level-3-automated-model-deployment) | - Low-friction, automatic releases<br>- Full traceability from deployment to source data<br>- Entire environment managed: training > testing > production | - Integrated A/B testing of model performance for deployment<br>- Automated testing for all code<br>- Centralized tracking of training model performance |
+| 4 | [Full MLOps Automated Operations](https://docs.microsoft.com/en-ie/azure/architecture/example-scenario/mlops/mlops-maturity-model#level-4-full-mlops-automated-retraining) | - Complete automated and easily monitored system<br>- Production systems provide information on how to improve and, in some cases, automatically, new models<br>- Approach of a system without dead time | - Automated training and testing of models<br>- Feedback, centralized metrics from a deployed model |
 
 For more information on each level, please click on the link in the description.
 

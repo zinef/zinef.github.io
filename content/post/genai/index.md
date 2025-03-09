@@ -157,7 +157,7 @@ Remember, Generative AI is a powerful tool, but it is the collaboration between 
 
 * [The GPT-3 Family: 50+ Models](https://lifearchitect.ai/gpt-3/)
 
-* [GPT-3.5 + ChatGPT: An illustrated overview](http://GPT-3.5 + ChatGPT: An illustrated overview)
+* [GPT-3.5 + ChatGPT: An illustrated overview](https://lifearchitect.ai/chatgpt/)
 
 * [GPT-4](https://lifearchitect.ai/gpt-4/)
 
