@@ -7,6 +7,14 @@ date: 2024-05-14
 weight: 1
 
 comments: false
+categories:
+    - Virtual Workspace
+tags:
+    - Work
+    - Virtual
+    - Share
+    - Fun
+
 ---
 
 ## 🚀 Welcome to My Work Adventure!  

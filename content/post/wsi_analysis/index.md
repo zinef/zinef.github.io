@@ -1,7 +1,7 @@
 ---
 title: "How Can We Analyze Large Medical Images to Detect Brain Tumors? A Practical Guide"
 description: "Leveraging deep learning to transform high-resolution medical images into actionable insights for brain tumor detection."
-slug: multiomics
+slug: lmianalysis
 date: 2024-02-17
 image: biospecimen-whole-slide-image-1.png
 categories:
@@ -25,7 +25,7 @@ Brain tumors are among the most aggressive and lethal forms of cancer, and early
 
 Medical images, particularly WSIs, are massive, often exceeding 100,000 pixels in resolution. Traditional image classification methods struggle to process such data due to memory constraints and computational complexity. My goal was to convert these high-dimensional images into meaningful embeddings that could be used for training classifier models to predict immune invasion stages in glioblastoma—a highly aggressive brain tumor.
 
-### Key Challenges:
+### Key Challenges
 1. **Data Size & Complexity:** WSIs are gigapixel images that require efficient handling and storage.
 2. **Annotation Scarcity:** Unlike natural images, medical images require expert annotations, which are often limited.
 3. **Feature Extraction:** Extracting meaningful representations from these images without losing critical information.
@@ -35,14 +35,14 @@ Medical images, particularly WSIs, are massive, often exceeding 100,000 pixels i
 
 To address these challenges, I explored and adapted two state-of-the-art deep learning approaches:
 
-### **1. Deep Attention Multiple-Instance Survival Learning (DeepAttnMISL)**
+### **Deep Attention Multiple-Instance Survival Learning (DeepAttnMISL)**
 DeepAttnMISL is a multiple-instance learning (MIL) approach designed for survival prediction from WSIs. Instead of classifying entire images at once, it breaks them into smaller regions (instances) and learns representations using an attention-based mechanism. Key steps included:
 - **Patch Extraction & Clustering:** Extracting patches from WSIs and grouping them into phenotype clusters.
 - **Feature Extraction via CNNs:** Using a pre-trained VGG model to generate feature embeddings for each patch.
 - **Attention-Based Pooling:** Aggregating patch-level information using an attention-based MIL pooling layer to make patient-level predictions.
 - **Final Classification:** Using the learned embeddings to train a classifier model to predict immune invasion stages (A, B, C, D).
 
-### **2. Vision Transformers (ViTs)**
+### **Vision Transformers (ViTs)**
 Inspired by their success in NLP, I also explored Vision Transformers (ViTs), which process images as sequences of patches rather than relying on convolutions. ViTs leverage self-attention mechanisms to capture long-range dependencies, making them particularly suited for analyzing complex medical images.
 - **Patch Tokenization:** Splitting the large image into smaller fixed-size patches.
 - **Embedding Generation:** Encoding each patch into a vector representation.
@@ -51,16 +51,16 @@ Inspired by their success in NLP, I also explored Vision Transformers (ViTs), wh
 
 ## Key Takeaways
 
-### **1. The Importance of Representation Learning**
+### **The Importance of Representation Learning**
 Converting images into embeddings significantly reduced the computational burden while preserving essential features. Choosing the right architecture for embedding extraction was crucial—DeepAttnMISL provided structured phenotype-based representations, while ViTs captured global dependencies.
 
-### **2. Attention Mechanisms Enhance Interpretability**
+### **Attention Mechanisms Enhance Interpretability**
 Using attention-based pooling allowed us to identify the most critical regions of the WSIs, improving both accuracy and interpretability. This was particularly useful for medical experts who need to understand model predictions.
 
-### **3. Pretrained Models Save Time & Resources**
+### **Pretrained Models Save Time & Resources**
 Instead of training deep networks from scratch, leveraging pretrained models (e.g., VGG, ResNet) for feature extraction proved highly effective. Fine-tuning these models with domain-specific data further improved performance.
 
-### **4. Computational Constraints Are a Real Challenge**
+### **Computational Constraints Are a Real Challenge**
 Processing high-resolution WSIs required significant memory and GPU resources. Using techniques like patch extraction, dimensionality reduction, and efficient batching helped mitigate these challenges.
 
 ## Conclusion
