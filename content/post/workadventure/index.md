@@ -4,7 +4,9 @@ description: "Step into my virtual workspace!"
 slug: myworkadventure
 image: wa.png
 date: 2024-05-14
-weight: 1       
+weight: 1
+
+comments: false
 ---
 
 ## 🚀 Welcome to My Work Adventure!  
