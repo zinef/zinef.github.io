@@ -1,4 +1,3 @@
-
 ---
 title: "How to Effectively Explore and Analyze Multi-Omics Data: Experience Report on Our Web Interface"
 description: "In the era of biological big data, multi-omics analysis represents a major challenge for researchers. How can we make sense of these gigantic biological datasets from different layers of cellular information?"
@@ -15,7 +14,6 @@ tags:
     - R Shiny
     - Dimensionality Reduction
     - Classification
-
 ---
 
 
