@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#101520;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1c2433;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Bar gradient -->
+    <linearGradient id="bar-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff3860;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff6b8b;stop-opacity:0.8" />
+    </linearGradient>
+    
+    <!-- Highlight gradient -->
+    <linearGradient id="highlight-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffdd57;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff9e41;stop-opacity:0.8" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="500" fill="url(#bg-gradient)" />
+  
+  <!-- Title -->
+  <text x="400" y="50" font-family="Arial, sans-serif" font-size="24" fill="white" text-anchor="middle" font-weight="bold">Hidden Storage Capacity in ResNet18's Largest Layer</text>
+  
+  <!-- Axes -->
+  <line x1="100" y1="400" x2="700" y2="400" stroke="white" stroke-width="2" />
+  <line x1="100" y1="400" x2="100" y2="100" stroke="white" stroke-width="2" />
+  
+  <!-- Y-axis grid lines -->
+  <line x1="95" y1="100" x2="700" y2="100" stroke="white" stroke-width="0.5" stroke-dasharray="5,5" />
+  <line x1="95" y1="160" x2="700" y2="160" stroke="white" stroke-width="0.5" stroke-dasharray="5,5" />
+  <line x1="95" y1="220" x2="700" y2="220" stroke="white" stroke-width="0.5" stroke-dasharray="5,5" />
+  <line x1="95" y1="280" x2="700" y2="280" stroke="white" stroke-width="0.5" stroke-dasharray="5,5" />
+  <line x1="95" y1="340" x2="700" y2="340" stroke="white" stroke-width="0.5" stroke-dasharray="5,5" />
+  
+  <!-- Y-axis labels -->
+  <text x="90" y="400" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="end">0</text>
+  <text x="90" y="340" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="end">0.5 MB</text>
+  <text x="90" y="280" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="end">1.0 MB</text>
+  <text x="90" y="220" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="end">1.5 MB</text>
+  <text x="90" y="160" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="end">2.0 MB</text>
+  <text x="90" y="100" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="end">2.5 MB</text>
+  
+  <!-- X-axis label -->
+  <text x="400" y="450" font-family="Arial, sans-serif" font-size="18" fill="white" text-anchor="middle">Bits Modified Per Float</text>
+  
+  <!-- Y-axis label -->
+  <text x="40" y="250" font-family="Arial, sans-serif" font-size="18" fill="white" text-anchor="middle" transform="rotate(-90, 40, 250)">Storage Capacity</text>
+  
+  <!-- Bars -->
+  <!-- 1-bit: 294.9 kB -->
+  <rect x="125" y="370" width="50" height="30" fill="url(#bar-gradient)" rx="3" ry="3" />
+  <text x="150" y="425" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="middle">1-bit</text>
+  <text x="150" y="360" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle">294.9 kB</text>
+  
+  <!-- 2-bits: 589.8 kB -->
+  <rect x="200" y="340" width="50" height="60" fill="url(#bar-gradient)" rx="3" ry="3" />
+  <text x="225" y="425" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="middle">2-bits</text>
+  <text x="225" y="330" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle">589.8 kB</text>
+  
+  <!-- 3-bits: 884.7 kB -->
+  <rect x="275" y="310" width="50" height="90" fill="url(#bar-gradient)" rx="3" ry="3" />
+  <text x="300" y="425" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="middle">3-bits</text>
+  <text x="300" y="300" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle">884.7 kB</text>
+  
+  <!-- 4-bits: 1.2 MB -->
+  <rect x="350" y="280" width="50" height="120" fill="url(#bar-gradient)" rx="3" ry="3" />
+  <text x="375" y="425" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="middle">4-bits</text>
+  <text x="375" y="270" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle">1.2 MB</text>
+  
+  <!-- 5-bits: 1.5 MB -->
+  <rect x="425" y="220" width="50" height="180" fill="url(#bar-gradient)" rx="3" ry="3" />
+  <text x="450" y="425" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="middle">5-bits</text>
+  <text x="450" y="210" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle">1.5 MB</text>
+  
+  <!-- 6-bits: 1.8 MB -->
+  <rect x="500" y="190" width="50" height="210" fill="url(#bar-gradient)" rx="3" ry="3" />
+  <text x="525" y="425" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="middle">6-bits</text>
+  <text x="525" y="180" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle">1.8 MB</text>
+  
+  <!-- 7-bits: 2.1 MB -->
+  <rect x="575" y="160" width="50" height="240" fill="url(#bar-gradient)" rx="3" ry="3" />
+  <text x="600" y="425" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="middle">7-bits</text>
+  <text x="600" y="150" font-family="Arial, sans-serif" font-size="12" fill="white" text-anchor="middle">2.1 MB</text>
+  
+  <!-- 8-bits: 2.4 MB - highlighted -->
+  <rect x="650" y="130" width="50" height="270" fill="url(#highlight-gradient)" rx="3" ry="3" stroke="#ffdd57" stroke-width="2" />
+  <text x="675" y="425" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="middle">8-bits</text>
+  <text x="675" y="120" font-family="Arial, sans-serif" font-size="14" fill="#ffdd57" text-anchor="middle" font-weight="bold">2.4 MB</text>
+  
+  <!-- Shocking capacity highlight -->
+  <text x="400" y="70" font-family="Arial, sans-serif" font-size="18" fill="#ff3860" text-anchor="middle" font-style="italic">While maintaining model accuracy!</text>
+</svg>

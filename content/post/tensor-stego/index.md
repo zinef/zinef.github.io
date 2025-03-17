@@ -33,8 +33,6 @@ Tensor steganography applies this concept to neural networks by embedding data i
 ![Overall Workflow (from : EvilModel: Hiding Malware Inside of Neural
 Network Models. )](workflow.png)
 
-Overall Workflow (from : EvilModel: Hiding Malware Inside of Neural
-Network Models. )
 
 ## Feasibility Analysis: The ResNet18 Case Study
 To understand the risk, let's analyze the capacity for hidden data in a relatively small model like ResNet18. The largest convolutional layer in ResNet18 contains approximately 9.4MB of floating-point values . By manipulating just the least significant bits of each float's mantissa, we can embed surprising amounts of data:
@@ -50,6 +48,7 @@ To understand the risk, let's analyze the capacity for hidden data in a relative
 | 7-bits | 2.1 MB |
 | 8-bits | 2.4 MB |
 
+![](capacity-bar-chart-updated.svg)
 This analysis reveals that even a modest model like ResNet18 can conceal up to 2.4MB of data by modifying just 8 bits per float in a single layer. Larger models commonly used in production environments could potentially hide much more — up to 9MB of malicious code using only 3 bits per float in a single layer.
 
 ## Implementation: How Tensor Steganography Works
@@ -94,7 +93,7 @@ def tensor_stego(model_path: Path, payload_path: Path, n: int = 1) -> bool:
 
 ### 3. Load the Model
 
-We load the model and ensure it's on the CPU:
+We load the model :
 
 ```python
 model = torch.load(model_path, map_location=torch.device("cpu"))
@@ -294,8 +293,6 @@ success = tensor_stego(model_path, payload_path, n=3)
 
 ![Tensor stego test run results](res1.png)
 
-Tensor stego test run results
-
 Here’s the reverse function to **extract the hidden payload** from the PyTorch model. This function will:
 
 1. **Load the model** from the given path.
@@ -361,8 +358,6 @@ if extracted_payload:
 ```
 
 ![Reverse function run results.](res2.png)
-
-Reverse function run results.
 
 ## Security Implications
 The ability to hide executable code within model weights presents several concerning security implications:
