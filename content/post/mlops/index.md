@@ -12,7 +12,6 @@ tags:
     - MLOps
     - DevOps
     - CI/CD
-weight: 2
 ---
 
 ## Introduction

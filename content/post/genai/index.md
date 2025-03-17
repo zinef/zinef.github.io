@@ -9,7 +9,6 @@ categories:
     - AI
 tags:
     - GenAI
-weight: 3       # You can add weight to some posts to override the default sorting (date descending)
 ---
 
 Have you ever struggled with the daunting task of code migration? Whether it’s moving from SAS to Python or Snowflake or BigQuery, C# to Python, PL/SQL to Snow SQL, or migrating ETL processes from Informatica to Snowflake, the challenges can be overwhelming. Not to mention the complexities involved in converting reports from Tableau to Power BI or Qlik to Power BI. However, with the groundbreaking capabilities of generative AI, these seemingly Herculean tasks can now be accomplished effortlessly and affordably. Say goodbye to traditional, time-consuming workflows and embrace the transformative power of generative AI in your migration endeavors.
