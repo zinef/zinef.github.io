@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CI/CD on Zine-eddine's Blog</title><link>https://zinef.github.io/tags/ci/cd/</link><description>Recent content in CI/CD on Zine-eddine's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Mon, 19 Jun 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://zinef.github.io/tags/ci/cd/index.xml" rel="self" type="application/rss+xml"/><item><title>MLOps: Introduction, Definitions and Best Practices</title><link>https://zinef.github.io/p/mlops_6_23/</link><pubDate>Mon, 19 Jun 2023 00:00:00 +0000</pubDate><guid>https://zinef.github.io/p/mlops_6_23/</guid><description>&lt;img src="https://zinef.github.io/p/mlops_6_23/MLOps-DevOps.webp" alt="Featured image of post MLOps: Introduction, Definitions and Best Practices" />&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>We hear more and more about MLOps. This practice, inspired by DevOps, aims to unify the tasks of developing Machine Learning applications with those of operations.&lt;/p>
+&lt;p>In this article, we will see what MLOps is, how it can be practiced and what tools are available to practice it.&lt;/p>
+&lt;p>In 2020, each person created at least 1.7 MB of data each second, according to techjury. That&amp;rsquo;s sound good for data scientists since there are so many theories and ideas to investigate, play with, and numerous findings and models to make.&lt;/p>
+&lt;p>However, if we want to take this seriously and have these models interact with real-world business challenges and people, we must address the basics first, like acquiring and cleaning large amounts of data, setting up tracking and versioning for experiments and model training runs, setting up the deployment and monitoring pipelines for the models that do get to production.&lt;/p>
+&lt;p>Similar challenges occurred in the past when we tried to grow traditional software systems to accommodate additional users. DevOps provided a solution in the form of a set of practices for building, testing, deploying, and running large-scale software systems. DevOps shortened development times, enhanced deployment velocity, and made system releases auditable and durable.&lt;/p>
+&lt;p>That bring us to MLOps. It was formed at the junction of DevOps, Data Engineering, and Machine Learning, and while the concept is similar to DevOps, the implementation differs. ML systems are more experimental in nature, with additional components that are far more difficult to develop and run.&lt;/p>
+&lt;h2 id="what-is-mlops">What is MLOps?
+&lt;/h2>&lt;p>MLOps is the operationalization of Machine Learning model management. This aims to create an end-to-end process for creating, implementing and managing repeatable, testable and scalable machine learning models. MLOps aims to:&lt;/p>
+&lt;ul>
+&lt;li>Unify the machine learning delivery cycle and the application development cycle&lt;/li>
+&lt;li>Automation of Machine Learning tests (Data Validation, model testing, model integration testing, etc)&lt;/li>
+&lt;li>Enables the application of agile principles to the Machine Learning project&lt;/li>
+&lt;li>Supports model creation in CI/CD&lt;/li>
+&lt;li>Reduces the technical debt of ML models&lt;/li>
+&lt;li>Must be independent of languages, framework, platform, etc.&lt;/li>
+&lt;/ul>
+&lt;p>If there is anything to remember, it is that: MLOps is a set of practices that is intended to be as agile as possible and that must be based on the automation of the delivery and continuous integration processes of ML applications&lt;/p>
+&lt;p>The key phases of MLOps are:&lt;/p>
+&lt;ul>
+&lt;li>Data gathering&lt;/li>
+&lt;li>Data analysis&lt;/li>
+&lt;li>Data transformation/preparation&lt;/li>
+&lt;li>Model training &amp;amp; development&lt;/li>
+&lt;li>Model validation&lt;/li>
+&lt;li>Model serving&lt;/li>
+&lt;li>Model monitoring&lt;/li>
+&lt;li>Model re-training.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://zinef.github.io/p/mlops_6_23/mlops_cycle.png"
+width="1366"
+height="768"
+srcset="https://zinef.github.io/p/mlops_6_23/mlops_cycle_hu_d5cdb6e8ade7612.png 480w, https://zinef.github.io/p/mlops_6_23/mlops_cycle_hu_6ee3e7024c6f0aac.png 1024w"
+loading="lazy"
+alt="MLOps cycle"
+class="gallery-image"
+data-flex-grow="177"
+data-flex-basis="426px"
+>&lt;/p>
+&lt;h3 id="devops--mlops">DevOps &amp;amp; MLOps
+&lt;/h3>&lt;p>DevOps is a set of activities aimed at shortening the development life of a system and providing continuous delivery of high quality software. DevOps and MLOps both aim to bring software into a repeatable and fault tolerant workflow, but in MLOps that software also has a machine learning component.&lt;/p>
+&lt;p>Before deep diving into the comparison of DevOps and MLOps let&amp;rsquo;s recall what is the DevOps Cycle&lt;/p>
+&lt;p>As teams strive for a quicker code-build-deploy loop, DevOps is a crucial concept in practically all successful IT projects. This gives teams the ability to deploy new features more quickly, allowing them to complete projects faster and with a higher quality final result. However, without adequate DevOps methods, teams face manual work, inability to test, and, as a result, dangerous production deployments.&lt;/p>
+&lt;p>An ideal DevOps cycle will include the following five important pillars for a successful project (&lt;a class="link" href="https://www.youtube.com/watch?v=uTEL8Ff1Zvk%29" target="_blank" rel="noopener"
+>https://www.youtube.com/watch?v=uTEL8Ff1Zvk)&lt;/a>:&lt;/p>
+&lt;ul>
+&lt;li>Reduce organizational silos&lt;/li>
+&lt;li>Accept failure as normal&lt;/li>
+&lt;li>Implement gradual changes&lt;/li>
+&lt;li>Leverage tooling and automation&lt;/li>
+&lt;li>Measure everything&lt;/li>
+&lt;/ul>
+&lt;div class="video-wrapper">
+&lt;iframe loading="lazy"
+src="https://www.youtube.com/embed/uTEL8Ff1Zvk"
+allowfullscreen
+title="YouTube Video"
+>
+&lt;/iframe>
+&lt;/div>
+&lt;p>And the common DevOps cycle that includes all these pillars looks like this:&lt;/p>
+&lt;p>&lt;img src="https://zinef.github.io/p/mlops_6_23/schema-devops.webp"
+width="850"
+height="350"
+srcset="https://zinef.github.io/p/mlops_6_23/schema-devops_hu_c802a00d1ba360e2.webp 480w, https://zinef.github.io/p/mlops_6_23/schema-devops_hu_b0788bad4f8f6096.webp 1024w"
+loading="lazy"
+alt="Dev &amp;#43; Ops = DevOps!"
+class="gallery-image"
+data-flex-grow="242"
+data-flex-basis="582px"
+>&lt;/p>
+&lt;h3 id="comparison">Comparison
+&lt;/h3>&lt;h4 id="cycle">Cycle
+&lt;/h4>&lt;p>A code-validate-deploy cycle is included in both DevOps and MLOps pipelines. However, the MLOps pipeline also includes data and model stages that are necessary to create and train a machine learning model (see diagram below). As a result, MLOps has a few differences from traditional DevOps for each component of the workflow.&lt;/p>
+&lt;p>&lt;img src="https://zinef.github.io/p/mlops_6_23/MLOps-DevOps.webp"
+width="896"
+height="432"
+srcset="https://zinef.github.io/p/mlops_6_23/MLOps-DevOps_hu_34477051f9523420.webp 480w, https://zinef.github.io/p/mlops_6_23/MLOps-DevOps_hu_371d600d4e29773a.webp 1024w"
+loading="lazy"
+alt="ML &amp;#43; Dev &amp;#43; Ops"
+class="gallery-image"
+data-flex-grow="207"
+data-flex-basis="497px"
+>&lt;/p>
+&lt;p>&amp;ldquo;data&amp;rdquo; and &amp;ldquo;model&amp;rdquo; here represent, in most cases, the data labeling, data transformation or feature engineering and algorithm selection process which we can call the experiment phase.&lt;/p>
+&lt;p>&lt;strong>Data labeling&lt;/strong> is the process of adding the target to a chunk of data records and the model will use this as a training set. In the case of a supervised ML model this type of data is critical.&lt;/p>
+&lt;p>&lt;strong>Data transformation or feature engineering&lt;/strong> is also an important step to preprocess and prepare the most suitable structure for the ML model in order to produce good results.&lt;/p>
+&lt;p>And &lt;strong>selecting algorithm process&lt;/strong> depends on the nature of the prediction problem at hand.&lt;/p>
+&lt;p>The &amp;ldquo;Dev&amp;rdquo; and &amp;ldquo;Ops&amp;rdquo; parts are mostly the same at a high level.&lt;/p>
+&lt;p>The experimentation phase is unique to the data science lifecycle, which reflects how data scientists traditionally do their work. This differs from the way code developers do their work. The following diagram illustrates this life cycle in more detail.&lt;/p>
+&lt;p>&lt;img src="https://zinef.github.io/p/mlops_6_23/tdsp-lifecycle.png"
+width="1150"
+height="858"
+srcset="https://zinef.github.io/p/mlops_6_23/tdsp-lifecycle_hu_e45b6dd94d3d1536.png 480w, https://zinef.github.io/p/mlops_6_23/tdsp-lifecycle_hu_ae699e5994cea53b.png 1024w"
+loading="lazy"
+alt="Data Science Life Cycle"
+class="gallery-image"
+data-flex-grow="134"
+data-flex-basis="321px"
+>&lt;/p>
+&lt;h4 id="development-and-cicd">Development and CI/CD
+&lt;/h4>&lt;p>The &amp;ldquo;development&amp;rdquo; takes two different meanings in each concept. In DevOps, by development we mean the code that creates an application or interface of some sort. The code is then wrapped up in an executable (artifact) that is deployed and validated against a series of tests. This cycle is ideally automated and continues until you have a final product. However, in MLOps the code is building/training a ML model. The output artifact here is a serialized file that can have data fed into it and produce inferences. The validation would be checking how well the trained model does against test data. Similarly, this is a cycle that continues until the model performs at a certain threshold.&lt;/p>
+&lt;h4 id="version-control">Version control
+&lt;/h4>&lt;p>In a DevOps pipeline, version control is usually limited to tracking changes to code and artifacts. There are more things to track in an MLOps pipeline.&lt;/p>
+&lt;p>As mentioned before, the code in MLOps is building/training the ML model and it is an iterative cycle of experimenting. Each experimental run&amp;rsquo;s components and metrics must be tracked in order to appropriately recreate it afterwards for auditing reasons. The data set utilized in training (train/test split), the model construction code, and the model artifact are among these components. The hyper-parameters and model performance are among the metrics (e.g., error rate).&lt;/p>
+&lt;p>When compared to standard software systems, this may appear to be a lot of information to keep track of. Fortunately, we have model registry tools (&lt;a class="link" href="https://www.phdata.io/blog/what-is-a-model-registry/" target="_blank" rel="noopener"
+>https://www.phdata.io/blog/what-is-a-model-registry/&lt;/a>) as a tailor-made solution for versioning ML models.&lt;/p>
+&lt;h4 id="monitoring">Monitoring
+&lt;/h4>&lt;p>Model drift is an additional component to monitor in MLOps, in addition to the application itself. Because data is continuously changing, your model must as well. Models trained on older data may or may not perform well on new data, particularly if the data is seasonal.&lt;/p>
+&lt;p>In order to keep your model up to date, it will need to be re-trained regularly (&lt;a class="link" href="https://www.phdata.io/blog/when-to-retrain-machine-learning-models/" target="_blank" rel="noopener"
+>https://www.phdata.io/blog/when-to-retrain-machine-learning-models/&lt;/a>) to gain consistent value from it.&lt;/p>
+&lt;p>&lt;img src="https://zinef.github.io/p/mlops_6_23/monitoring.webp"
+width="1024"
+height="602"
+srcset="https://zinef.github.io/p/mlops_6_23/monitoring_hu_769743d0a89db269.webp 480w, https://zinef.github.io/p/mlops_6_23/monitoring_hu_477412dc59565eaf.webp 1024w"
+loading="lazy"
+alt="Monitoring"
+class="gallery-image"
+data-flex-grow="170"
+data-flex-basis="408px"
+>&lt;/p>
+&lt;h2 id="why-mlops">Why MLOps?
+&lt;/h2>&lt;p>The importance of MLOps cannot be overstated. By establishing more efficient processes, utilizing data analytics for decision-making, and enhancing customer experience, machine learning helps individuals and enterprises deploy solutions that uncover previously untapped streams of revenue, save time, and decrease cost.&lt;/p>
+&lt;p>These objectives are difficult to achieve without a solid foundation to operate within. MLOps automates model creation and deployment, resulting in faster time to market and lower operating expenses. It assists managers and developers in making more strategic and agile decisions.&lt;/p>
+&lt;p>MLOps provides as a road map for individuals, small teams, and even enterprises to fulfill their objectives regardless of their restrictions, such as sensitive data, limited resources, or a limited budget.&lt;/p>
+&lt;p>Because MLOps are not set in stone, you may choose the size of your map. You may try out various options and keep only what works for you.&lt;/p>
+&lt;h2 id="best-practices">Best Practices
+&lt;/h2>&lt;p>In this section, we will see the best practices for different parts of an ML project, Team, DATA, Metrics&amp;amp;KPI, Model, Code and the Deployment.&lt;/p>
+&lt;h3 id="team">Team
+&lt;/h3>&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Use A collaborative Development Platform:&lt;/strong> by making consistent use of a collaborative dev platform teams can work together more effectively. All this is possible because dev platforms provides easy access to data, code, information and other tools. One other interesting thing is that platforms help teams to work together asynchronously or remotely. Collaborative development environments include GitHub, GitLab, BitBucket, and Azure DevOps Server.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Work Against a Shared Backlog:&lt;/strong> intent to avoid misunderstanding on the content, priority and status of tasks because an actively maintained backlog enables coordination of tasks within the team and with external stakeholders. It also helps in planning ahead and performing retrospective evaluations.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Communicate and Collaborate with others:&lt;/strong> The system that your team develops is meant to integrate with other systems within the context of a wider organization. this requires communication, alignment, and collaboration with others outside the team.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="data">Data
+&lt;/h3>&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Use Sanity Checks for All External Data Sources:&lt;/strong> Avoid invalid or incomplete data being processed because data errors is crucial for model quality&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Write Reusable Scripts for Data Cleaning and Merging:&lt;/strong> Avoid untidy data wrangling scripts, reuse code and increase reproducibility.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Ensure Data Labelling is Performed in a Strictly Controlled Process:&lt;/strong> Avoid invalid or incomplete labels, Controlling the data labelling process ensures label quality &amp;ndash; an important quality driver for supervised learning algorithms.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Make Data Sets Available on Shared Infrastructure (private or public):&lt;/strong> Avoid data duplication, data bottlenecks, or unnecessary transfer of large data sets.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="metrics--kpi">Metrics &amp;amp; KPI
+&lt;/h3>&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>At first, track multiple metrics, not necessarily the best one:&lt;/strong> You want to make money, make your users happy, and make the world a better place. There are tons of metrics that you care about, and you should measure them all. However, early in the machine learning process, you will notice them all going up, even those that you do not directly optimize.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Establish Responsible AI Values:&lt;/strong> Explicitly align all stakeholders on the ethical values and constraints of your machine learning application&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Enforce Fairness and Privacy:&lt;/strong> Avoid irresponsible use of machine learning and decisions with negative societal impact.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="model">Model
+&lt;/h3>&lt;p>The first thing to do with the model is to get it simple, interpretable and get the infrastructure right, that what makes debugging easier&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Share a Clearly Defined Training Objective within the Team:&lt;/strong> Avoid misunderstandings between multi-disciplinary team members. In a multi-disciplinary team, members with different backgrounds may misinterpret training objectives. Therefore, it is important to clearly communicate the objectives within the team.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Capture the Training Objective in a Metric that is Easy to Measure and Understand:&lt;/strong> Ensure the machine learning objective is easy to measure and it is a good proxy for the true objective.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Test all Feature Extraction Code&lt;/strong>: Avoid bugs in the feature extraction code to ensure the non presence of errors and bugs in the whole process.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Enable Parallel Training Experiments:&lt;/strong> Avoid deadlocks during experimentation. Machine learning relies heavily on empirical processes. In order to allow fast experimentation and avoid deadlocks, it is recommended to think upfront of experiment parallelisation.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Continuously Measure Model Quality and Performance&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Use Versioning for Data, Model, Configurations and Training Scripts&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="code">Code
+&lt;/h3>&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Run Automated Regression Tests:&lt;/strong> Avoid the introduction of bugs in code. When making changes, new defects can easily be introduced in existing code. A suite of automated regression tests helps to spot such defects as early as possible.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Use Continuous Integration&lt;/strong>: Catch any code integration problems as early as possible. Code changes and additions may introduce problems into the software system as a whole. This can be detected by running an automated build script each time that code is committed to the versioning repository.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Assure Application Security&lt;/strong>: to Prevent attackers from stealing or corrupting data, or from disrupting the availability of an application. Security incidents can lead to public data leaks, financial losses, or disrupt the availability of an application.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="deployment">Deployment
+&lt;/h3>&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Automate Model Deployment:&lt;/strong> Increase the ability to deploy models on demand, which increases availability and scalability. Deploying and orchestrating different components of an application can be a tedious task. Instead of manually packaging and delivering models, and in order to avoid manual interventions or errors, one can automate this task.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Enable Shadow Deployment:&lt;/strong> Test a model&amp;rsquo;s behaviour on production data, without any impact on the service it provides. Before pushing a model into production, it is wise to test its quality and performance on data from production. In order to facilitate this task, one can deploy multiple models to &amp;lsquo;shadow&amp;rsquo; each other.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Continuously Monitor the Behaviour of Deployed Models:&lt;/strong> To Avoid unintended behaviour in production models. Once a model is promoted to production, the team has to understand how it performs.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Log Production Predictions with the Model&amp;rsquo;s Version and Input Data:&lt;/strong> To Enhance debugging, enable traceability, reproducibility, compliance and incident management. Tracing decisions back to the input data and the model&amp;rsquo;s version can be difficult. It is therefore recommended to log production predictions together with the model&amp;rsquo;s version and input data.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="machine-learning-operations-maturity-model">Machine Learning Operations Maturity Model
+&lt;/h2>&lt;p>The purpose of this maturity model is to help clarify the principles and practices of Machine Learning Operations (MLOps). The maturity model shows continuous improvement in the creation and operation of a production-level machine learning application environment. You can use it as a metric to establish the incremental requirements needed to measure the maturity of a machine learning production environment and its associated processes.&lt;/p>
+&lt;p>As with most maturity models, the MLOps maturity model qualitatively assesses personas/culture, processes/structures, and objects/technologies. As the maturity level increases, the probability increases as incidents or errors lead to quality improvements in the development and production processes.&lt;/p>
+&lt;p>The MLOps maturity model encompasses five levels of technical capability:&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>&lt;strong>Level&lt;/strong>&lt;/th>
+&lt;th>&lt;strong>Description&lt;/strong>&lt;/th>
+&lt;th>&lt;strong>Key points&lt;/strong>&lt;/th>
+&lt;th>&lt;strong>Technology&lt;/strong>&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>0&lt;/td>
+&lt;td>&lt;a class="link" href="https://docs.microsoft.com/en-ie/azure/architecture/example-scenario/mlops/mlops-maturity-model#level-0-no-mlops" target="_blank" rel="noopener"
+>No MLOps&lt;/a>&lt;/td>
+&lt;td>- Difficulty in managing the full life cycle of machine learning models&lt;br>- Teams are heterogeneous and releases are painful&lt;br>- Most systems exist as &amp;ldquo;black boxes&amp;rdquo;, little feedback during/after deployment&lt;/td>
+&lt;td>- Manual builds and deployments&lt;br>- Manual model and application testing&lt;br>- No centralized monitoring of model performance&lt;br>- Model training is manual&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>&lt;a class="link" href="https://docs.microsoft.com/en-ie/azure/architecture/example-scenario/mlops/mlops-maturity-model#level-1-devops-no-mlops" target="_blank" rel="noopener"
+>DevOps but no MLOps&lt;/a>&lt;/td>
+&lt;td>- Production releases are less painful than non-MLOps, but rely on the data team for each new model&lt;br>- Feedback on model performance in production is always limited&lt;br>- Difficult trace/reproduction results&lt;/td>
+&lt;td>- Automated Builds&lt;br>- Automated tests for the application code&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>&lt;a class="link" href="https://docs.microsoft.com/en-ie/azure/architecture/example-scenario/mlops/mlops-maturity-model#level-2-automated-training" target="_blank" rel="noopener"
+>Automated Training&lt;/a>&lt;/td>
+&lt;td>- The training environment is fully managed and traceable&lt;br>- Easy to reproduce model&lt;br>- Versions are manual, but low friction&lt;/td>
+&lt;td>- Automated model learning&lt;br>- Centralized tracking of training model performance&lt;br>- Model management&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3&lt;/td>
+&lt;td>&lt;a class="link" href="https://docs.microsoft.com/en-ie/azure/architecture/example-scenario/mlops/mlops-maturity-model#level-3-automated-model-deployment" target="_blank" rel="noopener"
+>Automated Model Deployment&lt;/a>&lt;/td>
+&lt;td>- Low-friction, automatic releases&lt;br>- Full traceability from deployment to source data&lt;br>- Entire environment managed: training &amp;gt; testing &amp;gt; production&lt;/td>
+&lt;td>- Integrated A/B testing of model performance for deployment&lt;br>- Automated testing for all code&lt;br>- Centralized tracking of training model performance&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4&lt;/td>
+&lt;td>&lt;a class="link" href="https://docs.microsoft.com/en-ie/azure/architecture/example-scenario/mlops/mlops-maturity-model#level-4-full-mlops-automated-retraining" target="_blank" rel="noopener"
+>Full MLOps Automated Operations&lt;/a>&lt;/td>
+&lt;td>- Complete automated and easily monitored system&lt;br>- Production systems provide information on how to improve and, in some cases, automatically, new models&lt;br>- Approach of a system without dead time&lt;/td>
+&lt;td>- Automated training and testing of models&lt;br>- Feedback, centralized metrics from a deployed model&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>For more information on each level, please click on the link in the description.&lt;/p>
+&lt;h2 id="types-of-mlops-solutions">Types of MLOps solutions
+&lt;/h2>&lt;p>Depending on your needs, the choice of the MLOps solution can be made on the following two types:&lt;/p>
+&lt;ol>
+&lt;li>End to end MLOps solution&lt;/li>
+&lt;li>Custom build MLOps solution&lt;/li>
+&lt;/ol>
+&lt;h3 id="end-to-end-mlops-solution">End to end MLOps solution
+&lt;/h3>&lt;p>These type of solution provides data scientists the ability to build, train and deploy ML models quickly, the solutions are fully managed services. And the best solutions for this type could be:&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Amazon:&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Amazon sagemaker:&lt;/strong> Amazon SageMaker is an ML service that enables data scientists and engineers, as well as MLOps engineers and business analysts, to create, train, and deploy ML models for any use case, regardless of their level of ML expertise.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Google Cloud MLOps suite:&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Dataflow:&lt;/strong> Fast, unified and cost-effective serverless batch and stream data processing.&lt;/li>
+&lt;li>&lt;strong>Kubeflow pipelines:&lt;/strong> Kubeflow Pipelines is a platform for building and deploying portable, scalable machine learning (ML) workflows based on Docker containers.&lt;/li>
+&lt;li>&lt;strong>Google Kubernetes Engine:&lt;/strong> A simple way to automatically deploy, scale and manage Kubernetes.&lt;/li>
+&lt;li>&lt;strong>TFX:&lt;/strong> TensorFlow Extended (TFX) is an end-to-end platform for deploying production ML pipelines&lt;/li>
+&lt;li>&lt;strong>Vertex AI Workbench&lt;/strong>: A single development environment for the entire data science workflow.&lt;/li>
+&lt;li>&lt;strong>ML kit:&lt;/strong> Machine learning for mobile developers, ML Kit brings Google&amp;rsquo;s machine learning expertise to mobile developers in a powerful and easy-to-use package. Make your iOS and Android apps more engaging, personalized, and helpful with solutions that are optimized to run on device.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Microsoft Azure MLOps suite:&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Azure Machine Learning:&lt;/strong> Empower data scientists and developers to build, deploy, and manage high-quality models faster and with confidence. Accelerate time to value with industry-leading machine learning operations (MLOps), open-source interoperability, and integrated tools. Innovate on a secure, trusted platform designed for responsible AI applications in machine learning.&lt;/li>
+&lt;li>&lt;strong>Azure Kubernetes Service (AKS):&lt;/strong> Azure Kubernetes Service (AKS) offers the quickest way to start developing and deploying cloud-native apps, with built-in code-to-cloud pipelines and guardrails. Get unified management and governance for on-premises, edge, and multicloud Kubernetes clusters. Interoperate with Azure security, identity, cost management, and migration services.&lt;/li>
+&lt;li>&lt;strong>Azure Pipelines:&lt;/strong> Continuously build, test, and deploy to any platform and cloud.&lt;/li>
+&lt;li>&lt;strong>Azure Monitor:&lt;/strong> Azure Monitor helps you maximize the availability and performance of your applications and services.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="custom-built-mlops-solution">Custom built MLOps solution
+&lt;/h3>&lt;p>For making the pipeline robust, the custom-built solution is the best for you, this approach can help you avoid a single point of failure and makes your pipeline easier to audit, debug and more customizable. There are many tools available for this approach:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Project jupyter:&lt;/strong> Free software, open standards, and web services for interactive computing across all programming languages&lt;/li>
+&lt;li>&lt;strong>Nbdev:&lt;/strong> a library that allows you to develop a python library in Jupyter Notebooks, putting all your code, tests and documentation in one place.&lt;/li>
+&lt;li>&lt;strong>Airflow:&lt;/strong> Airflow is a platform created to programmatically author, schedule and monitor workflows.&lt;/li>
+&lt;li>&lt;strong>Kubeflow:&lt;/strong> The Machine Learning Toolkit for Kubernetes.&lt;/li>
+&lt;li>&lt;strong>MLflow:&lt;/strong> An open source platform for the machine learning lifecycle&lt;/li>
+&lt;li>&lt;strong>Neptune:&lt;/strong> Neptune is an ML metadata store that was built for research and production teams that run many experiments.&lt;/li>
+&lt;li>&lt;strong>Optuna:&lt;/strong> An open source hyperparameter optimization framework to automate hyperparameter search&lt;/li>
+&lt;li>&lt;strong>Cortex:&lt;/strong> Deploy, manage, and scale machine learning models in production.&lt;/li>
+&lt;/ul>
+&lt;h2 id="conclusion">Conclusion
+&lt;/h2>&lt;p>Now that you have in mind all the definitions and best practices of MLOps, you can chose one of the two solutions and go for it. Even better I invite you to consult my next article where I will present a solution and implementation of a MLOps pipeline.&lt;/p>
+&lt;h2 id="references">References
+&lt;/h2>&lt;ul>
+&lt;li>&lt;a class="link" href="https://se-ml.github.io/practices/" target="_blank" rel="noopener"
+>https://se-ml.github.io/practices/&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://developers.google.com/machine-learning/guides/rules-of-ml" target="_blank" rel="noopener"
+>https://developers.google.com/machine-learning/guides/rules-of-ml&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://docs.microsoft.com/en-ie/azure/architecture/example-scenario/mlops/mlops-maturity-model" target="_blank" rel="noopener"
+>https://docs.microsoft.com/en-ie/azure/architecture/example-scenario/mlops/mlops-maturity-model&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://docs.microsoft.com/en-ie/azure/architecture/example-scenario/mlops/aml-decision-tree" target="_blank" rel="noopener"
+>https://docs.microsoft.com/en-ie/azure/architecture/example-scenario/mlops/aml-decision-tree&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://docs.microsoft.com/en-ie/azure/architecture/data-guide/azure-dataops-architecture-design" target="_blank" rel="noopener"
+>https://docs.microsoft.com/en-ie/azure/architecture/data-guide/azure-dataops-architecture-design&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://docs.microsoft.com/fr-fr/azure/architecture/example-scenario/mlops/mlops-technical-paper" target="_blank" rel="noopener"
+>https://docs.microsoft.com/fr-fr/azure/architecture/example-scenario/mlops/mlops-technical-paper&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://neptune.ai/blog/category/mlops" target="_blank" rel="noopener"
+>https://neptune.ai/blog/category/mlops&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.phdata.io/blog/when-to-retrain-machine-learning-models/" target="_blank" rel="noopener"
+>https://www.phdata.io/blog/when-to-retrain-machine-learning-models/&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.phdata.io/blog/what-is-a-model-registry/" target="_blank" rel="noopener"
+>https://www.phdata.io/blog/what-is-a-model-registry/&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.youtube.com/watch?v=uTEL8Ff1Zvk" target="_blank" rel="noopener"
+>https://www.youtube.com/watch?v=uTEL8Ff1Zvk&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning#devops_versus_mlops" target="_blank" rel="noopener"
+>https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning#devops_versus_mlops&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.datasciencecentral.com/mlops-vs-devops-the-similarities-and-differences/" target="_blank" rel="noopener"
+>https://www.datasciencecentral.com/mlops-vs-devops-the-similarities-and-differences/&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://towardsdatascience.com/building-a-devops-pipeline-for-machine-learning-and-ai-evaluating-sagemaker-cf7fdd3632e7" target="_blank" rel="noopener"
+>https://towardsdatascience.com/building-a-devops-pipeline-for-machine-learning-and-ai-evaluating-sagemaker-cf7fdd3632e7&lt;/a>&lt;/li>
+&lt;/ul></description></item></channel></rss>
