@@ -1,0 +1,487 @@
+<!doctype html><html lang=en-us dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="Exploring how steganography can turn deep learning models into covert carriers of malicious code."><title>The Hidden Threat: Using Steganography to Hide Malicious Payloads in Deep Learning Models</title><link rel=canonical href=https://zinef.github.io/p/tensorstego/><link rel=stylesheet href=/scss/style.min.946cca6c6259ef94ac55abfae7c7bf3291ea3ed5eea17ef77500b257217c6710.css><meta property='og:title' content="The Hidden Threat: Using Steganography to Hide Malicious Payloads in Deep Learning Models"><meta property='og:description' content="Exploring how steganography can turn deep learning models into covert carriers of malicious code."><meta property='og:url' content='https://zinef.github.io/p/tensorstego/'><meta property='og:site_name' content="Zine-eddine's Blog"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='Malware'><meta property='article:tag' content='Payload'><meta property='article:tag' content='Tensorflow'><meta property='article:tag' content='Pytorch'><meta property='article:tag' content='Pickle'><meta property='article:tag' content='Serialization'><meta property='article:tag' content='Deep Learning models'><meta property='article:published_time' content='2025-03-17T00:00:00+00:00'><meta property='article:modified_time' content='2025-03-17T00:00:00+00:00'><meta property='og:image' content='https://zinef.github.io/p/tensorstego/tensor_stego_cover.jpg'><meta name=twitter:title content="The Hidden Threat: Using Steganography to Hide Malicious Payloads in Deep Learning Models"><meta name=twitter:description content="Exploring how steganography can turn deep learning models into covert carriers of malicious code."><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://zinef.github.io/p/tensorstego/tensor_stego_cover.jpg'><link rel="shortcut icon" href=/Mugiwara.png><script async src="https://www.googletagmanager.com/gtag/js?id=G-NZTWCSFPM5"></script><script>var dnt,doNotTrack=!1;if(!1&&(dnt=navigator.doNotTrack||window.doNotTrack||navigator.msDoNotTrack,doNotTrack=dnt=="1"||dnt=="yes"),!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-NZTWCSFPM5")}</script></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"dark")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label="Toggle Menu">
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_b6b517251c5ae6bb.jpg width=300 height=299 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🍥</span></figure><div class=site-meta><h1 class=site-name><a href=/>Zine-eddine's Blog</a></h1><h2 class=site-description>Data Scientist | CS Engineer</h2></div></header><ol class=menu-social><li><a href=https://github.com/zinef target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=https://www.linkedin.com/in/zinef/ target=_blank title=LinkedIn rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5"/><path d="M8 8v.01"/><path d="M12 16v-5"/><path d="M16 16v-3a2 2 0 10-4 0"/><path d="M3 7a4 4 0 014-4h10a4 4 0 014 4v10a4 4 0 01-4 4H7a4 4 0 01-4-4z"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Links</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>Dark Mode</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">Table of contents</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#introduction>Introduction</a></li><li><a href=#what-is-tensor-steganography>What is Tensor Steganography?</a></li><li><a href=#feasibility-analysis-the-resnet18-case-study>Feasibility Analysis: The ResNet18 Case Study</a></li><li><a href=#implementation-how-tensor-steganography-works>Implementation: How Tensor Steganography Works</a><ol><li><a href=#1-import-dependencies>1. Import Dependencies</a></li><li><a href=#2-function-definition-and-validations>2. Function Definition and Validations</a></li><li><a href=#3-load-the-model>3. Load the Model</a></li><li><a href=#4-read--prepare-the-payload>4. Read & Prepare the Payload</a></li><li><a href=#5-convert-payload-to-bit-stream>5. Convert Payload to Bit Stream</a></li><li><a href=#6-embed-the-bits-into-the-models-tensors>6. Embed the Bits into the Model’s Tensors</a></li><li><a href=#7-save-the-modified-model>7. Save the Modified Model</a></li></ol></li><li><a href=#security-implications>Security Implications</a></li><li><a href=#defensive-measures>Defensive Measures</a></li><li><a href=#conclusion>Conclusion</a></li><li><a href=#references->References :</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/p/tensorstego/><img src=/p/tensorstego/tensor_stego_cover_hu_604709658488b1b8.jpg srcset="/p/tensorstego/tensor_stego_cover_hu_604709658488b1b8.jpg 800w, /p/tensorstego/tensor_stego_cover_hu_ddf5fb8e5e91d0b6.jpg 1600w" width=800 height=449 loading=lazy alt="Featured image of post The Hidden Threat: Using Steganography to Hide Malicious Payloads in Deep Learning Models"></a></div><div class=article-details><header class=article-category><a href=/categories/data-science/>Data Science
+</a><a href=/categories/deep-learning/>Deep Learning
+</a><a href=/categories/cybersecurity/>Cybersecurity</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/tensorstego/>The Hidden Threat: Using Steganography to Hide Malicious Payloads in Deep Learning Models</a></h2><h3 class=article-subtitle>Exploring how steganography can turn deep learning models into covert carriers of malicious code.</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Mar 17, 2025</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>12 minute read</time></div></footer></div></header><section class=article-content><h2 id=introduction>Introduction</h2><p>As deep learning models become increasingly integrated into critical systems, the security implications of these AI models demand closer analysis. While much attention has focused on adversarial attacks and model poisoning, a more subtle threat lurks in the architecture of neural networks themselves: tensor steganography. This technique allows malicious actors to embed hidden payloads directly within model weights without significantly affecting performance, creating a potential vector for distributing malware that bypasses traditional security measures.</p><p>In this article, I&rsquo;ll explore how tensor steganography works, demonstrate its feasibility in popular models like ResNet18, and explain why security professionals and ML engineers should be concerned about this emerging threat vector.</p><h2 id=what-is-tensor-steganography>What is Tensor Steganography?</h2><p>Steganography is the practice of hiding information within other non-secret data or a physical object to avoid detection. Unlike encryption, which makes data unreadable but visible, steganography conceals the very existence of the hidden data.</p><p>Tensor steganography applies this concept to neural networks by embedding data in the least significant bits of the floating-point values that make up model weights. These minor alterations are virtually undetectable through casual inspection and have minimal impact on model performance, making them an ideal hiding place for malicious code.</p><p><img src=/p/tensorstego/workflow.png width=792 height=548 srcset="/p/tensorstego/workflow_hu_27998fe2a5a235ba.png 480w, /p/tensorstego/workflow_hu_a9d31b72b89d71f2.png 1024w" loading=lazy alt="Overall Workflow (from : EvilModel: Hiding Malware Inside of Neural
+Network Models. )" class=gallery-image data-flex-grow=144 data-flex-basis=346px></p><h2 id=feasibility-analysis-the-resnet18-case-study>Feasibility Analysis: The ResNet18 Case Study</h2><p>To understand the risk, let&rsquo;s analyze the capacity for hidden data in a relatively small model like ResNet18. The largest convolutional layer in ResNet18 contains approximately 9.4MB of floating-point values . By manipulating just the least significant bits of each float&rsquo;s mantissa, we can embed surprising amounts of data:</p><div class=table-wrapper><table><thead><tr><th><strong>Bits Modified Per Float</strong></th><th><strong>Storage Capacity</strong></th></tr></thead><tbody><tr><td>1-bit</td><td>294.9 kB</td></tr><tr><td>2-bits</td><td>589.8 kB</td></tr><tr><td>3-bits</td><td>884.7 kB</td></tr><tr><td>4-bits</td><td>1.2 MB</td></tr><tr><td>5-bits</td><td>1.5 MB</td></tr><tr><td>6-bits</td><td>1.8 MB</td></tr><tr><td>7-bits</td><td>2.1 MB</td></tr><tr><td>8-bits</td><td>2.4 MB</td></tr></tbody></table></div><p><img src=/p/tensorstego/capacity-bar-chart-updated.svg loading=lazy>
+This analysis reveals that even a modest model like ResNet18 can conceal up to 2.4MB of data by modifying just 8 bits per float in a single layer. Larger models commonly used in production environments could potentially hide much more — up to 9MB of malicious code using only 3 bits per float in a single layer.</p><h2 id=implementation-how-tensor-steganography-works>Implementation: How Tensor Steganography Works</h2><p>Below is a Python implementation that demonstrates how to embed an arbitrary payload into a PyTorch model using steganography. This is a simple and naive example for illustrative purposes. In practice, a malicious actor could employ far more sophisticated techniques, making the detection and analysis of such hidden data significantly more challenging.</p><h3 id=1-import-dependencies>1. Import Dependencies</h3><p>We first import the required libraries:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>os</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>struct</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>hashlib</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>pathlib</span> <span class=kn>import</span> <span class=n>Path</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>torch</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>numpy</span> <span class=k>as</span> <span class=nn>np</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=2-function-definition-and-validations>2. Function Definition and Validations</h3><p>We define the function and validate the bit-depth parameter <code>n</code>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>def</span> <span class=nf>tensor_stego</span><span class=p>(</span><span class=n>model_path</span><span class=p>:</span> <span class=n>Path</span><span class=p>,</span> <span class=n>payload_path</span><span class=p>:</span> <span class=n>Path</span><span class=p>,</span> <span class=n>n</span><span class=p>:</span> <span class=nb>int</span> <span class=o>=</span> <span class=mi>1</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>    Embeds a payload inside the least significant bits (LSB) of the weights in a PyTorch model.
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>    Args:
+</span></span></span><span class=line><span class=cl><span class=s2>        model_path (Path): Path to the PyTorch model (.pt or .pth).
+</span></span></span><span class=line><span class=cl><span class=s2>        payload_path (Path): Path to the binary payload file.
+</span></span></span><span class=line><span class=cl><span class=s2>        n (int): Number of LSBs to use (1-8). Default is 1.
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>    Returns:
+</span></span></span><span class=line><span class=cl><span class=s2>        bool: True if embedding was successful, False otherwise.
+</span></span></span><span class=line><span class=cl><span class=s2>    &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=ow>not</span> <span class=p>(</span><span class=mi>1</span> <span class=o>&lt;=</span> <span class=n>n</span> <span class=o>&lt;=</span> <span class=mi>8</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>raise</span> <span class=ne>ValueError</span><span class=p>(</span><span class=s2>&#34;n must be between 1 and 8.&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=3-load-the-model>3. Load the Model</h3><p>We load the model :</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>model</span> <span class=o>=</span> <span class=n>torch</span><span class=o>.</span><span class=n>load</span><span class=p>(</span><span class=n>model_path</span><span class=p>,</span> <span class=n>map_location</span><span class=o>=</span><span class=n>torch</span><span class=o>.</span><span class=n>device</span><span class=p>(</span><span class=s2>&#34;cpu&#34;</span><span class=p>))</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=4-read--prepare-the-payload>4. Read & Prepare the Payload</h3><p>Before embedding, we format the payload to include:</p><ol><li><strong>File size</strong> (so it can be reconstructed correctly)</li><li><strong>SHA-256 hash</strong> (for integrity verification)</li><li><strong>The actual payload data</strong></li></ol><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=n>payload_path</span><span class=p>,</span> <span class=s2>&#34;rb&#34;</span><span class=p>)</span> <span class=k>as</span> <span class=n>file</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>payload_data</span> <span class=o>=</span> <span class=n>file</span><span class=o>.</span><span class=n>read</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>payload_size</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>getsize</span><span class=p>(</span><span class=n>payload_data</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>payload_hash</span> <span class=o>=</span> <span class=n>hashlib</span><span class=o>.</span><span class=n>sha256</span><span class=p>(</span><span class=n>payload_data</span><span class=p>)</span><span class=o>.</span><span class=n>hexdigest</span><span class=p>()</span><span class=o>.</span><span class=n>encode</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Pack size (4 bytes) + hash (64 bytes) + actual data</span>
+</span></span><span class=line><span class=cl><span class=n>payload</span> <span class=o>=</span> <span class=n>struct</span><span class=o>.</span><span class=n>pack</span><span class=p>(</span><span class=s2>&#34;i&#34;</span><span class=p>,</span> <span class=n>payload_size</span><span class=p>)</span> <span class=o>+</span> <span class=n>payload_hash</span> <span class=o>+</span> <span class=n>payload_data</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=5-convert-payload-to-bit-stream>5. Convert Payload to Bit Stream</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>bits</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>unpackbits</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>frombuffer</span><span class=p>(</span><span class=n>payload</span><span class=p>,</span> <span class=n>dtype</span><span class=o>=</span><span class=n>np</span><span class=o>.</span><span class=n>uint8</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Ensure the bit stream is a multiple of `n` by padding with zeros</span>
+</span></span><span class=line><span class=cl><span class=n>padding_size</span> <span class=o>=</span> <span class=p>(</span><span class=n>n</span> <span class=o>-</span> <span class=p>(</span><span class=nb>len</span><span class=p>(</span><span class=n>bits</span><span class=p>)</span> <span class=o>%</span> <span class=n>n</span><span class=p>))</span> <span class=o>%</span> <span class=n>n</span>
+</span></span><span class=line><span class=cl><span class=n>bits</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>pad</span><span class=p>(</span><span class=n>bits</span><span class=p>,</span> <span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=n>padding_size</span><span class=p>),</span> <span class=n>constant_values</span><span class=o>=</span><span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>bits_iter</span> <span class=o>=</span> <span class=nb>iter</span><span class=p>(</span><span class=n>bits</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=6-embed-the-bits-into-the-models-tensors>6. Embed the Bits into the Model’s Tensors</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>for</span> <span class=n>name</span><span class=p>,</span> <span class=n>tensor</span> <span class=ow>in</span> <span class=n>model</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>  <span class=n>tensor_data</span> <span class=o>=</span> <span class=n>tensor</span><span class=o>.</span><span class=n>data</span><span class=o>.</span><span class=n>numpy</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1># Check if the tensor has enough capacity to store the payload</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=n>tensor_data</span><span class=o>.</span><span class=n>size</span> <span class=o>*</span> <span class=n>n</span> <span class=o>&lt;</span> <span class=nb>len</span><span class=p>(</span><span class=n>bits</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>      <span class=k>continue</span>  <span class=c1># Skip this tensor if it&#39;s too small</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Embedding payload into layer: </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1># Compute the LSB mask </span>
+</span></span><span class=line><span class=cl>  <span class=n>mask</span> <span class=o>=</span> <span class=mh>0xff</span>
+</span></span><span class=line><span class=cl>  <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=n>tensor_data</span><span class=o>.</span><span class=n>itemsize</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>mask</span> <span class=o>=</span> <span class=p>(</span><span class=n>mask</span> <span class=o>&lt;&lt;</span> <span class=mi>8</span><span class=p>)</span> <span class=o>|</span> <span class=mh>0xff</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>  <span class=n>mask</span> <span class=o>=</span> <span class=n>mask</span> <span class=o>-</span> <span class=p>(</span><span class=mi>1</span> <span class=o>&lt;&lt;</span> <span class=n>n</span><span class=p>)</span> <span class=o>+</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1># Create a read/write iterator for the tensor</span>
+</span></span><span class=line><span class=cl>  <span class=k>with</span> <span class=n>np</span><span class=o>.</span><span class=n>nditer</span><span class=p>(</span><span class=n>tensor_data</span><span class=o>.</span><span class=n>view</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>uint32</span><span class=p>)</span> <span class=p>,</span> <span class=n>op_flags</span><span class=o>=</span><span class=p>[</span><span class=s2>&#34;readwrite&#34;</span><span class=p>])</span> <span class=k>as</span> <span class=n>tensor_iterator</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Iterate over float values in tensor</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>f</span> <span class=ow>in</span> <span class=n>tensor_iterator</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>      <span class=c1># Get next bits to embed from the payload</span>
+</span></span><span class=line><span class=cl>      <span class=n>lsb_value</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>      <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=n>n</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>try</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>          <span class=n>lsb_value</span> <span class=o>=</span> <span class=p>(</span><span class=n>lsb_value</span> <span class=o>&lt;&lt;</span> <span class=mi>1</span><span class=p>)</span> <span class=o>+</span> <span class=nb>next</span><span class=p>(</span><span class=n>bits_iter</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>except</span> <span class=ne>StopIteration</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>          <span class=k>assert</span> <span class=n>i</span> <span class=o>==</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>          <span class=c1># Save the model back to disk</span>
+</span></span><span class=line><span class=cl>          <span class=n>torch</span><span class=o>.</span><span class=n>save</span><span class=p>(</span><span class=n>model</span><span class=p>,</span> <span class=n>f</span><span class=o>=</span><span class=n>model_path</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>          <span class=k>return</span> <span class=kc>True</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># Embed the payload bits into the float</span>
+</span></span><span class=line><span class=cl>        <span class=n>f</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>bitwise_and</span><span class=p>(</span><span class=n>f</span><span class=p>,</span> <span class=n>mask</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>f</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>bitwise_or</span><span class=p>(</span><span class=n>f</span><span class=p>,</span> <span class=n>lsb_value</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># Update the float value in the tensor</span>
+</span></span><span class=line><span class=cl>        <span class=n>tensor_iterator</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=</span> <span class=n>f</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>return</span> <span class=kc>False</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=7-save-the-modified-model>7. Save the Modified Model</h3><p>The model is automatically saved inside the loop when the entire payload is embedded. If embedding fails, we return <code>False</code>.</p><p><em><strong>N.B : This code includes a verification mechanism (SHA256 hash) to ensure the payload can be correctly extracted later. The payload format consists of the data size, a hash for verification, and the actual content.</strong></em></p><p>Below is the full script in one place for convenience:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>os</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>struct</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>hashlib</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>pathlib</span> <span class=kn>import</span> <span class=n>Path</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>torch</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>numpy</span> <span class=k>as</span> <span class=nn>np</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>tensor_stego</span><span class=p>(</span><span class=n>model_path</span><span class=p>:</span> <span class=n>Path</span><span class=p>,</span> <span class=n>payload_path</span><span class=p>:</span> <span class=n>Path</span><span class=p>,</span> <span class=n>n</span><span class=p>:</span> <span class=nb>int</span> <span class=o>=</span> <span class=mi>1</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bool</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>    Embeds a payload inside the least significant bits (LSB) of the weights in a PyTorch model.
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>    Args:
+</span></span></span><span class=line><span class=cl><span class=s2>        model_path (Path): Path to the PyTorch model (.pt or .pth).
+</span></span></span><span class=line><span class=cl><span class=s2>        payload_path (Path): Path to the binary payload file.
+</span></span></span><span class=line><span class=cl><span class=s2>        n (int): Number of LSBs to use (1-8). Default is 1.
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>    Returns:
+</span></span></span><span class=line><span class=cl><span class=s2>        bool: True if embedding was successful, False otherwise.
+</span></span></span><span class=line><span class=cl><span class=s2>    &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=ow>not</span> <span class=p>(</span><span class=mi>1</span> <span class=o>&lt;=</span> <span class=n>n</span> <span class=o>&lt;=</span> <span class=mi>8</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>raise</span> <span class=ne>ValueError</span><span class=p>(</span><span class=s2>&#34;n must be between 1 and 8.&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>model</span> <span class=o>=</span> <span class=n>torch</span><span class=o>.</span><span class=n>load</span><span class=p>(</span><span class=n>model_path</span><span class=p>,</span> <span class=n>map_location</span><span class=o>=</span><span class=n>torch</span><span class=o>.</span><span class=n>device</span><span class=p>(</span><span class=s2>&#34;cpu&#34;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=n>payload_path</span><span class=p>,</span> <span class=s2>&#34;rb&#34;</span><span class=p>)</span> <span class=k>as</span> <span class=n>file</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>      <span class=n>payload_data</span> <span class=o>=</span> <span class=n>file</span><span class=o>.</span><span class=n>read</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>payload_size</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>getsize</span><span class=p>(</span><span class=n>payload_path</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>payload_hash</span> <span class=o>=</span> <span class=n>hashlib</span><span class=o>.</span><span class=n>sha256</span><span class=p>(</span><span class=n>payload_data</span><span class=p>)</span><span class=o>.</span><span class=n>hexdigest</span><span class=p>()</span><span class=o>.</span><span class=n>encode</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># Pack size (4 bytes) + hash (64 bytes) + actual data</span>
+</span></span><span class=line><span class=cl>    <span class=n>payload</span> <span class=o>=</span> <span class=n>struct</span><span class=o>.</span><span class=n>pack</span><span class=p>(</span><span class=s2>&#34;i&#34;</span><span class=p>,</span> <span class=n>payload_size</span><span class=p>)</span> <span class=o>+</span> <span class=n>payload_hash</span> <span class=o>+</span> <span class=n>payload_data</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>bits</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>unpackbits</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>frombuffer</span><span class=p>(</span><span class=n>payload</span><span class=p>,</span> <span class=n>dtype</span><span class=o>=</span><span class=n>np</span><span class=o>.</span><span class=n>uint8</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># Ensure the bit stream is a multiple of `n` by padding with zeros</span>
+</span></span><span class=line><span class=cl>    <span class=n>padding_size</span> <span class=o>=</span> <span class=p>(</span><span class=n>n</span> <span class=o>-</span> <span class=p>(</span><span class=nb>len</span><span class=p>(</span><span class=n>bits</span><span class=p>)</span> <span class=o>%</span> <span class=n>n</span><span class=p>))</span> <span class=o>%</span> <span class=n>n</span>
+</span></span><span class=line><span class=cl>    <span class=n>bits</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>pad</span><span class=p>(</span><span class=n>bits</span><span class=p>,</span> <span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=n>padding_size</span><span class=p>),</span> <span class=n>constant_values</span><span class=o>=</span><span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>bits_iter</span> <span class=o>=</span> <span class=nb>iter</span><span class=p>(</span><span class=n>bits</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>name</span><span class=p>,</span> <span class=n>tensor</span> <span class=ow>in</span> <span class=n>model</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>      <span class=n>tensor_data</span> <span class=o>=</span> <span class=n>tensor</span><span class=o>.</span><span class=n>data</span><span class=o>.</span><span class=n>numpy</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>      <span class=c1># Check if the tensor has enough capacity to store the payload</span>
+</span></span><span class=line><span class=cl>      <span class=k>if</span> <span class=n>tensor_data</span><span class=o>.</span><span class=n>size</span> <span class=o>*</span> <span class=n>n</span> <span class=o>&lt;</span> <span class=nb>len</span><span class=p>(</span><span class=n>bits</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>          <span class=k>continue</span>  <span class=c1># Skip this tensor if it&#39;s too small</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>      <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Embedding payload into layer: </span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>      <span class=c1># Compute the LSB mask </span>
+</span></span><span class=line><span class=cl>      <span class=n>mask</span> <span class=o>=</span> <span class=mh>0xff</span>
+</span></span><span class=line><span class=cl>      <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=n>tensor_data</span><span class=o>.</span><span class=n>itemsize</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=n>mask</span> <span class=o>=</span> <span class=p>(</span><span class=n>mask</span> <span class=o>&lt;&lt;</span> <span class=mi>8</span><span class=p>)</span> <span class=o>|</span> <span class=mh>0xff</span>
+</span></span><span class=line><span class=cl>      
+</span></span><span class=line><span class=cl>      <span class=n>mask</span> <span class=o>=</span> <span class=n>mask</span> <span class=o>-</span> <span class=p>(</span><span class=mi>1</span> <span class=o>&lt;&lt;</span> <span class=n>n</span><span class=p>)</span> <span class=o>+</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>      <span class=c1># Create a read/write iterator for the tensor</span>
+</span></span><span class=line><span class=cl>      <span class=k>with</span> <span class=n>np</span><span class=o>.</span><span class=n>nditer</span><span class=p>(</span><span class=n>tensor_data</span><span class=o>.</span><span class=n>view</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>uint32</span><span class=p>)</span> <span class=p>,</span> <span class=n>op_flags</span><span class=o>=</span><span class=p>[</span><span class=s2>&#34;readwrite&#34;</span><span class=p>])</span> <span class=k>as</span> <span class=n>tensor_iterator</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># Iterate over float values in tensor</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>f</span> <span class=ow>in</span> <span class=n>tensor_iterator</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>          <span class=c1># Get next bits to embed from the payload</span>
+</span></span><span class=line><span class=cl>          <span class=n>lsb_value</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>          <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=n>n</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=k>try</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>              <span class=n>lsb_value</span> <span class=o>=</span> <span class=p>(</span><span class=n>lsb_value</span> <span class=o>&lt;&lt;</span> <span class=mi>1</span><span class=p>)</span> <span class=o>+</span> <span class=nb>next</span><span class=p>(</span><span class=n>bits_iter</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>except</span> <span class=ne>StopIteration</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>              <span class=k>assert</span> <span class=n>i</span> <span class=o>==</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>              <span class=c1># Save the model back to disk</span>
+</span></span><span class=line><span class=cl>              <span class=n>torch</span><span class=o>.</span><span class=n>save</span><span class=p>(</span><span class=n>model</span><span class=p>,</span> <span class=n>f</span><span class=o>=</span><span class=n>model_path</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>              <span class=k>return</span> <span class=kc>True</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=c1># Embed the payload bits into the float</span>
+</span></span><span class=line><span class=cl>            <span class=n>f</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>bitwise_and</span><span class=p>(</span><span class=n>f</span><span class=p>,</span> <span class=n>mask</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>f</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>bitwise_or</span><span class=p>(</span><span class=n>f</span><span class=p>,</span> <span class=n>lsb_value</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=c1># Update the float value in the tensor</span>
+</span></span><span class=line><span class=cl>            <span class=n>tensor_iterator</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=</span> <span class=n>f</span>
+</span></span><span class=line><span class=cl>      
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=kc>False</span>
+</span></span></code></pre></td></tr></table></div></div><p>Here&rsquo;s a test snippet using <strong>ResNet18</strong> to verify <code>tensor_stego()</code> :</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>torchvision.models</span> <span class=k>as</span> <span class=nn>models</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Define paths</span>
+</span></span><span class=line><span class=cl><span class=n>model_path</span> <span class=o>=</span> <span class=n>Path</span><span class=p>(</span><span class=s2>&#34;resnet18.pth&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>payload_path</span> <span class=o>=</span> <span class=n>Path</span><span class=p>(</span><span class=s2>&#34;payload.bin&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Load a pretrained ResNet18 model and save its state_dict</span>
+</span></span><span class=line><span class=cl><span class=n>model</span> <span class=o>=</span> <span class=n>models</span><span class=o>.</span><span class=n>resnet18</span><span class=p>(</span><span class=n>pretrained</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>torch</span><span class=o>.</span><span class=n>save</span><span class=p>(</span><span class=n>model</span><span class=o>.</span><span class=n>state_dict</span><span class=p>(),</span> <span class=n>model_path</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Generate a small binary payload</span>
+</span></span><span class=line><span class=cl><span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=n>payload_path</span><span class=p>,</span> <span class=s2>&#34;wb&#34;</span><span class=p>)</span> <span class=k>as</span> <span class=n>f</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>f</span><span class=o>.</span><span class=n>write</span><span class=p>(</span><span class=sa>b</span><span class=s2>&#34;The One Piece is real !&#34;</span><span class=p>)</span>  <span class=c1># Example hidden message</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl><span class=n>success</span> <span class=o>=</span> <span class=n>tensor_stego</span><span class=p>(</span><span class=n>model_path</span><span class=p>,</span> <span class=n>payload_path</span><span class=p>,</span> <span class=n>n</span><span class=o>=</span><span class=mi>3</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p><img src=/p/tensorstego/res1.png width=844 height=190 srcset="/p/tensorstego/res1_hu_3be774c4f1fbe107.png 480w, /p/tensorstego/res1_hu_7a3441109ea1c7b9.png 1024w" loading=lazy alt="Tensor stego test run results" class=gallery-image data-flex-grow=444 data-flex-basis=1066px></p><p>Here’s the reverse function to <strong>extract the hidden payload</strong> from the PyTorch model. This function will:</p><ol><li><strong>Load the model</strong> from the given path.</li><li><strong>Extract the LSBs</strong> of the weights to reconstruct the payload.</li><li><strong>Verify the extracted payload</strong> by checking its SHA-256 hash.</li></ol><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>def</span> <span class=nf>extract_payload</span><span class=p>(</span><span class=n>model_path</span><span class=p>:</span> <span class=n>Path</span><span class=p>,</span> <span class=n>n</span><span class=p>:</span> <span class=nb>int</span> <span class=o>=</span> <span class=mi>1</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>bytes</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>    Extracts a hidden payload from the least significant bits (LSB) of the weights in a PyTorch model.
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>    Args:
+</span></span></span><span class=line><span class=cl><span class=s2>        model_path (Path): Path to the PyTorch model (.pt or .pth).
+</span></span></span><span class=line><span class=cl><span class=s2>        n (int): Number of LSBs used for embedding (1-8).
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>    Returns:
+</span></span></span><span class=line><span class=cl><span class=s2>        bytes: Extracted payload if successful, None otherwise.
+</span></span></span><span class=line><span class=cl><span class=s2>    &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=ow>not</span> <span class=p>(</span><span class=mi>1</span> <span class=o>&lt;=</span> <span class=n>n</span> <span class=o>&lt;=</span> <span class=mi>8</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>raise</span> <span class=ne>ValueError</span><span class=p>(</span><span class=s2>&#34;n must be between 1 and 8.&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>model</span> <span class=o>=</span> <span class=n>torch</span><span class=o>.</span><span class=n>load</span><span class=p>(</span><span class=n>model_path</span><span class=p>,</span> <span class=n>map_location</span><span class=o>=</span><span class=n>torch</span><span class=o>.</span><span class=n>device</span><span class=p>(</span><span class=s2>&#34;cpu&#34;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=n>extracted_bits</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>name</span><span class=p>,</span> <span class=n>tensor</span> <span class=ow>in</span> <span class=n>model</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>        <span class=n>tensor_data</span> <span class=o>=</span> <span class=n>tensor</span><span class=o>.</span><span class=n>data</span><span class=o>.</span><span class=n>cpu</span><span class=p>()</span><span class=o>.</span><span class=n>numpy</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># Skip scalar tensors (0D)</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>tensor_data</span><span class=o>.</span><span class=n>ndim</span> <span class=o>==</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>continue</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># Ensure data is in a format that supports bitwise operations</span>
+</span></span><span class=line><span class=cl>        <span class=n>tensor_data_flat</span> <span class=o>=</span> <span class=n>tensor_data</span><span class=o>.</span><span class=n>ravel</span><span class=p>()</span><span class=o>.</span><span class=n>view</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>uint32</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>f</span> <span class=ow>in</span> <span class=n>tensor_data_flat</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># Extract LSBs from the float</span>
+</span></span><span class=line><span class=cl>            <span class=n>lsb_value</span> <span class=o>=</span> <span class=n>f</span> <span class=o>&amp;</span> <span class=p>((</span><span class=mi>1</span> <span class=o>&lt;&lt;</span> <span class=n>n</span><span class=p>)</span> <span class=o>-</span> <span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>extracted_bits</span><span class=o>.</span><span class=n>extend</span><span class=p>([(</span><span class=n>lsb_value</span> <span class=o>&gt;&gt;</span> <span class=n>i</span><span class=p>)</span> <span class=o>&amp;</span> <span class=mi>1</span> <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>reversed</span><span class=p>(</span><span class=nb>range</span><span class=p>(</span><span class=n>n</span><span class=p>))])</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># Convert bitstream to bytes</span>
+</span></span><span class=line><span class=cl>    <span class=n>extracted_bytes</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>packbits</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>array</span><span class=p>(</span><span class=n>extracted_bits</span><span class=p>,</span> <span class=n>dtype</span><span class=o>=</span><span class=n>np</span><span class=o>.</span><span class=n>uint8</span><span class=p>))</span><span class=o>.</span><span class=n>tobytes</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># Extract payload size (first 4 bytes)</span>
+</span></span><span class=line><span class=cl>    <span class=n>payload_size</span> <span class=o>=</span> <span class=n>struct</span><span class=o>.</span><span class=n>unpack</span><span class=p>(</span><span class=s2>&#34;i&#34;</span><span class=p>,</span> <span class=n>extracted_bytes</span><span class=p>[:</span><span class=mi>4</span><span class=p>])[</span><span class=mi>0</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=n>payload_hash</span> <span class=o>=</span> <span class=n>extracted_bytes</span><span class=p>[</span><span class=mi>4</span><span class=p>:</span><span class=mi>68</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=n>extracted_payload</span> <span class=o>=</span> <span class=n>extracted_bytes</span><span class=p>[</span><span class=mi>68</span><span class=p>:</span><span class=mi>68</span> <span class=o>+</span> <span class=n>payload_size</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># Verify integrity</span>
+</span></span><span class=line><span class=cl>    <span class=n>computed_hash</span> <span class=o>=</span> <span class=n>hashlib</span><span class=o>.</span><span class=n>sha256</span><span class=p>(</span><span class=n>extracted_payload</span><span class=p>)</span><span class=o>.</span><span class=n>hexdigest</span><span class=p>()</span><span class=o>.</span><span class=n>encode</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>computed_hash</span> <span class=o>==</span> <span class=n>payload_hash</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;Payload successfully extracted and verified!&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>extracted_payload</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;Payload extraction failed: Hash mismatch.&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=kc>None</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>extracted_payload</span> <span class=o>=</span> <span class=n>extract_payload</span><span class=p>(</span><span class=n>model_path</span><span class=o>=</span><span class=s2>&#34;resnet18.pth&#34;</span><span class=p>,</span> <span class=n>n</span><span class=o>=</span><span class=mi>3</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=n>extracted_payload</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;Extracted Message:&#34;</span><span class=p>,</span> <span class=n>extracted_payload</span><span class=o>.</span><span class=n>decode</span><span class=p>(</span><span class=n>errors</span><span class=o>=</span><span class=s2>&#34;ignore&#34;</span><span class=p>))</span>
+</span></span></code></pre></td></tr></table></div></div><p><img src=/p/tensorstego/res2.png width=844 height=202 srcset="/p/tensorstego/res2_hu_afd9f3e93bf6437b.png 480w, /p/tensorstego/res2_hu_65ae344575361bba.png 1024w" loading=lazy alt="Reverse function run results." class=gallery-image data-flex-grow=417 data-flex-basis=1002px></p><h2 id=security-implications>Security Implications</h2><p>The ability to hide executable code within model weights presents several concerning security implications:</p><ol><li><strong>Bypassing Security Scanning</strong>: Traditional malware detection tools don&rsquo;t inspect ML model weights, allowing embedded malicious code to evade detection.</li><li><strong>Supply Chain Attacks</strong>: Pre-trained models downloaded from public repositories could contain hidden payloads that activate when the model is loaded.</li><li><strong>Persistent Backdoors</strong>: Since model weights are rarely inspected or modified after deployment, embedded code could remain undetected for extended periods.</li><li><strong>Execution Pathways</strong>: Concealing data within tensors is only the first step. The real threat emerges when this hidden payload is automatically extracted and executed, potentially exploiting vulnerabilities in how ML frameworks deserialize and handle model parameters. Prior research has demonstrated how adversaries can craft malicious models that trigger arbitrary code execution upon loading, bridging the gap between passive data hiding and active system compromise. For those interested in the practical exploitation of this vulnerability, <a class=link href=https://hiddenlayer.com/innovation-hub/weaponizing-machine-learning-models-with-ransomware/ target=_blank rel=noopener>this article</a> provides a detailed breakdown of real-world attack scenarios, including a concrete example of how serialization flaws in PyTorch models can be leveraged for execution.</li></ol><h2 id=defensive-measures>Defensive Measures</h2><p>As a data professional responsible for model security, consider implementing these comprehensive protective measures:</p><ol><li><strong>Source Verification</strong>: Only use models from trusted sources with verified signatures. Implement model signing as a means of performing integrity checking to detect tampering and corruption.</li><li><strong>Weight Analysis</strong>: Develop tools to analyze the distribution of least significant bits in model weights, which may reveal statistical anomalies indicating hidden data. Techniques such as entropy and Z-score analysis can help detect low-entropy payloads, though encrypted payloads remain challenging to identify.</li><li><strong>Sandboxed Loading</strong>: Load models in isolated environments with limited permissions to prevent potential code execution. This is especially critical when using pre-trained models downloaded from the internet, as current anti-malware solutions may not detect all code execution techniques.</li><li><strong>Security Scanning Tools</strong>: Utilize specialized tools like TrailOfBits&rsquo; Fickling to detect simple attempts to exploit ML serialization formats. Monitor repositories like HuggingFace that have implemented security scanners for user-supplied models.</li><li><strong>Format Selection</strong>: Choose storage formats that offer enhanced security by avoiding data deserialization flaws, which are particularly vulnerable to exploitation.</li><li><strong>EDR Solutions</strong>: Deploy and properly tune Endpoint Detection and Response solutions to gain better insight into attacks as they occur, particularly for detecting advanced payloads delivered via ML models.</li><li><strong>Regular Security Audits</strong>: Conduct periodic security audits of your AI infrastructure, focusing on the integrity of deployed models and potential vulnerabilities in your ML pipeline.</li></ol><h2 id=conclusion>Conclusion</h2><p>Tensor steganography represents a sophisticated attack vector that could transform seemingly benign deep learning models into vehicles for malware distribution. As ML systems continue to proliferate across critical infrastructure, security professionals must expand their threat models to include these novel attack vectors.</p><p>The research demonstrates that even small models contain sufficient capacity to hide substantial malicious payloads with minimal impact on model performance. As larger models become standard, this capacity increases significantly—amplifying the potential threat.</p><p>For organizations developing or deploying ML systems, understanding and mitigating these risks should become an essential component of AI security protocols. The intersection of deep learning and cybersecurity continues to reveal new challenges that require vigilance and innovative defensive approaches.</p><p>For a more comprehensive understanding of this threat, I encourage readers to explore the references which provides detailed explanations of payload exploitation techniques, practical demonstrations, and extensive references. This in-depth resources offers security professionals the technical insights needed to develop robust defensive measures against this type of attacks.</p><h2 id=references->References :</h2><ul><li><a class=link href=https://hiddenlayer.com/innovation-hub/weaponizing-machine-learning-models-with-ransomware/ target=_blank rel=noopener>Weaponizing ML Models with Ransomware</a></li><li><a class=link href=https://cse.buffalo.edu/~wenyaoxu/papers/conference/xu-acsac2020.pdf target=_blank rel=noopener>StegoNet: Turn Deep Neural Network into a Stegomalware</a></li><li><a class=link href=https://arxiv.org/pdf/2107.08590 target=_blank rel=noopener>EvilModel: Hiding Malware Inside of Neural Network Models</a></li><li><a class=link href=https://arxiv.org/abs/2106.08970 target=_blank rel=noopener>Sleeper Agent: Scalable Hidden Trigger Backdoors for Neural Networks Trained from Scratch</a></li><li><a class=link href=https://www.darkreading.com/application-security/hugging-face-ai-platform-100-malicious-code-execution-models target=_blank rel=noopener>https://www.darkreading.com/application-security/hugging-face-ai-platform-100-malicious-code-execution-models</a></li><li><a class=link href=https://medium.com/@limbagoa/securing-the-ai-supply-chain-051f8d43c5c4 target=_blank rel=noopener>https://medium.com/@limbagoa/securing-the-ai-supply-chain-051f8d43c5c4</a></li><li><a class=link href=https://www.techrepublic.com/article/pytorch-ml-compromised/ target=_blank rel=noopener>https://www.techrepublic.com/article/pytorch-ml-compromised/</a></li></ul></section><footer class=article-footer><section class=article-tags><a href=/tags/malware/>Malware</a>
+<a href=/tags/payload/>Payload</a>
+<a href=/tags/tensorflow/>Tensorflow</a>
+<a href=/tags/pytorch/>Pytorch</a>
+<a href=/tags/pickle/>Pickle</a>
+<a href=/tags/serialization/>Serialization</a>
+<a href=/tags/deep-learning-models/>Deep Learning Models</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>Related content</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/p/lmianalysis/><div class=article-image><img src=/p/lmianalysis/biospecimen-whole-slide-image-1.3aeafa02a4f9f126989f8144d5baecf3_hu_3e3ef6de58aab8cc.png width=250 height=150 loading=lazy alt="Featured image of post How Can We Analyze Large Medical Images to Detect Brain Tumors? A Practical Guide" data-key=lmianalysis data-hash="md5-Our6AqT58SaYn4FE1brs8w=="></div><div class=article-details><h2 class=article-title>How Can We Analyze Large Medical Images to Detect Brain Tumors? A Practical Guide</h2></div></a></article><article class=has-image><a href=/p/mlops_6_23/><div class=article-image><img src=/p/mlops_6_23/MLOps-DevOps.fa99a5f685ca76503b92c9bf51a8f709_hu_6b9ff7ab4ff12b5b.webp width=250 height=150 loading=lazy alt="Featured image of post MLOps: Introduction, Definitions and Best Practices" data-key=mlops_6_23 data-hash="md5-+pml9oXKdlA7ksm/Uaj3CQ=="></div><div class=article-details><h2 class=article-title>MLOps: Introduction, Definitions and Best Practices</h2></div></a></article><article class=has-image><a href=/p/genai_6_22/><div class=article-image><img src=/p/genai_6_22/cover.c514d916917173a48a42e0114b469961_hu_12cb662251854034.jpg width=250 height=150 loading=lazy alt="Featured image of post Unleash Limitless Possibilities: Harness the Power of Generative AI to Meet Market Demands and Delight Your Clients" data-key=GenAI_6_22 data-hash="md5-xRTZFpFxc6SKQuARS0aZYQ=="></div><div class=article-details><h2 class=article-title>Unleash Limitless Possibilities: Harness the Power of Generative AI to Meet Market Demands and Delight Your Clients</h2></div></a></article><article class=has-image><a href=/p/multiomics/><div class=article-image><img src=/p/multiomics/dna-closely.1c450067a55ffe5ed61b9d0048fda150_hu_ea8ec74402cc84d8.jpg width=250 height=150 loading=lazy alt="Featured image of post How to Effectively Explore and Analyze Multi-Omics Data: Experience Report on Our Web Interface" data-key=multiomics data-hash="md5-HEUAZ6Vf/l7WG50ASP2hUA=="></div><div class=article-details><h2 class=article-title>How to Effectively Explore and Analyze Multi-Omics Data: Experience Report on Our Web Interface</h2></div></a></article></div></div></aside><div class=disqus-container><div id=disqus_thread></div><script>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//zinef.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div><style>.disqus-container{background-color:var(--card-background);border-radius:var(--card-border-radius);box-shadow:var(--shadow-l1);padding:var(--card-padding)}</style><script>window.addEventListener("onColorSchemeChange",e=>{typeof DISQUS=="object"&&DISQUS.reset({reload:!0})})</script><footer class=site-footer><section class=copyright>&copy;
+2023 -
+2025 Zine-eddine's Blog</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>Theme <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.30.0>Stack</a></b> designed by <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a></section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

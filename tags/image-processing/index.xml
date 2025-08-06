@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Image Processing on Zine-eddine's Blog</title><link>https://zinef.github.io/tags/image-processing/</link><description>Recent content in Image Processing on Zine-eddine's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sat, 17 Feb 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://zinef.github.io/tags/image-processing/index.xml" rel="self" type="application/rss+xml"/><item><title>How Can We Analyze Large Medical Images to Detect Brain Tumors? A Practical Guide</title><link>https://zinef.github.io/p/lmianalysis/</link><pubDate>Sat, 17 Feb 2024 00:00:00 +0000</pubDate><guid>https://zinef.github.io/p/lmianalysis/</guid><description>&lt;img src="https://zinef.github.io/p/lmianalysis/biospecimen-whole-slide-image-1.png" alt="Featured image of post How Can We Analyze Large Medical Images to Detect Brain Tumors? A Practical Guide" />&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>Brain tumors are among the most aggressive and lethal forms of cancer, and early detection is crucial for improving patient outcomes. However, analyzing medical images to diagnose and classify brain tumors presents several challenges due to the sheer size and complexity of whole-slide images (WSIs). In this article, I will share insights from my project, &lt;em>Converting Large Medical Images to Embeddings for Training Classifier Models&lt;/em>, where I leveraged deep learning techniques to process high-resolution medical images efficiently. This is not just a technical breakdown but a real-world experience of tackling the problem, highlighting key lessons and takeaways.&lt;/p>
+&lt;h2 id="the-challenge-of-large-scale-medical-image-analysis">The Challenge of Large-Scale Medical Image Analysis
+&lt;/h2>&lt;p>Medical images, particularly WSIs, are massive, often exceeding 100,000 pixels in resolution. Traditional image classification methods struggle to process such data due to memory constraints and computational complexity. My goal was to convert these high-dimensional images into meaningful embeddings that could be used for training classifier models to predict immune invasion stages in glioblastoma—a highly aggressive brain tumor.&lt;/p>
+&lt;h3 id="key-challenges">Key Challenges
+&lt;/h3>&lt;ol>
+&lt;li>&lt;strong>Data Size &amp;amp; Complexity:&lt;/strong> WSIs are gigapixel images that require efficient handling and storage.&lt;/li>
+&lt;li>&lt;strong>Annotation Scarcity:&lt;/strong> Unlike natural images, medical images require expert annotations, which are often limited.&lt;/li>
+&lt;li>&lt;strong>Feature Extraction:&lt;/strong> Extracting meaningful representations from these images without losing critical information.&lt;/li>
+&lt;li>&lt;strong>Computational Constraints:&lt;/strong> Training deep learning models on such large images is resource-intensive.&lt;/li>
+&lt;/ol>
+&lt;h2 id="the-solution-transforming-images-into-embeddings">The Solution: Transforming Images into Embeddings
+&lt;/h2>&lt;p>To address these challenges, I explored and adapted two state-of-the-art deep learning approaches:&lt;/p>
+&lt;h3 id="deep-attention-multiple-instance-survival-learning-deepattnmisl">&lt;strong>Deep Attention Multiple-Instance Survival Learning (DeepAttnMISL)&lt;/strong>
+&lt;/h3>&lt;p>DeepAttnMISL is a multiple-instance learning (MIL) approach designed for survival prediction from WSIs. Instead of classifying entire images at once, it breaks them into smaller regions (instances) and learns representations using an attention-based mechanism. Key steps included:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Patch Extraction &amp;amp; Clustering:&lt;/strong> Extracting patches from WSIs and grouping them into phenotype clusters.&lt;/li>
+&lt;li>&lt;strong>Feature Extraction via CNNs:&lt;/strong> Using a pre-trained VGG model to generate feature embeddings for each patch.&lt;/li>
+&lt;li>&lt;strong>Attention-Based Pooling:&lt;/strong> Aggregating patch-level information using an attention-based MIL pooling layer to make patient-level predictions.&lt;/li>
+&lt;li>&lt;strong>Final Classification:&lt;/strong> Using the learned embeddings to train a classifier model to predict immune invasion stages (A, B, C, D).&lt;/li>
+&lt;/ul>
+&lt;h3 id="vision-transformers-vits">&lt;strong>Vision Transformers (ViTs)&lt;/strong>
+&lt;/h3>&lt;p>Inspired by their success in NLP, I also explored Vision Transformers (ViTs), which process images as sequences of patches rather than relying on convolutions. ViTs leverage self-attention mechanisms to capture long-range dependencies, making them particularly suited for analyzing complex medical images.&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Patch Tokenization:&lt;/strong> Splitting the large image into smaller fixed-size patches.&lt;/li>
+&lt;li>&lt;strong>Embedding Generation:&lt;/strong> Encoding each patch into a vector representation.&lt;/li>
+&lt;li>&lt;strong>Self-Attention Mechanism:&lt;/strong> Learning relationships between different patches to detect patterns indicative of tumor presence.&lt;/li>
+&lt;li>&lt;strong>Classifier Training:&lt;/strong> Using the learned representations to train a predictive model.&lt;/li>
+&lt;/ul>
+&lt;h2 id="key-takeaways">Key Takeaways
+&lt;/h2>&lt;h3 id="the-importance-of-representation-learning">&lt;strong>The Importance of Representation Learning&lt;/strong>
+&lt;/h3>&lt;p>Converting images into embeddings significantly reduced the computational burden while preserving essential features. Choosing the right architecture for embedding extraction was crucial—DeepAttnMISL provided structured phenotype-based representations, while ViTs captured global dependencies.&lt;/p>
+&lt;h3 id="attention-mechanisms-enhance-interpretability">&lt;strong>Attention Mechanisms Enhance Interpretability&lt;/strong>
+&lt;/h3>&lt;p>Using attention-based pooling allowed us to identify the most critical regions of the WSIs, improving both accuracy and interpretability. This was particularly useful for medical experts who need to understand model predictions.&lt;/p>
+&lt;h3 id="pretrained-models-save-time--resources">&lt;strong>Pretrained Models Save Time &amp;amp; Resources&lt;/strong>
+&lt;/h3>&lt;p>Instead of training deep networks from scratch, leveraging pretrained models (e.g., VGG, ResNet) for feature extraction proved highly effective. Fine-tuning these models with domain-specific data further improved performance.&lt;/p>
+&lt;h3 id="computational-constraints-are-a-real-challenge">&lt;strong>Computational Constraints Are a Real Challenge&lt;/strong>
+&lt;/h3>&lt;p>Processing high-resolution WSIs required significant memory and GPU resources. Using techniques like patch extraction, dimensionality reduction, and efficient batching helped mitigate these challenges.&lt;/p>
+&lt;h2 id="conclusion">Conclusion
+&lt;/h2>&lt;p>Analyzing medical images for brain tumor detection is a complex but highly impactful challenge. By leveraging DeepAttnMISL and Vision Transformers, we can efficiently extract meaningful embeddings that improve classification accuracy while reducing computational costs. This project highlighted the power of attention mechanisms in deep learning and underscored the importance of adapting models to the unique constraints of medical imaging.&lt;/p>
+&lt;p>For those interested in deep learning applications in healthcare, this field offers vast opportunities to push the boundaries of AI-driven diagnostics. Whether you&amp;rsquo;re a researcher, practitioner, or enthusiast, the key takeaway is clear—smart representation learning is the future of medical image analysis.&lt;/p>
+&lt;hr>
+&lt;p>&lt;em>What are your thoughts on AI in medical imaging? Have you worked on similar projects? Let&amp;rsquo;s discuss in the comments!&lt;/em>&lt;/p></description></item></channel></rss>
