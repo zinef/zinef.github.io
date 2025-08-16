@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Biology on Zine-eddine's Blog</title><link>https://zinef.github.io/categories/biology/</link><description>Recent content in Biology on Zine-eddine's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sat, 17 Feb 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://zinef.github.io/categories/biology/index.xml" rel="self" type="application/rss+xml"/><item><title>How Can We Analyze Large Medical Images to Detect Brain Tumors? A Practical Guide</title><link>https://zinef.github.io/p/lmianalysis/</link><pubDate>Sat, 17 Feb 2024 00:00:00 +0000</pubDate><guid>https://zinef.github.io/p/lmianalysis/</guid><description>&lt;img src="https://zinef.github.io/p/lmianalysis/biospecimen-whole-slide-image-1.png" alt="Featured image of post How Can We Analyze Large Medical Images to Detect Brain Tumors? A Practical Guide" />&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>Brain tumors are among the most aggressive and lethal forms of cancer, and early detection is crucial for improving patient outcomes. However, analyzing medical images to diagnose and classify brain tumors presents several challenges due to the sheer size and complexity of whole-slide images (WSIs). In this article, I will share insights from my project, &lt;em>Converting Large Medical Images to Embeddings for Training Classifier Models&lt;/em>, where I leveraged deep learning techniques to process high-resolution medical images efficiently. This is not just a technical breakdown but a real-world experience of tackling the problem, highlighting key lessons and takeaways.&lt;/p>
+&lt;h2 id="the-challenge-of-large-scale-medical-image-analysis">The Challenge of Large-Scale Medical Image Analysis
+&lt;/h2>&lt;p>Medical images, particularly WSIs, are massive, often exceeding 100,000 pixels in resolution. Traditional image classification methods struggle to process such data due to memory constraints and computational complexity. My goal was to convert these high-dimensional images into meaningful embeddings that could be used for training classifier models to predict immune invasion stages in glioblastoma—a highly aggressive brain tumor.&lt;/p>
+&lt;h3 id="key-challenges">Key Challenges
+&lt;/h3>&lt;ol>
+&lt;li>&lt;strong>Data Size &amp;amp; Complexity:&lt;/strong> WSIs are gigapixel images that require efficient handling and storage.&lt;/li>
+&lt;li>&lt;strong>Annotation Scarcity:&lt;/strong> Unlike natural images, medical images require expert annotations, which are often limited.&lt;/li>
+&lt;li>&lt;strong>Feature Extraction:&lt;/strong> Extracting meaningful representations from these images without losing critical information.&lt;/li>
+&lt;li>&lt;strong>Computational Constraints:&lt;/strong> Training deep learning models on such large images is resource-intensive.&lt;/li>
+&lt;/ol>
+&lt;h2 id="the-solution-transforming-images-into-embeddings">The Solution: Transforming Images into Embeddings
+&lt;/h2>&lt;p>To address these challenges, I explored and adapted two state-of-the-art deep learning approaches:&lt;/p>
+&lt;h3 id="deep-attention-multiple-instance-survival-learning-deepattnmisl">&lt;strong>Deep Attention Multiple-Instance Survival Learning (DeepAttnMISL)&lt;/strong>
+&lt;/h3>&lt;p>DeepAttnMISL is a multiple-instance learning (MIL) approach designed for survival prediction from WSIs. Instead of classifying entire images at once, it breaks them into smaller regions (instances) and learns representations using an attention-based mechanism. Key steps included:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Patch Extraction &amp;amp; Clustering:&lt;/strong> Extracting patches from WSIs and grouping them into phenotype clusters.&lt;/li>
+&lt;li>&lt;strong>Feature Extraction via CNNs:&lt;/strong> Using a pre-trained VGG model to generate feature embeddings for each patch.&lt;/li>
+&lt;li>&lt;strong>Attention-Based Pooling:&lt;/strong> Aggregating patch-level information using an attention-based MIL pooling layer to make patient-level predictions.&lt;/li>
+&lt;li>&lt;strong>Final Classification:&lt;/strong> Using the learned embeddings to train a classifier model to predict immune invasion stages (A, B, C, D).&lt;/li>
+&lt;/ul>
+&lt;h3 id="vision-transformers-vits">&lt;strong>Vision Transformers (ViTs)&lt;/strong>
+&lt;/h3>&lt;p>Inspired by their success in NLP, I also explored Vision Transformers (ViTs), which process images as sequences of patches rather than relying on convolutions. ViTs leverage self-attention mechanisms to capture long-range dependencies, making them particularly suited for analyzing complex medical images.&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Patch Tokenization:&lt;/strong> Splitting the large image into smaller fixed-size patches.&lt;/li>
+&lt;li>&lt;strong>Embedding Generation:&lt;/strong> Encoding each patch into a vector representation.&lt;/li>
+&lt;li>&lt;strong>Self-Attention Mechanism:&lt;/strong> Learning relationships between different patches to detect patterns indicative of tumor presence.&lt;/li>
+&lt;li>&lt;strong>Classifier Training:&lt;/strong> Using the learned representations to train a predictive model.&lt;/li>
+&lt;/ul>
+&lt;h2 id="key-takeaways">Key Takeaways
+&lt;/h2>&lt;h3 id="the-importance-of-representation-learning">&lt;strong>The Importance of Representation Learning&lt;/strong>
+&lt;/h3>&lt;p>Converting images into embeddings significantly reduced the computational burden while preserving essential features. Choosing the right architecture for embedding extraction was crucial—DeepAttnMISL provided structured phenotype-based representations, while ViTs captured global dependencies.&lt;/p>
+&lt;h3 id="attention-mechanisms-enhance-interpretability">&lt;strong>Attention Mechanisms Enhance Interpretability&lt;/strong>
+&lt;/h3>&lt;p>Using attention-based pooling allowed us to identify the most critical regions of the WSIs, improving both accuracy and interpretability. This was particularly useful for medical experts who need to understand model predictions.&lt;/p>
+&lt;h3 id="pretrained-models-save-time--resources">&lt;strong>Pretrained Models Save Time &amp;amp; Resources&lt;/strong>
+&lt;/h3>&lt;p>Instead of training deep networks from scratch, leveraging pretrained models (e.g., VGG, ResNet) for feature extraction proved highly effective. Fine-tuning these models with domain-specific data further improved performance.&lt;/p>
+&lt;h3 id="computational-constraints-are-a-real-challenge">&lt;strong>Computational Constraints Are a Real Challenge&lt;/strong>
+&lt;/h3>&lt;p>Processing high-resolution WSIs required significant memory and GPU resources. Using techniques like patch extraction, dimensionality reduction, and efficient batching helped mitigate these challenges.&lt;/p>
+&lt;h2 id="conclusion">Conclusion
+&lt;/h2>&lt;p>Analyzing medical images for brain tumor detection is a complex but highly impactful challenge. By leveraging DeepAttnMISL and Vision Transformers, we can efficiently extract meaningful embeddings that improve classification accuracy while reducing computational costs. This project highlighted the power of attention mechanisms in deep learning and underscored the importance of adapting models to the unique constraints of medical imaging.&lt;/p>
+&lt;p>For those interested in deep learning applications in healthcare, this field offers vast opportunities to push the boundaries of AI-driven diagnostics. Whether you&amp;rsquo;re a researcher, practitioner, or enthusiast, the key takeaway is clear—smart representation learning is the future of medical image analysis.&lt;/p>
+&lt;hr>
+&lt;p>&lt;em>What are your thoughts on AI in medical imaging? Have you worked on similar projects? Let&amp;rsquo;s discuss in the comments!&lt;/em>&lt;/p></description></item><item><title>How to Effectively Explore and Analyze Multi-Omics Data: Experience Report on Our Web Interface</title><link>https://zinef.github.io/p/multiomics/</link><pubDate>Fri, 05 May 2023 00:00:00 +0000</pubDate><guid>https://zinef.github.io/p/multiomics/</guid><description>&lt;img src="https://zinef.github.io/p/multiomics/dna-closely.jpg" alt="Featured image of post How to Effectively Explore and Analyze Multi-Omics Data: Experience Report on Our Web Interface" />&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>In the era of biological big data, multi-omics analysis represents a major challenge for researchers. How can we make sense of these gigantic biological datasets from different layers of cellular information? How can we integrate transcriptomic, proteomic, and metabolomic data to gain a comprehensive view of biological processes?&lt;/p>
+&lt;p>These are precisely the questions that my team and I attempted to answer through our project &amp;ldquo;Web Interface: Advanced Analysis of Multi-Omics Data.&amp;rdquo; In this article, I share our experience in creating an interactive web solution that facilitates the complex analysis of these datasets.&lt;/p>
+&lt;h2 id="what-are-multi-omics-data">What are Multi-Omics Data?
+&lt;/h2>&lt;p>Before diving into the technical details, let&amp;rsquo;s clarify what multi-omics data are. The suffix &amp;ldquo;-omics&amp;rdquo; refers to the comprehensive study of a specific biological system. Thus:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Transcriptomics&lt;/strong> studies the entire set of messenger RNAs (gene expression)&lt;/li>
+&lt;li>&lt;strong>Proteomics&lt;/strong> focuses on the complete set of proteins&lt;/li>
+&lt;li>&lt;strong>Metabolomics&lt;/strong> analyzes all metabolites (small molecules)&lt;/li>
+&lt;li>&lt;strong>Phenomics&lt;/strong> measures the observable characteristics of organisms&lt;/li>
+&lt;/ul>
+&lt;p>Each of these information layers is represented by large data matrices. Multi-omic analysis aims to integrate these different matrices to understand the complex relationships between the various levels of biological organization.&lt;/p>
+&lt;h2 id="the-challenge-wallomics">The Challenge: WallOmics
+&lt;/h2>&lt;p>Our project focused on WallOmics data, a dataset from the model plant Arabidopsis thaliana. These data were collected from two different organs (rosettes and stems) of five genetic variants (ecotypes), exposed to two different temperature conditions.&lt;/p>
+&lt;p>The main challenge was to explore and analyze this massive data coherently, using matrix factorization approaches and offering an intuitive web interface.&lt;/p>
+&lt;h2 id="our-approach-omicsmatrix---the-matrixperience">Our Approach: OmicsMatrix - The Matrixperience
+&lt;/h2>&lt;p>Faced with this challenge, we developed &amp;ldquo;OmicsMatrix: The Matrixperience,&amp;rdquo; an interactive web interface based on R Shiny that integrates several advanced analysis methods. Here are the main features we implemented:&lt;/p>
+&lt;h3 id="1-intelligent-data-loading-and-preprocessing">1. Intelligent Data Loading and Preprocessing
+&lt;/h3>&lt;p>The first step was to enable easy data loading and immediate visualization. Our interface offers the ability to load data from WallOmics Data and automatically prepare it for analysis.&lt;/p>
+&lt;p>Our preprocessing pipeline automatically handles:&lt;/p>
+&lt;ul>
+&lt;li>Detection and treatment of missing values&lt;/li>
+&lt;li>Data normalization&lt;/li>
+&lt;li>Optional exclusion of irrelevant variables&lt;/li>
+&lt;/ul>
+&lt;h3 id="2-in-depth-visual-exploration">2. In-depth Visual Exploration
+&lt;/h3>&lt;p>Visual exploration is crucial for understanding data structure before applying more complex methods. Our &amp;ldquo;Exploration &amp;amp; PCA&amp;rdquo; panel offers:&lt;/p>
+&lt;ul>
+&lt;li>A global summary of datasets&lt;/li>
+&lt;li>Visualizations of variable distributions&lt;/li>
+&lt;li>Interactive correlation matrices&lt;/li>
+&lt;li>Principal Component Analysis (PCA) for dimensionality reduction&lt;/li>
+&lt;/ul>
+&lt;p>PCA proved particularly useful for identifying the most important variables that explain data variance and for visualizing sample separation in a reduced space.&lt;/p>
+&lt;h3 id="3-advanced-data-integration-methods">3. Advanced Data Integration Methods
+&lt;/h3>&lt;p>Our interface offers four main methods of multi-omic analysis, each with specific advantages:&lt;/p>
+&lt;h4 id="regularized-canonical-correlation-analysis-rcca">Regularized Canonical Correlation Analysis (rCCA)
+&lt;/h4>&lt;p>This method allows for exploring correlations between two omics datasets. In our experience, rCCA was particularly effective in discovering relationships between transcriptomic and proteomic data.&lt;/p>
+&lt;p>One of the challenges encountered with rCCA was the choice of regularization parameters. We implemented two approaches:&lt;/p>
+&lt;ul>
+&lt;li>Cross-validation (resource-intensive but accurate)&lt;/li>
+&lt;li>Shrinkage approach (faster but less optimal)&lt;/li>
+&lt;/ul>
+&lt;h4 id="partial-least-squares-pls">Partial Least Squares (PLS)
+&lt;/h4>&lt;p>The PLS method allowed us to maximize covariance between different data matrices. Its main advantage is its ability to handle highly correlated data, a common characteristic of omics data.&lt;/p>
+&lt;p>We also implemented the sparse version (Sparse PLS) which automatically selects the most important variables, thus reducing model complexity.&lt;/p>
+&lt;h4 id="pls-da-for-classification">PLS-DA for Classification
+&lt;/h4>&lt;p>For classification questions (e.g., distinguishing samples according to their ecotype or growth condition), we used the PLS-DA (Partial Least Squares-Discriminant Analysis) method.&lt;/p>
+&lt;p>This method proved particularly useful for identifying biological markers that discriminate between different experimental conditions.&lt;/p>
+&lt;h4 id="diablo-for-multiple-integration">DIABLO for Multiple Integration
+&lt;/h4>&lt;p>To simultaneously integrate more than two omics datasets, we implemented DIABLO (Data Integration Analysis for Biomarker Discovery using Latent variable approaches for Omics studies).&lt;/p>
+&lt;p>DIABLO was the most powerful method in our arsenal, allowing us to discover biomarkers associated with the studied phenotypes by combining information from all available omic layers.&lt;/p>
+&lt;h2 id="key-strategies-for-effective-multi-omics-analysis">Key Strategies for Effective Multi-Omics Analysis
+&lt;/h2>&lt;p>Based on extensive experience with the OmicsMatrix platform, four critical strategies emerge for successful multi-omics data integration:&lt;/p>
+&lt;h3 id="1-rigorous-exploratory-analysis-as-foundation">1. Rigorous Exploratory Analysis as Foundation
+&lt;/h3>&lt;p>Comprehensive exploratory analysis must precede any advanced analytical techniques. This foundational step reveals data structure, identifies outliers, and guides subsequent methodological choices. Investing time in thorough exploration consistently yields more interpretable and biologically meaningful final results.&lt;/p>
+&lt;h3 id="2-interactive-analysis-workflows">2. Interactive Analysis Workflows
+&lt;/h3>&lt;p>Multi-omics analysis demands an iterative approach with continuous parameter refinement. Real-time visualization of these adjustments&amp;rsquo; impact is essential for optimal results. The R Shiny framework provides the necessary reactive environment to support this advanced analytical process.&lt;/p>
+&lt;h3 id="3-method-selection-driven-by-biological-questions">3. Method Selection Driven by Biological Questions
+&lt;/h3>&lt;p>Each analytical method serves distinct biological objectives. For general data structure understanding, PCA excels; for pairwise dataset relationships, rCCA provides optimal insights; for prediction models, standard PLS offers robust solutions; for classification tasks, PLS-DA delivers superior performance; while comprehensive integration across multiple omics layers requires DIABLO&amp;rsquo;s sophisticated approach.&lt;/p>
+&lt;h3 id="4-advanced-visualization-for-biological-interpretation">4. Advanced Visualization for Biological Interpretation
+&lt;/h3>&lt;p>Even the most sophisticated analytical results remain ineffective without appropriate visualization techniques. Strategic data visualization transforms complex statistical outputs into interpretable biological insights, facilitating both analysis and communication of findings to diverse stakeholders.&lt;/p>
+&lt;h2 id="conclusion">Conclusion
+&lt;/h2>&lt;p>The analysis of multi-omics data represents a considerable challenge in bioinformatics, but our experience with OmicsMatrix shows that a well-designed web interface can greatly facilitate this process.&lt;/p>
+&lt;p>Our solution has made it possible to effectively analyze WallOmics data and draw relevant biological conclusions about Arabidopsis thaliana&amp;rsquo;s response to different environmental conditions.&lt;/p>
+&lt;p>The explosion of high-throughput biological data continues to transform biological research, and tools like OmicsMatrix serve as critical bridges between raw data complexity and actionable biological knowledge.&lt;/p>
+&lt;hr>
+&lt;p>&lt;em>This article is based on a project carried out in collaboration with Zine-Eddine F, Mohammed I A, and Lounes M, under the supervision of Lazhar L, as part of the MLSD Master&amp;rsquo;s program at UFR Biomédical.&lt;/em>&lt;/p></description></item></channel></rss>
