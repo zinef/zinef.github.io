@@ -54,7 +54,7 @@ No. We’re relocating formalism to the seams where it matters.
 - **Verification** is increasingly externalized: the model proposes, specialized solvers/checkers verify. This reflects a broader trend: treat the LLM as a parser/planner and let formal tools enforce correctness downstream.
 - **Proven limits** still apply. Church-Turing didn’t go away, undecidability and incompleteness still constrain what any program or model can guarantee. The practical response is to bound the problem and add safeguards, not to hope that prose resolves impossibility.
 
-Think of LLMs as stochastic compilers **from intent to actions. We’re not programming in English, we’re **using English to drive formal systems**.
+Think of LLMs as stochastic compilers **from intent to actions**. We’re not programming in English, we’re **using English to drive formal systems**.
 
 ## When is natural language a good “programming layer”?
 
@@ -84,21 +84,16 @@ Yes, with guardrails. We improved the human-computer interface without discardin
 ## Further reading & references
 
 - **Why formalize algorithms / historical roots.**
-    
-    Stanford Encyclopedia entries on the Church-Turing Thesis and Computability, Turing (1936) and Church (1936) on the Entscheidungsproblem. [eli-project.sourceforge.net](https://eli-project.sourceforge.net/a60_html/a60.html), [dl.acm.org](https://dl.acm.org/doi/10.1145/360303.360308)
-    
+    Stanford Encyclopedia entries on the Church-Turing Thesis and Computability, Turing (1936) and Church (1936) on the Entscheidungsproblem. [plato.stanford.edu](https://plato.stanford.edu/entries/church-turing/), [dl.acm.org](https://dl.acm.org/doi/10.1145/360303.360308)
+
 - **Language design and correctness.**
-    
-    ALGOL 60 report (BNF for syntax), Hoare’s “An Axiomatic Basis for Computer Programming”, Dijkstra’s “Go To Statement Considered Harmful.” [mass:werk – media environments](https://www.masswerk.at/algol60/report.htm), [plato.stanford.edu](https://plato.stanford.edu/entries/church-turing/), [homepages.cwi.nl](https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf)
-    
+    ALGOL 60 report (BNF for syntax), Hoare’s “An Axiomatic Basis for Computer Programming”, Dijkstra’s “Go To Statement Considered Harmful.” [werk – media environments](https://www.masswerk.at/algol60/report.htm),[eli-project.sourceforge.net](https://eli-project.sourceforge.net/a60_html/a60.html), [homepages.cwi.nl](https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf)
+
 - **Natural language programming debate.**
-    
     Dijkstra’s *On the foolishness of “natural language programming”* (1978/79), The New Yorker’s “What if natural language replaced programming?” for a modern cultural view. [cs.utexas.edu](https://www.cs.utexas.edu/~EWD/ewd06xx/EWD667.PDF)
-    
+
 - **LLMs as planners with tools.**
-    
     ReAct (reasoning+acting) and Toolformer (teaching models to use tools), surveys of LLM-based agents. [arXiv](https://arxiv.org/pdf/2210.03629), [openai.com](https://openai.com/index/function-calling-and-other-api-updates/)
-    
+
 - **Bridging NL to formal outputs.**
-    
     OpenAI structured outputs (JSON Schema adherence) and research on constrained/grammar-guided decoding. [openai.com](https://openai.com/index/introducing-structured-outputs-in-the-api/), [arXiv](https://arxiv.org/html/2403.06988v1), [aclanthology.org](https://aclanthology.org/2025.acl-industry.34.pdf)
