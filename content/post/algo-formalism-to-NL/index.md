@@ -87,7 +87,7 @@ Yes, with guardrails. We improved the human-computer interface without discardin
     Stanford Encyclopedia entries on the Church-Turing Thesis and Computability, Turing (1936) and Church (1936) on the Entscheidungsproblem. [plato.stanford.edu](https://plato.stanford.edu/entries/church-turing/), [dl.acm.org](https://dl.acm.org/doi/10.1145/360303.360308)
 
 - **Language design and correctness.**
-    ALGOL 60 report (BNF for syntax), Hoare’s “An Axiomatic Basis for Computer Programming”, Dijkstra’s “Go To Statement Considered Harmful.” [werk – media environments](https://www.masswerk.at/algol60/report.htm),[eli-project.sourceforge.net](https://eli-project.sourceforge.net/a60_html/a60.html), [homepages.cwi.nl](https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf)
+    ALGOL 60 report (BNF for syntax), Hoare’s “An Axiomatic Basis for Computer Programming”, Dijkstra’s “Go To Statement Considered Harmful.” [mass:werk – media environments](https://www.masswerk.at/algol60/report.htm),[eli-project.sourceforge.net](https://eli-project.sourceforge.net/a60_html/a60.html), [homepages.cwi.nl](https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf)
 
 - **Natural language programming debate.**
     Dijkstra’s *On the foolishness of “natural language programming”* (1978/79), The New Yorker’s “What if natural language replaced programming?” for a modern cultural view. [cs.utexas.edu](https://www.cs.utexas.edu/~EWD/ewd06xx/EWD667.PDF)
