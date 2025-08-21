@@ -22,4 +22,4 @@ pagerSize = 5
 ID = "G-NZTWCSFPM5"
 
 [sitemap]
-  changeFreq = 'weekly'
+changeFreq = 'weekly'
