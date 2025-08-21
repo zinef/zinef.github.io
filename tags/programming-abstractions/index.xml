@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Programming Abstractions on Zine-eddine's Blog</title><link>https://zinef.github.io/tags/programming-abstractions/</link><description>Recent content in Programming Abstractions on Zine-eddine's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Tue, 19 Aug 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://zinef.github.io/tags/programming-abstractions/index.xml" rel="self" type="application/rss+xml"/><item><title>From Algorithms to Prompts: Did We Just Loop Back or Level Up?</title><link>https://zinef.github.io/p/algorithms-to-prompts-llms/</link><pubDate>Tue, 19 Aug 2025 00:00:00 +0000</pubDate><guid>https://zinef.github.io/p/algorithms-to-prompts-llms/</guid><description>&lt;img src="https://zinef.github.io/p/algorithms-to-prompts-llms/turing-m.jpeg" alt="Featured image of post From Algorithms to Prompts: Did We Just Loop Back or Level Up?" />&lt;p>A century ago we invented &lt;em>formal&lt;/em> ways to describe computations precisely because everyday language was too squishy. Now we’re steering powerful systems with… everyday language. Is that progress or a regression?&lt;/p>
+&lt;p>Short answer: it’s a step sideways and up. We didn’t abandon formalism, we pushed it down a layer. Natural language is becoming the interface, while the machinery underneath is getting more formal (APIs, schemas, tools, verifiers). Below I’ll unpack why the algorithmic formalists did what they did, how LLMs change the surface of programming, and when “English as glue” is a good idea or a trap.&lt;/p>
+&lt;h2 id="why-formalize-algorithms-in-the-first-place-">Why formalize algorithms in the first place ?
+&lt;/h2>&lt;p>Early 20th-century logicians tried to pin down what it means to compute at all. David Hilbert’s program asked whether there was a mechanical procedure to decide the truth of any statement in first-order logic (the Entscheidungsproblem). Alonzo Church (lambda calculus) and Alan Turing (Turing machines) independently answered no, but their negative answers gave us something priceless: precise models of effective procedure, what we now call algorithms. Their work, together with Post and Kleene, forms the backbone of the Church - Turing thesis and computability theory.&lt;/p>
+&lt;p>From there, computer science doubled down on precision inside programming, not just in computability theory:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Syntax&lt;/strong> got formal grammars (e.g., Backus–Naur Form) to define languages unambiguously, famously in the ALGOL 60 report.&lt;/li>
+&lt;li>&lt;strong>Semantics and correctness&lt;/strong> got axioms and proofs (e.g., Hoare logic), and structured programming discouraged ambiguous control flow.&lt;/li>
+&lt;/ul>
+&lt;p>The point was never to avoid natural language in discourse, but to ensure that what the &lt;em>machine&lt;/em> sees is crisp, verifiable, and composable.&lt;/p>
+&lt;h2 id="so-why-are-we-back-to-natural-language-now">So why are we “back” to natural language now?
+&lt;/h2>&lt;p>Because LLMs made natural language an effective &lt;strong>specification medium&lt;/strong> for many tasks. A good prompt can compress years of prior work : data, code, papers … into a short instruction that selects and adapts knowledge. But crucially, recent LLM apps don’t stop at plain text:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Function/Tool calling&lt;/strong> turns a sentence into a typed API call with guaranteed structure. What the user says is fuzzy, what the system executes is precise.&lt;/li>
+&lt;li>&lt;strong>Agents + tools&lt;/strong> (search, code execution, calculators, retrievers) let models plan in language but act through formal interfaces.&lt;/li>
+&lt;li>&lt;strong>Structured outputs&lt;/strong> (JSON Schema) and &lt;strong>constrained decoding&lt;/strong> force the model to emit data that matches a schema exactly, bridging natural prompts with machine-checkable results.&lt;/li>
+&lt;/ul>
+&lt;p>In other words, we use natural language for &lt;strong>intent capture&lt;/strong> and &lt;strong>explanation&lt;/strong>, then immediately re-enter formal territory for &lt;strong>execution&lt;/strong> and &lt;strong>interoperability&lt;/strong>.&lt;/p>
+&lt;h2 id="are-we-undoing-the-original-reasons-for-formalism">Are we undoing the original reasons for formalism?
+&lt;/h2>&lt;p>No. We’re relocating formalism to the seams where it matters.&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Ambiguity control&lt;/strong> moved from the user’s prompt to the &lt;strong>contracts at the boundary&lt;/strong> (schemas, types, tools). With structured outputs and grammar-constrained decoding, you can make the generator respect your formal spec while still letting users speak freely.&lt;/li>
+&lt;li>&lt;strong>Verification&lt;/strong> is increasingly externalized: the model proposes, specialized solvers/checkers verify. This reflects a broader trend: treat the LLM as a parser/planner and let formal tools enforce correctness downstream.&lt;/li>
+&lt;li>&lt;strong>Proven limits&lt;/strong> still apply. Church-Turing didn’t go away, undecidability and incompleteness still constrain what any program or model can guarantee. The practical response is to bound the problem and add safeguards, not to hope that prose resolves impossibility.&lt;/li>
+&lt;/ul>
+&lt;p>Think of LLMs as stochastic compilers &lt;strong>from intent to actions&lt;/strong>. We’re not programming in English, we’re &lt;strong>using English to drive formal systems&lt;/strong>.&lt;/p>
+&lt;h2 id="when-is-natural-language-a-good-programming-layer">When is natural language a good “programming layer”?
+&lt;/h2>&lt;p>&lt;strong>Great for:&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Exploration &amp;amp; orchestration.&lt;/strong> “Summarize these docs, extract entities, then call the CRM API.” The natural language plan can be translated to tool calls with structured outputs so the rest of your stack stays typed.&lt;/li>
+&lt;li>&lt;strong>End-user customization.&lt;/strong> Users don’t want DSLs, they want results. NL prompts make power accessible, while your app constrains what can actually happen via tools and schemas.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>Risky for:&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>High-assurance logic.&lt;/strong> Dijkstra warned in 1978 against “natural language programming” because ambiguity clashes with the precision that programs require. The warning is still relevant unless you couple NL with formal constraints and verification.&lt;/li>
+&lt;/ul>
+&lt;p>A pragmatic pattern is: &lt;strong>Prompt → Plan → Structured Calls → Verify → Persist&lt;/strong>. The prompt is the human-friendly layer, everything after is formal and testable.&lt;/p>
+&lt;h2 id="llms-reuse-existing-knowledge-prompts-just-query-it">LLMs reuse existing knowledge, prompts just query it
+&lt;/h2>&lt;p>LLMs are trained on existing artifacts. At inference time they compose and contextualize that knowledge. Tool use and retrieval make this even clearer: the model plans in language but leans on external knowledge bases or APIs for facts and effects. Recent surveys of LLM-based agents document this emerging architecture, language for reasoning and coordination, tools for ground truth and action.&lt;/p>
+&lt;h2 id="but-didnt-people-try-english-like-programming-before">But didn’t people try “English-like programming” before?
+&lt;/h2>&lt;p>Yes, COBOL’s Englishy syntax, HyperTalk, Inform 7, and decades of “natural language programming” experiments. The enduring critique, again from Dijkstra, is that surface readability doesn’t buy you &lt;strong>semantic guarantees&lt;/strong>. What’s new now isn’t Englishy syntax, it’s &lt;strong>learning-based intent capture + formal execution layers&lt;/strong>. The shift is closer to Andrej Karpathy’s “Software 2.0” idea, specifying behavior via data and learned models instead of only handwritten rules, now extended with a natural language interface on top.&lt;/p>
+&lt;h2 id="a-sober-take-is-this-a-step-up">A sober take: is this a step up?
+&lt;/h2>&lt;p>Yes, with guardrails. We improved the human-computer interface without discarding the computer’s need for formality. The socio-technical win is accessibility and speed, the technical debt is that ambiguity and hallucination creep back in unless you constrain, ground, and verify. The state of the art is actively addressing this with structured outputs, grammar-constrained decoding, and agent frameworks that keep LLMs honest by delegating to formal tools.&lt;/p>
+&lt;h2 id="further-reading--references">Further reading &amp;amp; references
+&lt;/h2>&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Why formalize algorithms / historical roots.&lt;/strong>
+Stanford Encyclopedia entries on the Church-Turing Thesis and Computability, Turing (1936) and Church (1936) on the Entscheidungsproblem. &lt;a class="link" href="https://plato.stanford.edu/entries/church-turing/" target="_blank" rel="noopener"
+>plato.stanford.edu&lt;/a>, &lt;a class="link" href="https://dl.acm.org/doi/10.1145/360303.360308" target="_blank" rel="noopener"
+>dl.acm.org&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Language design and correctness.&lt;/strong>
+ALGOL 60 report (BNF for syntax), Hoare’s “An Axiomatic Basis for Computer Programming”, Dijkstra’s “Go To Statement Considered Harmful.” &lt;a class="link" href="https://www.masswerk.at/algol60/report.htm" target="_blank" rel="noopener"
+>mass:werk – media environments&lt;/a>,&lt;a class="link" href="https://eli-project.sourceforge.net/a60_html/a60.html" target="_blank" rel="noopener"
+>eli-project.sourceforge.net&lt;/a>, &lt;a class="link" href="https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf" target="_blank" rel="noopener"
+>homepages.cwi.nl&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Natural language programming debate.&lt;/strong>
+Dijkstra’s &lt;em>On the foolishness of “natural language programming”&lt;/em> (1978/79), The New Yorker’s “What if natural language replaced programming?” for a modern cultural view. &lt;a class="link" href="https://www.cs.utexas.edu/~EWD/ewd06xx/EWD667.PDF" target="_blank" rel="noopener"
+>cs.utexas.edu&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>LLMs as planners with tools.&lt;/strong>
+ReAct (reasoning+acting) and Toolformer (teaching models to use tools), surveys of LLM-based agents. &lt;a class="link" href="https://arxiv.org/pdf/2210.03629" target="_blank" rel="noopener"
+>arXiv&lt;/a>, &lt;a class="link" href="https://openai.com/index/function-calling-and-other-api-updates/" target="_blank" rel="noopener"
+>openai.com&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Bridging NL to formal outputs.&lt;/strong>
+OpenAI structured outputs (JSON Schema adherence) and research on constrained/grammar-guided decoding. &lt;a class="link" href="https://openai.com/index/introducing-structured-outputs-in-the-api/" target="_blank" rel="noopener"
+>openai.com&lt;/a>, &lt;a class="link" href="https://arxiv.org/html/2403.06988v1" target="_blank" rel="noopener"
+>arXiv&lt;/a>, &lt;a class="link" href="https://aclanthology.org/2025.acl-industry.34.pdf" target="_blank" rel="noopener"
+>aclanthology.org&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ul></description></item></channel></rss>

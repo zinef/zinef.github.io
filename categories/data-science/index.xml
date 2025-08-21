@@ -1,0 +1,1274 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Data Science on Zine-eddine's Blog</title><link>https://zinef.github.io/categories/data-science/</link><description>Recent content in Data Science on Zine-eddine's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Mon, 17 Mar 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://zinef.github.io/categories/data-science/index.xml" rel="self" type="application/rss+xml"/><item><title>The Hidden Threat: Using Steganography to Hide Malicious Payloads in Deep Learning Models</title><link>https://zinef.github.io/p/tensorstego/</link><pubDate>Mon, 17 Mar 2025 00:00:00 +0000</pubDate><guid>https://zinef.github.io/p/tensorstego/</guid><description>&lt;img src="https://zinef.github.io/p/tensorstego/tensor_stego_cover.jpg" alt="Featured image of post The Hidden Threat: Using Steganography to Hide Malicious Payloads in Deep Learning Models" />&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>As deep learning models become increasingly integrated into critical systems, the security implications of these AI models demand closer analysis. While much attention has focused on adversarial attacks and model poisoning, a more subtle threat lurks in the architecture of neural networks themselves: tensor steganography. This technique allows malicious actors to embed hidden payloads directly within model weights without significantly affecting performance, creating a potential vector for distributing malware that bypasses traditional security measures.&lt;/p>
+&lt;p>In this article, I&amp;rsquo;ll explore how tensor steganography works, demonstrate its feasibility in popular models like ResNet18, and explain why security professionals and ML engineers should be concerned about this emerging threat vector.&lt;/p>
+&lt;h2 id="what-is-tensor-steganography">What is Tensor Steganography?
+&lt;/h2>&lt;p>Steganography is the practice of hiding information within other non-secret data or a physical object to avoid detection. Unlike encryption, which makes data unreadable but visible, steganography conceals the very existence of the hidden data.&lt;/p>
+&lt;p>Tensor steganography applies this concept to neural networks by embedding data in the least significant bits of the floating-point values that make up model weights. These minor alterations are virtually undetectable through casual inspection and have minimal impact on model performance, making them an ideal hiding place for malicious code.&lt;/p>
+&lt;p>&lt;img src="https://zinef.github.io/p/tensorstego/workflow.png"
+width="792"
+height="548"
+srcset="https://zinef.github.io/p/tensorstego/workflow_hu_27998fe2a5a235ba.png 480w, https://zinef.github.io/p/tensorstego/workflow_hu_a9d31b72b89d71f2.png 1024w"
+loading="lazy"
+alt="Overall Workflow (from : EvilModel: Hiding Malware Inside of Neural
+Network Models. )"
+class="gallery-image"
+data-flex-grow="144"
+data-flex-basis="346px"
+>&lt;/p>
+&lt;h2 id="feasibility-analysis-the-resnet18-case-study">Feasibility Analysis: The ResNet18 Case Study
+&lt;/h2>&lt;p>To understand the risk, let&amp;rsquo;s analyze the capacity for hidden data in a relatively small model like ResNet18. The largest convolutional layer in ResNet18 contains approximately 9.4MB of floating-point values . By manipulating just the least significant bits of each float&amp;rsquo;s mantissa, we can embed surprising amounts of data:&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>&lt;strong>Bits Modified Per Float&lt;/strong>&lt;/th>
+&lt;th>&lt;strong>Storage Capacity&lt;/strong>&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1-bit&lt;/td>
+&lt;td>294.9 kB&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2-bits&lt;/td>
+&lt;td>589.8 kB&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3-bits&lt;/td>
+&lt;td>884.7 kB&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4-bits&lt;/td>
+&lt;td>1.2 MB&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>5-bits&lt;/td>
+&lt;td>1.5 MB&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>6-bits&lt;/td>
+&lt;td>1.8 MB&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>7-bits&lt;/td>
+&lt;td>2.1 MB&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>8-bits&lt;/td>
+&lt;td>2.4 MB&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>&lt;img src="https://zinef.github.io/p/tensorstego/capacity-bar-chart-updated.svg"
+loading="lazy"
+>
+This analysis reveals that even a modest model like ResNet18 can conceal up to 2.4MB of data by modifying just 8 bits per float in a single layer. Larger models commonly used in production environments could potentially hide much more — up to 9MB of malicious code using only 3 bits per float in a single layer.&lt;/p>
+&lt;h2 id="implementation-how-tensor-steganography-works">Implementation: How Tensor Steganography Works
+&lt;/h2>&lt;p>Below is a Python implementation that demonstrates how to embed an arbitrary payload into a PyTorch model using steganography. This is a simple and naive example for illustrative purposes. In practice, a malicious actor could employ far more sophisticated techniques, making the detection and analysis of such hidden data significantly more challenging.&lt;/p>
+&lt;h3 id="1-import-dependencies">1. Import Dependencies
+&lt;/h3>&lt;p>We first import the required libraries:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">os&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">struct&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">hashlib&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">from&lt;/span> &lt;span class="nn">pathlib&lt;/span> &lt;span class="kn">import&lt;/span> &lt;span class="n">Path&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">torch&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">numpy&lt;/span> &lt;span class="k">as&lt;/span> &lt;span class="nn">np&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="2-function-definition-and-validations">2. Function Definition and Validations
+&lt;/h3>&lt;p>We define the function and validate the bit-depth parameter &lt;code>n&lt;/code>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">tensor_stego&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">model_path&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">Path&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">payload_path&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">Path&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nb">int&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">-&amp;gt;&lt;/span> &lt;span class="nb">bool&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;&amp;#34;&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> Embeds a payload inside the least significant bits (LSB) of the weights in a PyTorch model.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> Args:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> model_path (Path): Path to the PyTorch model (.pt or .pth).
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> payload_path (Path): Path to the binary payload file.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> n (int): Number of LSBs to use (1-8). Default is 1.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> Returns:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> bool: True if embedding was successful, False otherwise.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> &amp;#34;&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="ow">not&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="n">n&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="mi">8&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">raise&lt;/span> &lt;span class="ne">ValueError&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;n must be between 1 and 8.&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="3-load-the-model">3. Load the Model
+&lt;/h3>&lt;p>We load the model :&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">model&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">model_path&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">map_location&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">device&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;cpu&amp;#34;&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="4-read--prepare-the-payload">4. Read &amp;amp; Prepare the Payload
+&lt;/h3>&lt;p>Before embedding, we format the payload to include:&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>File size&lt;/strong> (so it can be reconstructed correctly)&lt;/li>
+&lt;li>&lt;strong>SHA-256 hash&lt;/strong> (for integrity verification)&lt;/li>
+&lt;li>&lt;strong>The actual payload data&lt;/strong>&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="k">with&lt;/span> &lt;span class="nb">open&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">payload_path&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;rb&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">as&lt;/span> &lt;span class="n">file&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">payload_data&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">file&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">read&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">payload_size&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">path&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">getsize&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">payload_data&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">payload_hash&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">hashlib&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sha256&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">payload_data&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">hexdigest&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">encode&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Pack size (4 bytes) + hash (64 bytes) + actual data&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">payload&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">struct&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">pack&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;i&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">payload_size&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">payload_hash&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">payload_data&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="5-convert-payload-to-bit-stream">5. Convert Payload to Bit Stream
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">bits&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">unpackbits&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">frombuffer&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">payload&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">dtype&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">uint8&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Ensure the bit stream is a multiple of `n` by padding with zeros&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">padding_size&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">n&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">len&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">bits&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="n">n&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">bits&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">pad&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">bits&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">padding_size&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">constant_values&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">bits_iter&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">iter&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">bits&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="6-embed-the-bits-into-the-models-tensors">6. Embed the Bits into the Model’s Tensors
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="k">for&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">tensor&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">model&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">items&lt;/span>&lt;span class="p">():&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">tensor_data&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tensor&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">data&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">numpy&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Check if the tensor has enough capacity to store the payload&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">tensor_data&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">size&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">n&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="nb">len&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">bits&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">continue&lt;/span> &lt;span class="c1"># Skip this tensor if it&amp;#39;s too small&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sa">f&lt;/span>&lt;span class="s2">&amp;#34;Embedding payload into layer: &lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">name&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Compute the LSB mask &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mask&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mh">0xff&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="nb">range&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">tensor_data&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">itemsize&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mask&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">mask&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="mi">8&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="mh">0xff&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mask&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">mask&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Create a read/write iterator for the tensor&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">with&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">nditer&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">tensor_data&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">view&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">uint32&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">,&lt;/span> &lt;span class="n">op_flags&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;readwrite&amp;#34;&lt;/span>&lt;span class="p">])&lt;/span> &lt;span class="k">as&lt;/span> &lt;span class="n">tensor_iterator&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Iterate over float values in tensor&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">f&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">tensor_iterator&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Get next bits to embed from the payload&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">lsb_value&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="nb">range&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">try&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">lsb_value&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">lsb_value&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="nb">next&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">bits_iter&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">except&lt;/span> &lt;span class="ne">StopIteration&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">assert&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="mi">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Save the model back to disk&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">save&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">model&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">f&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">model_path&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="kc">True&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Embed the payload bits into the float&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">f&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">bitwise_and&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">f&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">mask&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">f&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">bitwise_or&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">f&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">lsb_value&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Update the float value in the tensor&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">tensor_iterator&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">f&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">return&lt;/span> &lt;span class="kc">False&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="7-save-the-modified-model">7. Save the Modified Model
+&lt;/h3>&lt;p>The model is automatically saved inside the loop when the entire payload is embedded. If embedding fails, we return &lt;code>False&lt;/code>.&lt;/p>
+&lt;p>&lt;em>&lt;strong>N.B : This code includes a verification mechanism (SHA256 hash) to ensure the payload can be correctly extracted later. The payload format consists of the data size, a hash for verification, and the actual content.&lt;/strong>&lt;/em>&lt;/p>
+&lt;p>Below is the full script in one place for convenience:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;span class="lnt">64
+&lt;/span>&lt;span class="lnt">65
+&lt;/span>&lt;span class="lnt">66
+&lt;/span>&lt;span class="lnt">67
+&lt;/span>&lt;span class="lnt">68
+&lt;/span>&lt;span class="lnt">69
+&lt;/span>&lt;span class="lnt">70
+&lt;/span>&lt;span class="lnt">71
+&lt;/span>&lt;span class="lnt">72
+&lt;/span>&lt;span class="lnt">73
+&lt;/span>&lt;span class="lnt">74
+&lt;/span>&lt;span class="lnt">75
+&lt;/span>&lt;span class="lnt">76
+&lt;/span>&lt;span class="lnt">77
+&lt;/span>&lt;span class="lnt">78
+&lt;/span>&lt;span class="lnt">79
+&lt;/span>&lt;span class="lnt">80
+&lt;/span>&lt;span class="lnt">81
+&lt;/span>&lt;span class="lnt">82
+&lt;/span>&lt;span class="lnt">83
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">os&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">struct&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">hashlib&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">from&lt;/span> &lt;span class="nn">pathlib&lt;/span> &lt;span class="kn">import&lt;/span> &lt;span class="n">Path&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">torch&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">numpy&lt;/span> &lt;span class="k">as&lt;/span> &lt;span class="nn">np&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">tensor_stego&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">model_path&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">Path&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">payload_path&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">Path&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nb">int&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">-&amp;gt;&lt;/span> &lt;span class="nb">bool&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;&amp;#34;&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> Embeds a payload inside the least significant bits (LSB) of the weights in a PyTorch model.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> Args:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> model_path (Path): Path to the PyTorch model (.pt or .pth).
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> payload_path (Path): Path to the binary payload file.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> n (int): Number of LSBs to use (1-8). Default is 1.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> Returns:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> bool: True if embedding was successful, False otherwise.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> &amp;#34;&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="ow">not&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="n">n&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="mi">8&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">raise&lt;/span> &lt;span class="ne">ValueError&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;n must be between 1 and 8.&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">model&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">model_path&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">map_location&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">device&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;cpu&amp;#34;&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">with&lt;/span> &lt;span class="nb">open&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">payload_path&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;rb&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">as&lt;/span> &lt;span class="n">file&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">payload_data&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">file&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">read&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">payload_size&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">path&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">getsize&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">payload_path&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">payload_hash&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">hashlib&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sha256&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">payload_data&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">hexdigest&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">encode&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Pack size (4 bytes) + hash (64 bytes) + actual data&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">payload&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">struct&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">pack&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;i&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">payload_size&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">payload_hash&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">payload_data&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">bits&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">unpackbits&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">frombuffer&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">payload&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">dtype&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">uint8&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Ensure the bit stream is a multiple of `n` by padding with zeros&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">padding_size&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">n&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">len&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">bits&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="o">%&lt;/span> &lt;span class="n">n&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">bits&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">pad&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">bits&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">padding_size&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">constant_values&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">bits_iter&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">iter&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">bits&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">tensor&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">model&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">items&lt;/span>&lt;span class="p">():&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">tensor_data&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tensor&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">data&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">numpy&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Check if the tensor has enough capacity to store the payload&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">tensor_data&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">size&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">n&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="nb">len&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">bits&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">continue&lt;/span> &lt;span class="c1"># Skip this tensor if it&amp;#39;s too small&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sa">f&lt;/span>&lt;span class="s2">&amp;#34;Embedding payload into layer: &lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">name&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Compute the LSB mask &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mask&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mh">0xff&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="nb">range&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">tensor_data&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">itemsize&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mask&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">mask&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="mi">8&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">|&lt;/span> &lt;span class="mh">0xff&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">mask&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">mask&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Create a read/write iterator for the tensor&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">with&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">nditer&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">tensor_data&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">view&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">uint32&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">,&lt;/span> &lt;span class="n">op_flags&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;readwrite&amp;#34;&lt;/span>&lt;span class="p">])&lt;/span> &lt;span class="k">as&lt;/span> &lt;span class="n">tensor_iterator&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Iterate over float values in tensor&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">f&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">tensor_iterator&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Get next bits to embed from the payload&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">lsb_value&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="nb">range&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">try&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">lsb_value&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">lsb_value&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="nb">next&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">bits_iter&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">except&lt;/span> &lt;span class="ne">StopIteration&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">assert&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="mi">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Save the model back to disk&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">save&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">model&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">f&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">model_path&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="kc">True&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Embed the payload bits into the float&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">f&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">bitwise_and&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">f&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">mask&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">f&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">bitwise_or&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">f&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">lsb_value&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Update the float value in the tensor&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">tensor_iterator&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">f&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="kc">False&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Here&amp;rsquo;s a test snippet using &lt;strong>ResNet18&lt;/strong> to verify &lt;code>tensor_stego()&lt;/code> :&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">torchvision.models&lt;/span> &lt;span class="k">as&lt;/span> &lt;span class="nn">models&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Define paths&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">model_path&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">Path&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;resnet18.pth&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">payload_path&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">Path&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;payload.bin&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Load a pretrained ResNet18 model and save its state_dict&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">model&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">models&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">resnet18&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">pretrained&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="kc">True&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">save&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">model&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">state_dict&lt;/span>&lt;span class="p">(),&lt;/span> &lt;span class="n">model_path&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Generate a small binary payload&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">with&lt;/span> &lt;span class="nb">open&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">payload_path&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;wb&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">as&lt;/span> &lt;span class="n">f&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">f&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">write&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sa">b&lt;/span>&lt;span class="s2">&amp;#34;The One Piece is real !&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1"># Example hidden message&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">success&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tensor_stego&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">model_path&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">payload_path&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://zinef.github.io/p/tensorstego/res1.png"
+width="844"
+height="190"
+srcset="https://zinef.github.io/p/tensorstego/res1_hu_3be774c4f1fbe107.png 480w, https://zinef.github.io/p/tensorstego/res1_hu_7a3441109ea1c7b9.png 1024w"
+loading="lazy"
+alt="Tensor stego test run results"
+class="gallery-image"
+data-flex-grow="444"
+data-flex-basis="1066px"
+>&lt;/p>
+&lt;p>Here’s the reverse function to &lt;strong>extract the hidden payload&lt;/strong> from the PyTorch model. This function will:&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>Load the model&lt;/strong> from the given path.&lt;/li>
+&lt;li>&lt;strong>Extract the LSBs&lt;/strong> of the weights to reconstruct the payload.&lt;/li>
+&lt;li>&lt;strong>Verify the extracted payload&lt;/strong> by checking its SHA-256 hash.&lt;/li>
+&lt;/ol>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">extract_payload&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">model_path&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">Path&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="nb">int&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">-&amp;gt;&lt;/span> &lt;span class="nb">bytes&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;&amp;#34;&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> Extracts a hidden payload from the least significant bits (LSB) of the weights in a PyTorch model.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> Args:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> model_path (Path): Path to the PyTorch model (.pt or .pth).
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> n (int): Number of LSBs used for embedding (1-8).
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> Returns:
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> bytes: Extracted payload if successful, None otherwise.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="s2"> &amp;#34;&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="ow">not&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="n">n&lt;/span> &lt;span class="o">&amp;lt;=&lt;/span> &lt;span class="mi">8&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">raise&lt;/span> &lt;span class="ne">ValueError&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;n must be between 1 and 8.&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">model&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">model_path&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">map_location&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">device&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;cpu&amp;#34;&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">extracted_bits&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">[]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">name&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">tensor&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">model&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">items&lt;/span>&lt;span class="p">():&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">tensor_data&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tensor&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">data&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">cpu&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">numpy&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Skip scalar tensors (0D)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">tensor_data&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">ndim&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">continue&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Ensure data is in a format that supports bitwise operations&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">tensor_data_flat&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tensor_data&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">ravel&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">view&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">uint32&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">f&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">tensor_data_flat&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Extract LSBs from the float&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">lsb_value&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">f&lt;/span> &lt;span class="o">&amp;amp;&lt;/span> &lt;span class="p">((&lt;/span>&lt;span class="mi">1&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">extracted_bits&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">extend&lt;/span>&lt;span class="p">([(&lt;/span>&lt;span class="n">lsb_value&lt;/span> &lt;span class="o">&amp;gt;&amp;gt;&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">&amp;amp;&lt;/span> &lt;span class="mi">1&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="nb">reversed&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nb">range&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="p">))])&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Convert bitstream to bytes&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">extracted_bytes&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">packbits&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">array&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">extracted_bits&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">dtype&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">uint8&lt;/span>&lt;span class="p">))&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">tobytes&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Extract payload size (first 4 bytes)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">payload_size&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">struct&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">unpack&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;i&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">extracted_bytes&lt;/span>&lt;span class="p">[:&lt;/span>&lt;span class="mi">4&lt;/span>&lt;span class="p">])[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">payload_hash&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">extracted_bytes&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">4&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">68&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">extracted_payload&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">extracted_bytes&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">68&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">68&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">payload_size&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># Verify integrity&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">computed_hash&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">hashlib&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">sha256&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">extracted_payload&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">hexdigest&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">encode&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">computed_hash&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">payload_hash&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;Payload successfully extracted and verified!&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">extracted_payload&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;Payload extraction failed: Hash mismatch.&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="kc">None&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">extracted_payload&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">extract_payload&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">model_path&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;resnet18.pth&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="n">extracted_payload&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;Extracted Message:&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">extracted_payload&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">decode&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">errors&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;ignore&amp;#34;&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://zinef.github.io/p/tensorstego/res2.png"
+width="844"
+height="202"
+srcset="https://zinef.github.io/p/tensorstego/res2_hu_afd9f3e93bf6437b.png 480w, https://zinef.github.io/p/tensorstego/res2_hu_65ae344575361bba.png 1024w"
+loading="lazy"
+alt="Reverse function run results."
+class="gallery-image"
+data-flex-grow="417"
+data-flex-basis="1002px"
+>&lt;/p>
+&lt;h2 id="security-implications">Security Implications
+&lt;/h2>&lt;p>The ability to hide executable code within model weights presents several concerning security implications:&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>Bypassing Security Scanning&lt;/strong>: Traditional malware detection tools don&amp;rsquo;t inspect ML model weights, allowing embedded malicious code to evade detection.&lt;/li>
+&lt;li>&lt;strong>Supply Chain Attacks&lt;/strong>: Pre-trained models downloaded from public repositories could contain hidden payloads that activate when the model is loaded.&lt;/li>
+&lt;li>&lt;strong>Persistent Backdoors&lt;/strong>: Since model weights are rarely inspected or modified after deployment, embedded code could remain undetected for extended periods.&lt;/li>
+&lt;li>&lt;strong>Execution Pathways&lt;/strong>: Concealing data within tensors is only the first step. The real threat emerges when this hidden payload is automatically extracted and executed, potentially exploiting vulnerabilities in how ML frameworks deserialize and handle model parameters. Prior research has demonstrated how adversaries can craft malicious models that trigger arbitrary code execution upon loading, bridging the gap between passive data hiding and active system compromise. For those interested in the practical exploitation of this vulnerability, &lt;a class="link" href="https://hiddenlayer.com/innovation-hub/weaponizing-machine-learning-models-with-ransomware/" target="_blank" rel="noopener"
+>this article&lt;/a> provides a detailed breakdown of real-world attack scenarios, including a concrete example of how serialization flaws in PyTorch models can be leveraged for execution.&lt;/li>
+&lt;/ol>
+&lt;h2 id="defensive-measures">Defensive Measures
+&lt;/h2>&lt;p>As a data professional responsible for model security, consider implementing these comprehensive protective measures:&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>Source Verification&lt;/strong>: Only use models from trusted sources with verified signatures. Implement model signing as a means of performing integrity checking to detect tampering and corruption.&lt;/li>
+&lt;li>&lt;strong>Weight Analysis&lt;/strong>: Develop tools to analyze the distribution of least significant bits in model weights, which may reveal statistical anomalies indicating hidden data. Techniques such as entropy and Z-score analysis can help detect low-entropy payloads, though encrypted payloads remain challenging to identify.&lt;/li>
+&lt;li>&lt;strong>Sandboxed Loading&lt;/strong>: Load models in isolated environments with limited permissions to prevent potential code execution. This is especially critical when using pre-trained models downloaded from the internet, as current anti-malware solutions may not detect all code execution techniques.&lt;/li>
+&lt;li>&lt;strong>Security Scanning Tools&lt;/strong>: Utilize specialized tools like TrailOfBits&amp;rsquo; Fickling to detect simple attempts to exploit ML serialization formats. Monitor repositories like HuggingFace that have implemented security scanners for user-supplied models.&lt;/li>
+&lt;li>&lt;strong>Format Selection&lt;/strong>: Choose storage formats that offer enhanced security by avoiding data deserialization flaws, which are particularly vulnerable to exploitation.&lt;/li>
+&lt;li>&lt;strong>EDR Solutions&lt;/strong>: Deploy and properly tune Endpoint Detection and Response solutions to gain better insight into attacks as they occur, particularly for detecting advanced payloads delivered via ML models.&lt;/li>
+&lt;li>&lt;strong>Regular Security Audits&lt;/strong>: Conduct periodic security audits of your AI infrastructure, focusing on the integrity of deployed models and potential vulnerabilities in your ML pipeline.&lt;/li>
+&lt;/ol>
+&lt;h2 id="conclusion">Conclusion
+&lt;/h2>&lt;p>Tensor steganography represents a sophisticated attack vector that could transform seemingly benign deep learning models into vehicles for malware distribution. As ML systems continue to proliferate across critical infrastructure, security professionals must expand their threat models to include these novel attack vectors.&lt;/p>
+&lt;p>The research demonstrates that even small models contain sufficient capacity to hide substantial malicious payloads with minimal impact on model performance. As larger models become standard, this capacity increases significantly—amplifying the potential threat.&lt;/p>
+&lt;p>For organizations developing or deploying ML systems, understanding and mitigating these risks should become an essential component of AI security protocols. The intersection of deep learning and cybersecurity continues to reveal new challenges that require vigilance and innovative defensive approaches.&lt;/p>
+&lt;p>For a more comprehensive understanding of this threat, I encourage readers to explore the references which provides detailed explanations of payload exploitation techniques, practical demonstrations, and extensive references. This in-depth resources offers security professionals the technical insights needed to develop robust defensive measures against this type of attacks.&lt;/p>
+&lt;h2 id="references-">References :
+&lt;/h2>&lt;ul>
+&lt;li>&lt;a class="link" href="https://hiddenlayer.com/innovation-hub/weaponizing-machine-learning-models-with-ransomware/" target="_blank" rel="noopener"
+>Weaponizing ML Models with Ransomware&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://cse.buffalo.edu/~wenyaoxu/papers/conference/xu-acsac2020.pdf" target="_blank" rel="noopener"
+>StegoNet: Turn Deep Neural Network into a Stegomalware&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://arxiv.org/pdf/2107.08590" target="_blank" rel="noopener"
+>EvilModel: Hiding Malware Inside of Neural Network Models&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://arxiv.org/abs/2106.08970" target="_blank" rel="noopener"
+>Sleeper Agent: Scalable Hidden Trigger Backdoors for Neural Networks Trained from Scratch&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.darkreading.com/application-security/hugging-face-ai-platform-100-malicious-code-execution-models" target="_blank" rel="noopener"
+>https://www.darkreading.com/application-security/hugging-face-ai-platform-100-malicious-code-execution-models&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://medium.com/@limbagoa/securing-the-ai-supply-chain-051f8d43c5c4" target="_blank" rel="noopener"
+>https://medium.com/@limbagoa/securing-the-ai-supply-chain-051f8d43c5c4&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.techrepublic.com/article/pytorch-ml-compromised/" target="_blank" rel="noopener"
+>https://www.techrepublic.com/article/pytorch-ml-compromised/&lt;/a>&lt;/li>
+&lt;/ul></description></item><item><title>How Can We Analyze Large Medical Images to Detect Brain Tumors? A Practical Guide</title><link>https://zinef.github.io/p/lmianalysis/</link><pubDate>Sat, 17 Feb 2024 00:00:00 +0000</pubDate><guid>https://zinef.github.io/p/lmianalysis/</guid><description>&lt;img src="https://zinef.github.io/p/lmianalysis/biospecimen-whole-slide-image-1.png" alt="Featured image of post How Can We Analyze Large Medical Images to Detect Brain Tumors? A Practical Guide" />&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>Brain tumors are among the most aggressive and lethal forms of cancer, and early detection is crucial for improving patient outcomes. However, analyzing medical images to diagnose and classify brain tumors presents several challenges due to the sheer size and complexity of whole-slide images (WSIs). In this article, I will share insights from my project, &lt;em>Converting Large Medical Images to Embeddings for Training Classifier Models&lt;/em>, where I leveraged deep learning techniques to process high-resolution medical images efficiently. This is not just a technical breakdown but a real-world experience of tackling the problem, highlighting key lessons and takeaways.&lt;/p>
+&lt;h2 id="the-challenge-of-large-scale-medical-image-analysis">The Challenge of Large-Scale Medical Image Analysis
+&lt;/h2>&lt;p>Medical images, particularly WSIs, are massive, often exceeding 100,000 pixels in resolution. Traditional image classification methods struggle to process such data due to memory constraints and computational complexity. My goal was to convert these high-dimensional images into meaningful embeddings that could be used for training classifier models to predict immune invasion stages in glioblastoma—a highly aggressive brain tumor.&lt;/p>
+&lt;h3 id="key-challenges">Key Challenges
+&lt;/h3>&lt;ol>
+&lt;li>&lt;strong>Data Size &amp;amp; Complexity:&lt;/strong> WSIs are gigapixel images that require efficient handling and storage.&lt;/li>
+&lt;li>&lt;strong>Annotation Scarcity:&lt;/strong> Unlike natural images, medical images require expert annotations, which are often limited.&lt;/li>
+&lt;li>&lt;strong>Feature Extraction:&lt;/strong> Extracting meaningful representations from these images without losing critical information.&lt;/li>
+&lt;li>&lt;strong>Computational Constraints:&lt;/strong> Training deep learning models on such large images is resource-intensive.&lt;/li>
+&lt;/ol>
+&lt;h2 id="the-solution-transforming-images-into-embeddings">The Solution: Transforming Images into Embeddings
+&lt;/h2>&lt;p>To address these challenges, I explored and adapted two state-of-the-art deep learning approaches:&lt;/p>
+&lt;h3 id="deep-attention-multiple-instance-survival-learning-deepattnmisl">&lt;strong>Deep Attention Multiple-Instance Survival Learning (DeepAttnMISL)&lt;/strong>
+&lt;/h3>&lt;p>DeepAttnMISL is a multiple-instance learning (MIL) approach designed for survival prediction from WSIs. Instead of classifying entire images at once, it breaks them into smaller regions (instances) and learns representations using an attention-based mechanism. Key steps included:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Patch Extraction &amp;amp; Clustering:&lt;/strong> Extracting patches from WSIs and grouping them into phenotype clusters.&lt;/li>
+&lt;li>&lt;strong>Feature Extraction via CNNs:&lt;/strong> Using a pre-trained VGG model to generate feature embeddings for each patch.&lt;/li>
+&lt;li>&lt;strong>Attention-Based Pooling:&lt;/strong> Aggregating patch-level information using an attention-based MIL pooling layer to make patient-level predictions.&lt;/li>
+&lt;li>&lt;strong>Final Classification:&lt;/strong> Using the learned embeddings to train a classifier model to predict immune invasion stages (A, B, C, D).&lt;/li>
+&lt;/ul>
+&lt;h3 id="vision-transformers-vits">&lt;strong>Vision Transformers (ViTs)&lt;/strong>
+&lt;/h3>&lt;p>Inspired by their success in NLP, I also explored Vision Transformers (ViTs), which process images as sequences of patches rather than relying on convolutions. ViTs leverage self-attention mechanisms to capture long-range dependencies, making them particularly suited for analyzing complex medical images.&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Patch Tokenization:&lt;/strong> Splitting the large image into smaller fixed-size patches.&lt;/li>
+&lt;li>&lt;strong>Embedding Generation:&lt;/strong> Encoding each patch into a vector representation.&lt;/li>
+&lt;li>&lt;strong>Self-Attention Mechanism:&lt;/strong> Learning relationships between different patches to detect patterns indicative of tumor presence.&lt;/li>
+&lt;li>&lt;strong>Classifier Training:&lt;/strong> Using the learned representations to train a predictive model.&lt;/li>
+&lt;/ul>
+&lt;h2 id="key-takeaways">Key Takeaways
+&lt;/h2>&lt;h3 id="the-importance-of-representation-learning">&lt;strong>The Importance of Representation Learning&lt;/strong>
+&lt;/h3>&lt;p>Converting images into embeddings significantly reduced the computational burden while preserving essential features. Choosing the right architecture for embedding extraction was crucial—DeepAttnMISL provided structured phenotype-based representations, while ViTs captured global dependencies.&lt;/p>
+&lt;h3 id="attention-mechanisms-enhance-interpretability">&lt;strong>Attention Mechanisms Enhance Interpretability&lt;/strong>
+&lt;/h3>&lt;p>Using attention-based pooling allowed us to identify the most critical regions of the WSIs, improving both accuracy and interpretability. This was particularly useful for medical experts who need to understand model predictions.&lt;/p>
+&lt;h3 id="pretrained-models-save-time--resources">&lt;strong>Pretrained Models Save Time &amp;amp; Resources&lt;/strong>
+&lt;/h3>&lt;p>Instead of training deep networks from scratch, leveraging pretrained models (e.g., VGG, ResNet) for feature extraction proved highly effective. Fine-tuning these models with domain-specific data further improved performance.&lt;/p>
+&lt;h3 id="computational-constraints-are-a-real-challenge">&lt;strong>Computational Constraints Are a Real Challenge&lt;/strong>
+&lt;/h3>&lt;p>Processing high-resolution WSIs required significant memory and GPU resources. Using techniques like patch extraction, dimensionality reduction, and efficient batching helped mitigate these challenges.&lt;/p>
+&lt;h2 id="conclusion">Conclusion
+&lt;/h2>&lt;p>Analyzing medical images for brain tumor detection is a complex but highly impactful challenge. By leveraging DeepAttnMISL and Vision Transformers, we can efficiently extract meaningful embeddings that improve classification accuracy while reducing computational costs. This project highlighted the power of attention mechanisms in deep learning and underscored the importance of adapting models to the unique constraints of medical imaging.&lt;/p>
+&lt;p>For those interested in deep learning applications in healthcare, this field offers vast opportunities to push the boundaries of AI-driven diagnostics. Whether you&amp;rsquo;re a researcher, practitioner, or enthusiast, the key takeaway is clear—smart representation learning is the future of medical image analysis.&lt;/p>
+&lt;hr>
+&lt;p>&lt;em>What are your thoughts on AI in medical imaging? Have you worked on similar projects? Let&amp;rsquo;s discuss in the comments!&lt;/em>&lt;/p></description></item><item><title>MLOps: Introduction, Definitions and Best Practices</title><link>https://zinef.github.io/p/mlops_6_23/</link><pubDate>Mon, 19 Jun 2023 00:00:00 +0000</pubDate><guid>https://zinef.github.io/p/mlops_6_23/</guid><description>&lt;img src="https://zinef.github.io/p/mlops_6_23/MLOps-DevOps.webp" alt="Featured image of post MLOps: Introduction, Definitions and Best Practices" />&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>We hear more and more about MLOps. This practice, inspired by DevOps, aims to unify the tasks of developing Machine Learning applications with those of operations.&lt;/p>
+&lt;p>In this article, we will see what MLOps is, how it can be practiced and what tools are available to practice it.&lt;/p>
+&lt;p>In 2020, each person created at least 1.7 MB of data each second, according to techjury. That&amp;rsquo;s sound good for data scientists since there are so many theories and ideas to investigate, play with, and numerous findings and models to make.&lt;/p>
+&lt;p>However, if we want to take this seriously and have these models interact with real-world business challenges and people, we must address the basics first, like acquiring and cleaning large amounts of data, setting up tracking and versioning for experiments and model training runs, setting up the deployment and monitoring pipelines for the models that do get to production.&lt;/p>
+&lt;p>Similar challenges occurred in the past when we tried to grow traditional software systems to accommodate additional users. DevOps provided a solution in the form of a set of practices for building, testing, deploying, and running large-scale software systems. DevOps shortened development times, enhanced deployment velocity, and made system releases auditable and durable.&lt;/p>
+&lt;p>That bring us to MLOps. It was formed at the junction of DevOps, Data Engineering, and Machine Learning, and while the concept is similar to DevOps, the implementation differs. ML systems are more experimental in nature, with additional components that are far more difficult to develop and run.&lt;/p>
+&lt;h2 id="what-is-mlops">What is MLOps?
+&lt;/h2>&lt;p>MLOps is the operationalization of Machine Learning model management. This aims to create an end-to-end process for creating, implementing and managing repeatable, testable and scalable machine learning models. MLOps aims to:&lt;/p>
+&lt;ul>
+&lt;li>Unify the machine learning delivery cycle and the application development cycle&lt;/li>
+&lt;li>Automation of Machine Learning tests (Data Validation, model testing, model integration testing, etc)&lt;/li>
+&lt;li>Enables the application of agile principles to the Machine Learning project&lt;/li>
+&lt;li>Supports model creation in CI/CD&lt;/li>
+&lt;li>Reduces the technical debt of ML models&lt;/li>
+&lt;li>Must be independent of languages, framework, platform, etc.&lt;/li>
+&lt;/ul>
+&lt;p>If there is anything to remember, it is that: MLOps is a set of practices that is intended to be as agile as possible and that must be based on the automation of the delivery and continuous integration processes of ML applications&lt;/p>
+&lt;p>The key phases of MLOps are:&lt;/p>
+&lt;ul>
+&lt;li>Data gathering&lt;/li>
+&lt;li>Data analysis&lt;/li>
+&lt;li>Data transformation/preparation&lt;/li>
+&lt;li>Model training &amp;amp; development&lt;/li>
+&lt;li>Model validation&lt;/li>
+&lt;li>Model serving&lt;/li>
+&lt;li>Model monitoring&lt;/li>
+&lt;li>Model re-training.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://zinef.github.io/p/mlops_6_23/mlops_cycle.png"
+width="1366"
+height="768"
+srcset="https://zinef.github.io/p/mlops_6_23/mlops_cycle_hu_d5cdb6e8ade7612.png 480w, https://zinef.github.io/p/mlops_6_23/mlops_cycle_hu_6ee3e7024c6f0aac.png 1024w"
+loading="lazy"
+alt="MLOps cycle"
+class="gallery-image"
+data-flex-grow="177"
+data-flex-basis="426px"
+>&lt;/p>
+&lt;h3 id="devops--mlops">DevOps &amp;amp; MLOps
+&lt;/h3>&lt;p>DevOps is a set of activities aimed at shortening the development life of a system and providing continuous delivery of high quality software. DevOps and MLOps both aim to bring software into a repeatable and fault tolerant workflow, but in MLOps that software also has a machine learning component.&lt;/p>
+&lt;p>Before deep diving into the comparison of DevOps and MLOps let&amp;rsquo;s recall what is the DevOps Cycle&lt;/p>
+&lt;p>As teams strive for a quicker code-build-deploy loop, DevOps is a crucial concept in practically all successful IT projects. This gives teams the ability to deploy new features more quickly, allowing them to complete projects faster and with a higher quality final result. However, without adequate DevOps methods, teams face manual work, inability to test, and, as a result, dangerous production deployments.&lt;/p>
+&lt;p>An ideal DevOps cycle will include the following five important pillars for a successful project (&lt;a class="link" href="https://www.youtube.com/watch?v=uTEL8Ff1Zvk%29" target="_blank" rel="noopener"
+>https://www.youtube.com/watch?v=uTEL8Ff1Zvk)&lt;/a>:&lt;/p>
+&lt;ul>
+&lt;li>Reduce organizational silos&lt;/li>
+&lt;li>Accept failure as normal&lt;/li>
+&lt;li>Implement gradual changes&lt;/li>
+&lt;li>Leverage tooling and automation&lt;/li>
+&lt;li>Measure everything&lt;/li>
+&lt;/ul>
+&lt;div class="video-wrapper">
+&lt;iframe loading="lazy"
+src="https://www.youtube.com/embed/uTEL8Ff1Zvk"
+allowfullscreen
+title="YouTube Video"
+>
+&lt;/iframe>
+&lt;/div>
+&lt;p>And the common DevOps cycle that includes all these pillars looks like this:&lt;/p>
+&lt;p>&lt;img src="https://zinef.github.io/p/mlops_6_23/schema-devops.webp"
+width="850"
+height="350"
+srcset="https://zinef.github.io/p/mlops_6_23/schema-devops_hu_c802a00d1ba360e2.webp 480w, https://zinef.github.io/p/mlops_6_23/schema-devops_hu_b0788bad4f8f6096.webp 1024w"
+loading="lazy"
+alt="Dev &amp;#43; Ops = DevOps!"
+class="gallery-image"
+data-flex-grow="242"
+data-flex-basis="582px"
+>&lt;/p>
+&lt;h3 id="comparison">Comparison
+&lt;/h3>&lt;h4 id="cycle">Cycle
+&lt;/h4>&lt;p>A code-validate-deploy cycle is included in both DevOps and MLOps pipelines. However, the MLOps pipeline also includes data and model stages that are necessary to create and train a machine learning model (see diagram below). As a result, MLOps has a few differences from traditional DevOps for each component of the workflow.&lt;/p>
+&lt;p>&lt;img src="https://zinef.github.io/p/mlops_6_23/MLOps-DevOps.webp"
+width="896"
+height="432"
+srcset="https://zinef.github.io/p/mlops_6_23/MLOps-DevOps_hu_34477051f9523420.webp 480w, https://zinef.github.io/p/mlops_6_23/MLOps-DevOps_hu_371d600d4e29773a.webp 1024w"
+loading="lazy"
+alt="ML &amp;#43; Dev &amp;#43; Ops"
+class="gallery-image"
+data-flex-grow="207"
+data-flex-basis="497px"
+>&lt;/p>
+&lt;p>&amp;ldquo;data&amp;rdquo; and &amp;ldquo;model&amp;rdquo; here represent, in most cases, the data labeling, data transformation or feature engineering and algorithm selection process which we can call the experiment phase.&lt;/p>
+&lt;p>&lt;strong>Data labeling&lt;/strong> is the process of adding the target to a chunk of data records and the model will use this as a training set. In the case of a supervised ML model this type of data is critical.&lt;/p>
+&lt;p>&lt;strong>Data transformation or feature engineering&lt;/strong> is also an important step to preprocess and prepare the most suitable structure for the ML model in order to produce good results.&lt;/p>
+&lt;p>And &lt;strong>selecting algorithm process&lt;/strong> depends on the nature of the prediction problem at hand.&lt;/p>
+&lt;p>The &amp;ldquo;Dev&amp;rdquo; and &amp;ldquo;Ops&amp;rdquo; parts are mostly the same at a high level.&lt;/p>
+&lt;p>The experimentation phase is unique to the data science lifecycle, which reflects how data scientists traditionally do their work. This differs from the way code developers do their work. The following diagram illustrates this life cycle in more detail.&lt;/p>
+&lt;p>&lt;img src="https://zinef.github.io/p/mlops_6_23/tdsp-lifecycle.png"
+width="1150"
+height="858"
+srcset="https://zinef.github.io/p/mlops_6_23/tdsp-lifecycle_hu_e45b6dd94d3d1536.png 480w, https://zinef.github.io/p/mlops_6_23/tdsp-lifecycle_hu_ae699e5994cea53b.png 1024w"
+loading="lazy"
+alt="Data Science Life Cycle"
+class="gallery-image"
+data-flex-grow="134"
+data-flex-basis="321px"
+>&lt;/p>
+&lt;h4 id="development-and-cicd">Development and CI/CD
+&lt;/h4>&lt;p>The &amp;ldquo;development&amp;rdquo; takes two different meanings in each concept. In DevOps, by development we mean the code that creates an application or interface of some sort. The code is then wrapped up in an executable (artifact) that is deployed and validated against a series of tests. This cycle is ideally automated and continues until you have a final product. However, in MLOps the code is building/training a ML model. The output artifact here is a serialized file that can have data fed into it and produce inferences. The validation would be checking how well the trained model does against test data. Similarly, this is a cycle that continues until the model performs at a certain threshold.&lt;/p>
+&lt;h4 id="version-control">Version control
+&lt;/h4>&lt;p>In a DevOps pipeline, version control is usually limited to tracking changes to code and artifacts. There are more things to track in an MLOps pipeline.&lt;/p>
+&lt;p>As mentioned before, the code in MLOps is building/training the ML model and it is an iterative cycle of experimenting. Each experimental run&amp;rsquo;s components and metrics must be tracked in order to appropriately recreate it afterwards for auditing reasons. The data set utilized in training (train/test split), the model construction code, and the model artifact are among these components. The hyper-parameters and model performance are among the metrics (e.g., error rate).&lt;/p>
+&lt;p>When compared to standard software systems, this may appear to be a lot of information to keep track of. Fortunately, we have model registry tools (&lt;a class="link" href="https://www.phdata.io/blog/what-is-a-model-registry/" target="_blank" rel="noopener"
+>https://www.phdata.io/blog/what-is-a-model-registry/&lt;/a>) as a tailor-made solution for versioning ML models.&lt;/p>
+&lt;h4 id="monitoring">Monitoring
+&lt;/h4>&lt;p>Model drift is an additional component to monitor in MLOps, in addition to the application itself. Because data is continuously changing, your model must as well. Models trained on older data may or may not perform well on new data, particularly if the data is seasonal.&lt;/p>
+&lt;p>In order to keep your model up to date, it will need to be re-trained regularly (&lt;a class="link" href="https://www.phdata.io/blog/when-to-retrain-machine-learning-models/" target="_blank" rel="noopener"
+>https://www.phdata.io/blog/when-to-retrain-machine-learning-models/&lt;/a>) to gain consistent value from it.&lt;/p>
+&lt;p>&lt;img src="https://zinef.github.io/p/mlops_6_23/monitoring.webp"
+width="1024"
+height="602"
+srcset="https://zinef.github.io/p/mlops_6_23/monitoring_hu_769743d0a89db269.webp 480w, https://zinef.github.io/p/mlops_6_23/monitoring_hu_477412dc59565eaf.webp 1024w"
+loading="lazy"
+alt="Monitoring"
+class="gallery-image"
+data-flex-grow="170"
+data-flex-basis="408px"
+>&lt;/p>
+&lt;h2 id="why-mlops">Why MLOps?
+&lt;/h2>&lt;p>The importance of MLOps cannot be overstated. By establishing more efficient processes, utilizing data analytics for decision-making, and enhancing customer experience, machine learning helps individuals and enterprises deploy solutions that uncover previously untapped streams of revenue, save time, and decrease cost.&lt;/p>
+&lt;p>These objectives are difficult to achieve without a solid foundation to operate within. MLOps automates model creation and deployment, resulting in faster time to market and lower operating expenses. It assists managers and developers in making more strategic and agile decisions.&lt;/p>
+&lt;p>MLOps provides as a road map for individuals, small teams, and even enterprises to fulfill their objectives regardless of their restrictions, such as sensitive data, limited resources, or a limited budget.&lt;/p>
+&lt;p>Because MLOps are not set in stone, you may choose the size of your map. You may try out various options and keep only what works for you.&lt;/p>
+&lt;h2 id="best-practices">Best Practices
+&lt;/h2>&lt;p>In this section, we will see the best practices for different parts of an ML project, Team, DATA, Metrics&amp;amp;KPI, Model, Code and the Deployment.&lt;/p>
+&lt;h3 id="team">Team
+&lt;/h3>&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Use A collaborative Development Platform:&lt;/strong> by making consistent use of a collaborative dev platform teams can work together more effectively. All this is possible because dev platforms provides easy access to data, code, information and other tools. One other interesting thing is that platforms help teams to work together asynchronously or remotely. Collaborative development environments include GitHub, GitLab, BitBucket, and Azure DevOps Server.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Work Against a Shared Backlog:&lt;/strong> intent to avoid misunderstanding on the content, priority and status of tasks because an actively maintained backlog enables coordination of tasks within the team and with external stakeholders. It also helps in planning ahead and performing retrospective evaluations.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Communicate and Collaborate with others:&lt;/strong> The system that your team develops is meant to integrate with other systems within the context of a wider organization. this requires communication, alignment, and collaboration with others outside the team.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="data">Data
+&lt;/h3>&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Use Sanity Checks for All External Data Sources:&lt;/strong> Avoid invalid or incomplete data being processed because data errors is crucial for model quality&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Write Reusable Scripts for Data Cleaning and Merging:&lt;/strong> Avoid untidy data wrangling scripts, reuse code and increase reproducibility.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Ensure Data Labelling is Performed in a Strictly Controlled Process:&lt;/strong> Avoid invalid or incomplete labels, Controlling the data labelling process ensures label quality &amp;ndash; an important quality driver for supervised learning algorithms.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Make Data Sets Available on Shared Infrastructure (private or public):&lt;/strong> Avoid data duplication, data bottlenecks, or unnecessary transfer of large data sets.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="metrics--kpi">Metrics &amp;amp; KPI
+&lt;/h3>&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>At first, track multiple metrics, not necessarily the best one:&lt;/strong> You want to make money, make your users happy, and make the world a better place. There are tons of metrics that you care about, and you should measure them all. However, early in the machine learning process, you will notice them all going up, even those that you do not directly optimize.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Establish Responsible AI Values:&lt;/strong> Explicitly align all stakeholders on the ethical values and constraints of your machine learning application&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Enforce Fairness and Privacy:&lt;/strong> Avoid irresponsible use of machine learning and decisions with negative societal impact.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="model">Model
+&lt;/h3>&lt;p>The first thing to do with the model is to get it simple, interpretable and get the infrastructure right, that what makes debugging easier&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Share a Clearly Defined Training Objective within the Team:&lt;/strong> Avoid misunderstandings between multi-disciplinary team members. In a multi-disciplinary team, members with different backgrounds may misinterpret training objectives. Therefore, it is important to clearly communicate the objectives within the team.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Capture the Training Objective in a Metric that is Easy to Measure and Understand:&lt;/strong> Ensure the machine learning objective is easy to measure and it is a good proxy for the true objective.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Test all Feature Extraction Code&lt;/strong>: Avoid bugs in the feature extraction code to ensure the non presence of errors and bugs in the whole process.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Enable Parallel Training Experiments:&lt;/strong> Avoid deadlocks during experimentation. Machine learning relies heavily on empirical processes. In order to allow fast experimentation and avoid deadlocks, it is recommended to think upfront of experiment parallelisation.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Continuously Measure Model Quality and Performance&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Use Versioning for Data, Model, Configurations and Training Scripts&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="code">Code
+&lt;/h3>&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Run Automated Regression Tests:&lt;/strong> Avoid the introduction of bugs in code. When making changes, new defects can easily be introduced in existing code. A suite of automated regression tests helps to spot such defects as early as possible.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Use Continuous Integration&lt;/strong>: Catch any code integration problems as early as possible. Code changes and additions may introduce problems into the software system as a whole. This can be detected by running an automated build script each time that code is committed to the versioning repository.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Assure Application Security&lt;/strong>: to Prevent attackers from stealing or corrupting data, or from disrupting the availability of an application. Security incidents can lead to public data leaks, financial losses, or disrupt the availability of an application.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="deployment">Deployment
+&lt;/h3>&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Automate Model Deployment:&lt;/strong> Increase the ability to deploy models on demand, which increases availability and scalability. Deploying and orchestrating different components of an application can be a tedious task. Instead of manually packaging and delivering models, and in order to avoid manual interventions or errors, one can automate this task.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Enable Shadow Deployment:&lt;/strong> Test a model&amp;rsquo;s behaviour on production data, without any impact on the service it provides. Before pushing a model into production, it is wise to test its quality and performance on data from production. In order to facilitate this task, one can deploy multiple models to &amp;lsquo;shadow&amp;rsquo; each other.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Continuously Monitor the Behaviour of Deployed Models:&lt;/strong> To Avoid unintended behaviour in production models. Once a model is promoted to production, the team has to understand how it performs.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Log Production Predictions with the Model&amp;rsquo;s Version and Input Data:&lt;/strong> To Enhance debugging, enable traceability, reproducibility, compliance and incident management. Tracing decisions back to the input data and the model&amp;rsquo;s version can be difficult. It is therefore recommended to log production predictions together with the model&amp;rsquo;s version and input data.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="machine-learning-operations-maturity-model">Machine Learning Operations Maturity Model
+&lt;/h2>&lt;p>The purpose of this maturity model is to help clarify the principles and practices of Machine Learning Operations (MLOps). The maturity model shows continuous improvement in the creation and operation of a production-level machine learning application environment. You can use it as a metric to establish the incremental requirements needed to measure the maturity of a machine learning production environment and its associated processes.&lt;/p>
+&lt;p>As with most maturity models, the MLOps maturity model qualitatively assesses personas/culture, processes/structures, and objects/technologies. As the maturity level increases, the probability increases as incidents or errors lead to quality improvements in the development and production processes.&lt;/p>
+&lt;p>The MLOps maturity model encompasses five levels of technical capability:&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>&lt;strong>Level&lt;/strong>&lt;/th>
+&lt;th>&lt;strong>Description&lt;/strong>&lt;/th>
+&lt;th>&lt;strong>Key points&lt;/strong>&lt;/th>
+&lt;th>&lt;strong>Technology&lt;/strong>&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>0&lt;/td>
+&lt;td>&lt;a class="link" href="https://docs.microsoft.com/en-ie/azure/architecture/example-scenario/mlops/mlops-maturity-model#level-0-no-mlops" target="_blank" rel="noopener"
+>No MLOps&lt;/a>&lt;/td>
+&lt;td>- Difficulty in managing the full life cycle of machine learning models&lt;br>- Teams are heterogeneous and releases are painful&lt;br>- Most systems exist as &amp;ldquo;black boxes&amp;rdquo;, little feedback during/after deployment&lt;/td>
+&lt;td>- Manual builds and deployments&lt;br>- Manual model and application testing&lt;br>- No centralized monitoring of model performance&lt;br>- Model training is manual&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>&lt;a class="link" href="https://docs.microsoft.com/en-ie/azure/architecture/example-scenario/mlops/mlops-maturity-model#level-1-devops-no-mlops" target="_blank" rel="noopener"
+>DevOps but no MLOps&lt;/a>&lt;/td>
+&lt;td>- Production releases are less painful than non-MLOps, but rely on the data team for each new model&lt;br>- Feedback on model performance in production is always limited&lt;br>- Difficult trace/reproduction results&lt;/td>
+&lt;td>- Automated Builds&lt;br>- Automated tests for the application code&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>&lt;a class="link" href="https://docs.microsoft.com/en-ie/azure/architecture/example-scenario/mlops/mlops-maturity-model#level-2-automated-training" target="_blank" rel="noopener"
+>Automated Training&lt;/a>&lt;/td>
+&lt;td>- The training environment is fully managed and traceable&lt;br>- Easy to reproduce model&lt;br>- Versions are manual, but low friction&lt;/td>
+&lt;td>- Automated model learning&lt;br>- Centralized tracking of training model performance&lt;br>- Model management&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3&lt;/td>
+&lt;td>&lt;a class="link" href="https://docs.microsoft.com/en-ie/azure/architecture/example-scenario/mlops/mlops-maturity-model#level-3-automated-model-deployment" target="_blank" rel="noopener"
+>Automated Model Deployment&lt;/a>&lt;/td>
+&lt;td>- Low-friction, automatic releases&lt;br>- Full traceability from deployment to source data&lt;br>- Entire environment managed: training &amp;gt; testing &amp;gt; production&lt;/td>
+&lt;td>- Integrated A/B testing of model performance for deployment&lt;br>- Automated testing for all code&lt;br>- Centralized tracking of training model performance&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4&lt;/td>
+&lt;td>&lt;a class="link" href="https://docs.microsoft.com/en-ie/azure/architecture/example-scenario/mlops/mlops-maturity-model#level-4-full-mlops-automated-retraining" target="_blank" rel="noopener"
+>Full MLOps Automated Operations&lt;/a>&lt;/td>
+&lt;td>- Complete automated and easily monitored system&lt;br>- Production systems provide information on how to improve and, in some cases, automatically, new models&lt;br>- Approach of a system without dead time&lt;/td>
+&lt;td>- Automated training and testing of models&lt;br>- Feedback, centralized metrics from a deployed model&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>For more information on each level, please click on the link in the description.&lt;/p>
+&lt;h2 id="types-of-mlops-solutions">Types of MLOps solutions
+&lt;/h2>&lt;p>Depending on your needs, the choice of the MLOps solution can be made on the following two types:&lt;/p>
+&lt;ol>
+&lt;li>End to end MLOps solution&lt;/li>
+&lt;li>Custom build MLOps solution&lt;/li>
+&lt;/ol>
+&lt;h3 id="end-to-end-mlops-solution">End to end MLOps solution
+&lt;/h3>&lt;p>These type of solution provides data scientists the ability to build, train and deploy ML models quickly, the solutions are fully managed services. And the best solutions for this type could be:&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Amazon:&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Amazon sagemaker:&lt;/strong> Amazon SageMaker is an ML service that enables data scientists and engineers, as well as MLOps engineers and business analysts, to create, train, and deploy ML models for any use case, regardless of their level of ML expertise.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Google Cloud MLOps suite:&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Dataflow:&lt;/strong> Fast, unified and cost-effective serverless batch and stream data processing.&lt;/li>
+&lt;li>&lt;strong>Kubeflow pipelines:&lt;/strong> Kubeflow Pipelines is a platform for building and deploying portable, scalable machine learning (ML) workflows based on Docker containers.&lt;/li>
+&lt;li>&lt;strong>Google Kubernetes Engine:&lt;/strong> A simple way to automatically deploy, scale and manage Kubernetes.&lt;/li>
+&lt;li>&lt;strong>TFX:&lt;/strong> TensorFlow Extended (TFX) is an end-to-end platform for deploying production ML pipelines&lt;/li>
+&lt;li>&lt;strong>Vertex AI Workbench&lt;/strong>: A single development environment for the entire data science workflow.&lt;/li>
+&lt;li>&lt;strong>ML kit:&lt;/strong> Machine learning for mobile developers, ML Kit brings Google&amp;rsquo;s machine learning expertise to mobile developers in a powerful and easy-to-use package. Make your iOS and Android apps more engaging, personalized, and helpful with solutions that are optimized to run on device.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Microsoft Azure MLOps suite:&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Azure Machine Learning:&lt;/strong> Empower data scientists and developers to build, deploy, and manage high-quality models faster and with confidence. Accelerate time to value with industry-leading machine learning operations (MLOps), open-source interoperability, and integrated tools. Innovate on a secure, trusted platform designed for responsible AI applications in machine learning.&lt;/li>
+&lt;li>&lt;strong>Azure Kubernetes Service (AKS):&lt;/strong> Azure Kubernetes Service (AKS) offers the quickest way to start developing and deploying cloud-native apps, with built-in code-to-cloud pipelines and guardrails. Get unified management and governance for on-premises, edge, and multicloud Kubernetes clusters. Interoperate with Azure security, identity, cost management, and migration services.&lt;/li>
+&lt;li>&lt;strong>Azure Pipelines:&lt;/strong> Continuously build, test, and deploy to any platform and cloud.&lt;/li>
+&lt;li>&lt;strong>Azure Monitor:&lt;/strong> Azure Monitor helps you maximize the availability and performance of your applications and services.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="custom-built-mlops-solution">Custom built MLOps solution
+&lt;/h3>&lt;p>For making the pipeline robust, the custom-built solution is the best for you, this approach can help you avoid a single point of failure and makes your pipeline easier to audit, debug and more customizable. There are many tools available for this approach:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Project jupyter:&lt;/strong> Free software, open standards, and web services for interactive computing across all programming languages&lt;/li>
+&lt;li>&lt;strong>Nbdev:&lt;/strong> a library that allows you to develop a python library in Jupyter Notebooks, putting all your code, tests and documentation in one place.&lt;/li>
+&lt;li>&lt;strong>Airflow:&lt;/strong> Airflow is a platform created to programmatically author, schedule and monitor workflows.&lt;/li>
+&lt;li>&lt;strong>Kubeflow:&lt;/strong> The Machine Learning Toolkit for Kubernetes.&lt;/li>
+&lt;li>&lt;strong>MLflow:&lt;/strong> An open source platform for the machine learning lifecycle&lt;/li>
+&lt;li>&lt;strong>Neptune:&lt;/strong> Neptune is an ML metadata store that was built for research and production teams that run many experiments.&lt;/li>
+&lt;li>&lt;strong>Optuna:&lt;/strong> An open source hyperparameter optimization framework to automate hyperparameter search&lt;/li>
+&lt;li>&lt;strong>Cortex:&lt;/strong> Deploy, manage, and scale machine learning models in production.&lt;/li>
+&lt;/ul>
+&lt;h2 id="conclusion">Conclusion
+&lt;/h2>&lt;p>Now that you have in mind all the definitions and best practices of MLOps, you can chose one of the two solutions and go for it. Even better I invite you to consult my next article where I will present a solution and implementation of a MLOps pipeline.&lt;/p>
+&lt;h2 id="references">References
+&lt;/h2>&lt;ul>
+&lt;li>&lt;a class="link" href="https://se-ml.github.io/practices/" target="_blank" rel="noopener"
+>https://se-ml.github.io/practices/&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://developers.google.com/machine-learning/guides/rules-of-ml" target="_blank" rel="noopener"
+>https://developers.google.com/machine-learning/guides/rules-of-ml&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://docs.microsoft.com/en-ie/azure/architecture/example-scenario/mlops/mlops-maturity-model" target="_blank" rel="noopener"
+>https://docs.microsoft.com/en-ie/azure/architecture/example-scenario/mlops/mlops-maturity-model&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://docs.microsoft.com/en-ie/azure/architecture/example-scenario/mlops/aml-decision-tree" target="_blank" rel="noopener"
+>https://docs.microsoft.com/en-ie/azure/architecture/example-scenario/mlops/aml-decision-tree&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://docs.microsoft.com/en-ie/azure/architecture/data-guide/azure-dataops-architecture-design" target="_blank" rel="noopener"
+>https://docs.microsoft.com/en-ie/azure/architecture/data-guide/azure-dataops-architecture-design&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://docs.microsoft.com/fr-fr/azure/architecture/example-scenario/mlops/mlops-technical-paper" target="_blank" rel="noopener"
+>https://docs.microsoft.com/fr-fr/azure/architecture/example-scenario/mlops/mlops-technical-paper&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://neptune.ai/blog/category/mlops" target="_blank" rel="noopener"
+>https://neptune.ai/blog/category/mlops&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.phdata.io/blog/when-to-retrain-machine-learning-models/" target="_blank" rel="noopener"
+>https://www.phdata.io/blog/when-to-retrain-machine-learning-models/&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.phdata.io/blog/what-is-a-model-registry/" target="_blank" rel="noopener"
+>https://www.phdata.io/blog/what-is-a-model-registry/&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.youtube.com/watch?v=uTEL8Ff1Zvk" target="_blank" rel="noopener"
+>https://www.youtube.com/watch?v=uTEL8Ff1Zvk&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning#devops_versus_mlops" target="_blank" rel="noopener"
+>https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning#devops_versus_mlops&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.datasciencecentral.com/mlops-vs-devops-the-similarities-and-differences/" target="_blank" rel="noopener"
+>https://www.datasciencecentral.com/mlops-vs-devops-the-similarities-and-differences/&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://towardsdatascience.com/building-a-devops-pipeline-for-machine-learning-and-ai-evaluating-sagemaker-cf7fdd3632e7" target="_blank" rel="noopener"
+>https://towardsdatascience.com/building-a-devops-pipeline-for-machine-learning-and-ai-evaluating-sagemaker-cf7fdd3632e7&lt;/a>&lt;/li>
+&lt;/ul></description></item><item><title>Unleash Limitless Possibilities: Harness the Power of Generative AI to Meet Market Demands and Delight Your Clients</title><link>https://zinef.github.io/p/genai_6_22/</link><pubDate>Sun, 04 Jun 2023 00:00:00 +0000</pubDate><guid>https://zinef.github.io/p/genai_6_22/</guid><description>&lt;img src="https://zinef.github.io/p/genai_6_22/cover.jpg" alt="Featured image of post Unleash Limitless Possibilities: Harness the Power of Generative AI to Meet Market Demands and Delight Your Clients" />&lt;p>Have you ever struggled with the daunting task of code migration? Whether it’s moving from SAS to Python or Snowflake or BigQuery, C# to Python, PL/SQL to Snow SQL, or migrating ETL processes from Informatica to Snowflake, the challenges can be overwhelming. Not to mention the complexities involved in converting reports from Tableau to Power BI or Qlik to Power BI. However, with the groundbreaking capabilities of generative AI, these seemingly Herculean tasks can now be accomplished effortlessly and affordably. Say goodbye to traditional, time-consuming workflows and embrace the transformative power of generative AI in your migration endeavors.&lt;/p>
+&lt;p>Recently, I embarked on a fascinating journey into the realm of Generative AI, and the discoveries I’ve made are too exciting not to share. In this article, I have curated a collection of powerful use cases that demonstrate the remarkable potential of Generative AI to revolutionize the data science field. So, fasten your seatbelts as we explore the possibilities that lie ahead.&lt;/p>
+&lt;h2 id="understanding-generative-ai">Understanding Generative AI
+&lt;/h2>&lt;p>Before we claw into the captivating world of Generative AI, let’s take a moment to familiarize ourselves with its environment. Generative AI refers to a branch of artificial intelligence that focuses on creating models able of producing new and original content. These models can induce realistic images, vids, music, and text that nearly resembles human creations.&lt;/p>
+&lt;p>Generative AI can be divided into two subtypes, models that calculate the density (explicit density) and models that can only sample the density (implicit density), and these are further divided into subtypes, at the bottom of the tree we retrieve mostly these models :&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>Autoencoders (VAE):&lt;/strong>&lt;/li>
+&lt;/ol>
+&lt;p>Autoencoders serve as a fundamental building block of Generative AI. They are neural networks designed to learn efficient representations of data by encoding and decoding it. One compelling use case of autoencoders is their ability to facilitate fraud detection and anomaly detection.&lt;/p>
+&lt;ol start="2">
+&lt;li>&lt;strong>Generative Adversarial Networks (GANs):&lt;/strong>&lt;/li>
+&lt;/ol>
+&lt;p>GANs employ a two-part network comprising a generator and a discriminator, which work together to produce realistic outputs. GANs have found remarkable success in various domains, such as image synthesis, video generation, and even designing new products. For instance, GANs can aid in the creation of highly realistic images for marketing and advertising purposes or assist architects in envisioning realistic renderings of buildings that are yet to be constructed.&lt;/p>
+&lt;ol start="3">
+&lt;li>&lt;strong>Diffusion Models:&lt;/strong>&lt;/li>
+&lt;/ol>
+&lt;p>Diffusion models are powerful generative AI techniques that excel in generating high-quality, realistic samples. These models learn the underlying probability distribution of a dataset and can then generate new samples that resemble the original data. They have shown great potential in fields such as image synthesis, medical anomaly detection, and data augmentation.&lt;/p>
+&lt;ol start="4">
+&lt;li>&lt;strong>Large Language Models (LLMs):&lt;/strong>&lt;/li>
+&lt;/ol>
+&lt;p>Among the various subtypes of Generative AI models, Large Language Models (LLMs) have been trending in recent years. These models are trained on vast amounts of text data and can generate coherent and contextually relevant text responses. With the advancements in LLMs, numerous applications have emerged, including language translation, chatbots, content generation, and even code completion. In this article, we will primarily focus on the intriguing use cases of LLMs.&lt;/p>
+&lt;p>&lt;img src="https://cdn-images-1.medium.com/max/3840/1*ePhP1tOGcL2VkMzcHZigtg.png"
+loading="lazy"
+alt="Image by LifeArchitect.ai/gpt-3"
+>&lt;em>Image by &lt;a class="link" href="http://LifeArchitect.ai/gpt-3" target="_blank" rel="noopener"
+>LifeArchitect.ai/gpt-3&lt;/a>&lt;/em>&lt;/p>
+&lt;p>&lt;img src="https://cdn-images-1.medium.com/max/3840/1*TE9hCCFjMVT0EywFwn3MHw.png"
+loading="lazy"
+alt="Image by LifeArchitect.ai/gpt-4"
+>&lt;em>Image by &lt;a class="link" href="http://LifeArchitect.ai/gpt-4" target="_blank" rel="noopener"
+>LifeArchitect.ai/gpt-4&lt;/a>&lt;/em>&lt;/p>
+&lt;h2 id="deep-dive-into-captivating-use-cases">Deep Dive into Captivating Use Cases
+&lt;/h2>&lt;p>Now that we have laid the foundation, let’s dive into the captivating use cases that have caught my attention. These innovative applications of Generative AI are not only transforming industries but also enhancing the capabilities of data scientists, paving the way for groundbreaking advancements in their respective fields.&lt;/p>
+&lt;h3 id="cognitive-search-using-embeddings">Cognitive Search using Embeddings
+&lt;/h3>&lt;p>In today&amp;rsquo;s data-driven world, the ability to extract relevant information quickly and efficiently is paramount. Traditional keyword-based search engines often fall short when it comes to understanding the context and nuances of user queries. However, with the advent of Generative AI, specifically the utilization of embeddings, a revolutionary approach to search has emerged.&lt;/p>
+&lt;p>Embeddings, in the context of Generative AI, refer to vector representations that capture the semantic meaning of words, phrases, or documents. By leveraging advanced techniques like GPT or BERT (Bidirectional Encoder Representations from Transformers), these embeddings enable machines to comprehend the underlying meaning and relationships within textual data.&lt;/p>
+&lt;p>Cognitive search powered by embeddings offers significant advantages over traditional search methods. It can understand the intent behind user queries, consider the context, and provide more accurate and relevant search results.&lt;/p>
+&lt;p>Here&amp;rsquo;s an example to illustrate its potential: Imagine you are working in a large organization that generates vast amounts of data. You need to find specific documents related to a particular project. Instead of relying solely on keyword matching, cognitive search with embeddings can understand the project&amp;rsquo;s context and return documents that are semantically relevant. It can even suggest related documents that might be useful, even if they don&amp;rsquo;t contain the exact search terms.&lt;/p>
+&lt;p>Furthermore, embeddings allow for semantic similarity searches. This means that you can search for documents that are conceptually similar to a given document, even if the keywords or phrases differ. For instance, if you have a document describing a marketing campaign, cognitive search can identify other documents discussing similar marketing strategies or related topics.&lt;/p>
+&lt;p>By harnessing the power of embeddings in cognitive search, organizations can enhance their knowledge discovery processes, improve search accuracy, and save valuable time and resources. Whether it&amp;rsquo;s within enterprise knowledge management systems, customer support portals, or e-commerce platforms, cognitive search using embeddings empowers users to explore and retrieve information more effectively.&lt;/p>
+&lt;p>This use case illustrates how Generative AI, particularly leveraging embeddings, revolutionizes the way we interact with and extract insights from textual data. The potential for cognitive search is vast, and as the technology advances, we can expect even more sophisticated applications that redefine how we access and make sense of information.&lt;/p>
+&lt;h3 id="anything-from-anything--code-migration-and-platform-conversion">Anything from Anything : Code Migration and Platform Conversion
+&lt;/h3>&lt;p>Generative AI has proven to be a game-changer when it comes to code migration and platform conversion. Traditional approaches to these tasks often involve significant time, effort, and potential risks. However, with the power of Generative AI, these processes can be streamlined, making them faster, more efficient, and cost-effective.&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Code migration :&lt;/strong> Migrating code from one language or platform to another can be a complex and time-consuming endeavor. Generative AI techniques, such as LLMs, can aid in this process by learning the underlying structure and patterns of the source code and generating equivalent code in the desired language or platform.
+For example, let’s consider the migration of code from SAS to Python. Instead of manually rewriting the entire codebase, Generative AI models can be trained on existing SAS code to learn the syntax, logic, and functionality. The models can then generate equivalent code in Python, reducing the effort and potential errors involved in the migration process. Similarly, migrating code from languages like C# to Python or PL/SQL to Snow SQL can be facilitated through Generative AI. By leveraging the power of AI, organizations can minimize the challenges associated with code migration, accelerate the transition process, and capitalize on the benefits of new technologies and platforms.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Platform Conversion :&lt;/strong> Platform conversion, such as migrating ETL processes from one platform to another, is another area where Generative AI shines. Take, for example, the migration from Informatica to Snowflake. Generative AI techniques can analyze the existing ETL workflows, understand the data transformations, and generate equivalent workflows in Snowflake’s ETL. This enables a seamless transition between platforms, ensuring data continuity and minimizing disruption. Moreover, Generative AI can assist in converting reports from one visualization platform to another. For instance, converting reports from Tableau to Power BI or Qlik to Power BI can be a laborious task. However, by leveraging the power of Generative AI, the models can learn the visualization structures, data mappings, and formatting styles of the source reports. They can then generate equivalent reports in the desired target platform, significantly reducing the time and effort required for manual conversion.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>Additionally, Generative AI can be used in the automation of test cases. By training models on existing codebases and test suites, they can generate unit test cases for programming languages like Java or Python. This automation streamlines the testing process, enhances code quality, and frees up valuable time for data scientists to focus on higher-level tasks.&lt;/p>
+&lt;p>Generative AI’s ability to streamline code migration, platform conversion, report conversion, and test automation is transformative. It empowers organizations to adapt to new technologies, optimize workflows, and unlock efficiencies that were previously challenging to achieve. With Generative AI as a driving force, the data science field is witnessing a paradigm shift in how these tasks are approached and executed.&lt;/p>
+&lt;h3 id="business-analytics-service-enablement">Business Analytics Service Enablement
+&lt;/h3>&lt;p>Generative AI has the potential to transform business analytics services by enabling intuitive and user-friendly solutions. Imagine a scenario where clients can effortlessly extract insights from vast amounts of data, just like requesting information from a virtual assistant. Generative AI makes this a reality by empowering business analytics platforms, such as Power BI or Tableau, with advanced capabilities.&lt;/p>
+&lt;p>Clients often express the desire for a streamlined and automated analytics experience. They envision a solution where they can simply ask for specific data insights and receive visually appealing graphs or charts without the need for complex queries or manual data manipulation.&lt;/p>
+&lt;p>Generative AI brings this vision to life. By leveraging natural language processing and machine learning techniques, analytics platforms can understand and interpret user requests in plain language. Clients can say, “Give me the sales of this product in this region for this month” and the system will intelligently retrieve the relevant data, perform the necessary calculations, and present the requested insights in an intuitive and visually appealing manner.&lt;/p>
+&lt;p>The integration of Generative AI into business analytics services enables a self-service analytics experience that empowers users at all levels of an organization. Executives, business analysts, and data scientists alike can effortlessly explore and visualize complex data sets, extract valuable insights, and make data-driven decisions without the need for extensive technical knowledge or assistance.&lt;/p>
+&lt;p>This use case illustrates the transformative power of Generative AI in revolutionizing business analytics services. It not only enhances the accessibility of data but also empowers organizations to unlock the full potential of their data assets. By simplifying the analytics process, organizations can make faster, data-driven decisions, uncover hidden trends and patterns, and gain a competitive edge in their respective industries.&lt;/p>
+&lt;p>As Generative AI continues to advance, we can expect even more sophisticated analytics service enablement solutions. The ability to seamlessly interact with data and extract actionable insights will become increasingly intuitive, making data-driven decision-making a seamless part of everyday business operations.&lt;/p>
+&lt;h3 id="medical-nlp-using-biogpt">Medical NLP using BioGPT
+&lt;/h3>&lt;p>Medical professionals deal with a vast amount of unstructured textual data, including patient records, clinical notes, research papers, and more. Extracting valuable insights from this data can be a time-consuming and labor-intensive task. However, Generative AI, specifically Natural Language Processing (NLP) models like BioGPT, has emerged as a powerful tool to revolutionize medical data analysis and decision-making.&lt;/p>
+&lt;p>BioGPT, a specialized variant of Generative Pre-trained Transformer (GPT) models, is specifically trained on medical literature and healthcare-related text. This pre-training equips it with a deep understanding of medical concepts, terminology, and context. By leveraging BioGPT, medical professionals and researchers can unlock valuable insights from vast amounts of unstructured medical data.&lt;/p>
+&lt;p>One key application of BioGPT is in clinical decision support. Medical professionals can input patient symptoms, medical history, and test results into the system, and BioGPT can analyze the data to provide recommendations for diagnosis, treatment options, and potential risk factors. This assists healthcare providers in making more informed decisions and improving patient outcomes.&lt;/p>
+&lt;p>Furthermore, BioGPT can aid in biomedical research and literature review. By processing and analyzing a vast array of research papers, clinical trials, and scientific articles, BioGPT can identify relevant studies, extract key findings, and provide summaries or insights on specific medical topics. This significantly accelerates the research process, enabling scientists and clinicians to stay up-to-date with the latest advancements and make evidence-based decisions.&lt;/p>
+&lt;p>Another application of BioGPT in medical NLP is in coding and structuring medical records. Medical coding is a crucial process that ensures accurate reimbursement, clinical documentation, and data analysis. BioGPT can automatically extract relevant information from clinical notes and assign appropriate codes, simplifying the coding process and reducing the risk of errors.&lt;/p>
+&lt;p>Moreover, BioGPT can assist in natural language understanding for electronic health records (EHRs). It can analyze and extract important clinical information from free-text EHRs, facilitating data mining and enabling population health analysis. This helps in identifying patterns, predicting disease outcomes, and improving healthcare delivery and planning.&lt;/p>
+&lt;p>By harnessing the power of BioGPT and medical NLP, healthcare professionals can streamline data analysis, enhance decision-making, and improve patient care. The combination of advanced language understanding and medical expertise empowers medical practitioners and researchers to extract valuable insights from vast amounts of unstructured medical data, revolutionizing the way healthcare is delivered and improving patient outcomes.&lt;/p>
+&lt;p>This use case showcases the tremendous potential of Generative AI, specifically BioGPT, in transforming medical NLP and revolutionizing healthcare data analysis, clinical decision-making, and biomedical research. As the technology continues to advance, we can expect even more sophisticated applications that redefine how medical data is analyzed, interpreted, and utilized in the pursuit of improved healthcare outcomes.&lt;/p>
+&lt;h3 id="automated-software-defect-closure">Automated Software Defect Closure
+&lt;/h3>&lt;p>Software defects are an inevitable part of the software development process, and closing them in a timely and efficient manner is crucial for delivering high-quality software. Generative AI offers a powerful solution to automate the process of identifying and closing software defects, saving time and resources for development teams.&lt;/p>
+&lt;p>Here’s how automated software defect closure using Generative AI can benefit organizations:&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Defect Identification:&lt;/strong> Generative AI models can analyze codebases, logs, and error reports to identify patterns and anomalies that indicate the presence of software defects. By leveraging machine learning algorithms, these models can learn from historical data and develop a deep understanding of different types of defects. This enables them to accurately pinpoint potential issues within the codebase.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Automated Root Cause Analysis:&lt;/strong> Generative AI can assist in performing automated root cause analysis for software defects. By analyzing code changes, dependencies, and system logs, the models can determine the underlying cause of the defect. This information is valuable for developers, as it helps them understand the root cause and address it effectively.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Automated Bug Fix Generation:&lt;/strong> Once a software defect is identified and its root cause determined, Generative AI models can automatically generate potential bug fixes or suggest code changes to resolve the issue. These models leverage their understanding of programming languages, coding best practices, and defect patterns to generate high-quality fixes that adhere to coding standards.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Regression Testing:&lt;/strong> After a bug fix is implemented, Generative AI can assist in performing automated regression testing. The models can generate test cases based on the defect and its fix, ensuring that the issue is resolved and that the fix does not introduce new defects or regressions in the software.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Continuous Learning and Improvement:&lt;/strong> Generative AI models can continuously learn from the feedback provided by developers and testers. This feedback loop helps the models refine their bug detection and fix generation capabilities over time, leading to more accurate and effective defect closure.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>Automated software defect closure using Generative AI streamlines the defect resolution process, accelerates bug fixes, and improves software quality. By automating repetitive and time-consuming tasks, development teams can focus on more critical aspects of software development, such as feature implementation and performance optimization.&lt;/p>
+&lt;p>This use case demonstrates the transformative potential of Generative AI in automating software defect closure. By leveraging machine learning and automation, organizations can improve software quality, shorten development cycles, and deliver more robust and reliable software products to their customers.&lt;/p>
+&lt;h2 id="sum-up">Sum up
+&lt;/h2>&lt;p>Generative AI, with its ability to understand, create, and automate, has emerged as a transformative force in the field of data science. Its applications, especially in the realms of Generative AI and Large Language Models (LLMs), have attracted clients and companies across various industries. While the adoption of Generative AI brings immense opportunities and advancements, it is crucial to acknowledge the continued importance of data scientists in harnessing the power of AI.&lt;/p>
+&lt;p>Throughout this article, we have explored several captivating use cases that demonstrate the potential of Generative AI to revolutionize various domains. From cognitive search to business analytics service enablement, medical NLP, and automated software defect closure, Generative AI showcases its versatility in driving innovation and efficiency.&lt;/p>
+&lt;p>By leveraging Generative AI, organizations can meet the ever-increasing market demand and cater to their clients’ needs more effectively. The ability to generate meaningful insights from vast amounts of data, automate complex tasks, and improve decision-making processes positions Generative AI as a valuable tool in today’s data-driven landscape.&lt;/p>
+&lt;p>However, it is important to emphasize that Generative AI does not replace the role of data scientists and domain experts. Instead, it enhances their capabilities, enabling them to tackle more complex challenges and leverage AI-powered solutions effectively. Data scientists play a vital role in training, fine-tuning, and validating Generative AI models to ensure accuracy, ethical considerations, and alignment with business objectives.&lt;/p>
+&lt;p>As we look to the future, the potential of Generative AI continues to expand. The integration of advanced techniques, such as AutoEncoders, Generative Adversarial Networks (GANs), diffusion models, and Large Language Models (LLMs), opens up new possibilities for innovation and problem-solving.&lt;/p>
+&lt;p>In conclusion, Generative AI, with its diverse use cases and transformative capabilities, offers significant value to clients and companies in the data science field. By embracing Generative AI and recognizing the continued importance of data scientists, organizations can unlock the true potential of AI and drive impactful change in their respective industries.&lt;/p>
+&lt;p>Remember, Generative AI is a powerful tool, but it is the collaboration between human expertise and AI capabilities that truly propels us towards a future where data-driven insights and solutions are readily accessible, efficient, and impactful.&lt;/p>
+&lt;h2 id="references">References
+&lt;/h2>&lt;ul>
+&lt;li>
+&lt;p>&lt;a class="link" href="https://data-science-blog.com/blog/2022/04/19/variational-autoencoders/" target="_blank" rel="noopener"
+>Variational Autoencoders&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;a class="link" href="https://data-science-blog.com/blog/2022/03/15/deep-autoregressive-models/" target="_blank" rel="noopener"
+>Deep Autoregressive Models&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;a class="link" href="https://data-science-blog.com/blog/2022/02/19/deep-generative-modelling/" target="_blank" rel="noopener"
+>Deep Generative Modelling&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;a class="link" href="https://medium.com/analytics-vidhya/an-introduction-to-generative-deep-learning-792e93d1c6d4" target="_blank" rel="noopener"
+>An Introduction to Generative Deep Learning&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;a class="link" href="https://arxiv.org/abs/2210.10341" target="_blank" rel="noopener"
+>BioGPT: Generative Pre-trained Transformer for Biomedical Text Generation and Mining&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;a class="link" href="https://lifearchitect.ai/gpt-3/" target="_blank" rel="noopener"
+>The GPT-3 Family: 50+ Models&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;a class="link" href="https://lifearchitect.ai/chatgpt/" target="_blank" rel="noopener"
+>GPT-3.5 + ChatGPT: An illustrated overview&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;a class="link" href="https://lifearchitect.ai/gpt-4/" target="_blank" rel="noopener"
+>GPT-4&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;a class="link" href="https://jalammar.github.io/illustrated-transformer/" target="_blank" rel="noopener"
+>The Illustrated Transformer&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;a class="link" href="https://medium.com/@monadsblog/diffusion-models-4dbe58489a2f" target="_blank" rel="noopener"
+>Diffusion models&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;a class="link" href="https://arxiv.org/abs/2211.09800" target="_blank" rel="noopener"
+>InstructPix2Pix: Learning to Follow Image Editing Instructions&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ul></description></item><item><title>How to Effectively Explore and Analyze Multi-Omics Data: Experience Report on Our Web Interface</title><link>https://zinef.github.io/p/multiomics/</link><pubDate>Fri, 05 May 2023 00:00:00 +0000</pubDate><guid>https://zinef.github.io/p/multiomics/</guid><description>&lt;img src="https://zinef.github.io/p/multiomics/dna-closely.jpg" alt="Featured image of post How to Effectively Explore and Analyze Multi-Omics Data: Experience Report on Our Web Interface" />&lt;h2 id="introduction">Introduction
+&lt;/h2>&lt;p>In the era of biological big data, multi-omics analysis represents a major challenge for researchers. How can we make sense of these gigantic biological datasets from different layers of cellular information? How can we integrate transcriptomic, proteomic, and metabolomic data to gain a comprehensive view of biological processes?&lt;/p>
+&lt;p>These are precisely the questions that my team and I attempted to answer through our project &amp;ldquo;Web Interface: Advanced Analysis of Multi-Omics Data.&amp;rdquo; In this article, I share our experience in creating an interactive web solution that facilitates the complex analysis of these datasets.&lt;/p>
+&lt;h2 id="what-are-multi-omics-data">What are Multi-Omics Data?
+&lt;/h2>&lt;p>Before diving into the technical details, let&amp;rsquo;s clarify what multi-omics data are. The suffix &amp;ldquo;-omics&amp;rdquo; refers to the comprehensive study of a specific biological system. Thus:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Transcriptomics&lt;/strong> studies the entire set of messenger RNAs (gene expression)&lt;/li>
+&lt;li>&lt;strong>Proteomics&lt;/strong> focuses on the complete set of proteins&lt;/li>
+&lt;li>&lt;strong>Metabolomics&lt;/strong> analyzes all metabolites (small molecules)&lt;/li>
+&lt;li>&lt;strong>Phenomics&lt;/strong> measures the observable characteristics of organisms&lt;/li>
+&lt;/ul>
+&lt;p>Each of these information layers is represented by large data matrices. Multi-omic analysis aims to integrate these different matrices to understand the complex relationships between the various levels of biological organization.&lt;/p>
+&lt;h2 id="the-challenge-wallomics">The Challenge: WallOmics
+&lt;/h2>&lt;p>Our project focused on WallOmics data, a dataset from the model plant Arabidopsis thaliana. These data were collected from two different organs (rosettes and stems) of five genetic variants (ecotypes), exposed to two different temperature conditions.&lt;/p>
+&lt;p>The main challenge was to explore and analyze this massive data coherently, using matrix factorization approaches and offering an intuitive web interface.&lt;/p>
+&lt;h2 id="our-approach-omicsmatrix---the-matrixperience">Our Approach: OmicsMatrix - The Matrixperience
+&lt;/h2>&lt;p>Faced with this challenge, we developed &amp;ldquo;OmicsMatrix: The Matrixperience,&amp;rdquo; an interactive web interface based on R Shiny that integrates several advanced analysis methods. Here are the main features we implemented:&lt;/p>
+&lt;h3 id="1-intelligent-data-loading-and-preprocessing">1. Intelligent Data Loading and Preprocessing
+&lt;/h3>&lt;p>The first step was to enable easy data loading and immediate visualization. Our interface offers the ability to load data from WallOmics Data and automatically prepare it for analysis.&lt;/p>
+&lt;p>Our preprocessing pipeline automatically handles:&lt;/p>
+&lt;ul>
+&lt;li>Detection and treatment of missing values&lt;/li>
+&lt;li>Data normalization&lt;/li>
+&lt;li>Optional exclusion of irrelevant variables&lt;/li>
+&lt;/ul>
+&lt;h3 id="2-in-depth-visual-exploration">2. In-depth Visual Exploration
+&lt;/h3>&lt;p>Visual exploration is crucial for understanding data structure before applying more complex methods. Our &amp;ldquo;Exploration &amp;amp; PCA&amp;rdquo; panel offers:&lt;/p>
+&lt;ul>
+&lt;li>A global summary of datasets&lt;/li>
+&lt;li>Visualizations of variable distributions&lt;/li>
+&lt;li>Interactive correlation matrices&lt;/li>
+&lt;li>Principal Component Analysis (PCA) for dimensionality reduction&lt;/li>
+&lt;/ul>
+&lt;p>PCA proved particularly useful for identifying the most important variables that explain data variance and for visualizing sample separation in a reduced space.&lt;/p>
+&lt;h3 id="3-advanced-data-integration-methods">3. Advanced Data Integration Methods
+&lt;/h3>&lt;p>Our interface offers four main methods of multi-omic analysis, each with specific advantages:&lt;/p>
+&lt;h4 id="regularized-canonical-correlation-analysis-rcca">Regularized Canonical Correlation Analysis (rCCA)
+&lt;/h4>&lt;p>This method allows for exploring correlations between two omics datasets. In our experience, rCCA was particularly effective in discovering relationships between transcriptomic and proteomic data.&lt;/p>
+&lt;p>One of the challenges encountered with rCCA was the choice of regularization parameters. We implemented two approaches:&lt;/p>
+&lt;ul>
+&lt;li>Cross-validation (resource-intensive but accurate)&lt;/li>
+&lt;li>Shrinkage approach (faster but less optimal)&lt;/li>
+&lt;/ul>
+&lt;h4 id="partial-least-squares-pls">Partial Least Squares (PLS)
+&lt;/h4>&lt;p>The PLS method allowed us to maximize covariance between different data matrices. Its main advantage is its ability to handle highly correlated data, a common characteristic of omics data.&lt;/p>
+&lt;p>We also implemented the sparse version (Sparse PLS) which automatically selects the most important variables, thus reducing model complexity.&lt;/p>
+&lt;h4 id="pls-da-for-classification">PLS-DA for Classification
+&lt;/h4>&lt;p>For classification questions (e.g., distinguishing samples according to their ecotype or growth condition), we used the PLS-DA (Partial Least Squares-Discriminant Analysis) method.&lt;/p>
+&lt;p>This method proved particularly useful for identifying biological markers that discriminate between different experimental conditions.&lt;/p>
+&lt;h4 id="diablo-for-multiple-integration">DIABLO for Multiple Integration
+&lt;/h4>&lt;p>To simultaneously integrate more than two omics datasets, we implemented DIABLO (Data Integration Analysis for Biomarker Discovery using Latent variable approaches for Omics studies).&lt;/p>
+&lt;p>DIABLO was the most powerful method in our arsenal, allowing us to discover biomarkers associated with the studied phenotypes by combining information from all available omic layers.&lt;/p>
+&lt;h2 id="key-strategies-for-effective-multi-omics-analysis">Key Strategies for Effective Multi-Omics Analysis
+&lt;/h2>&lt;p>Based on extensive experience with the OmicsMatrix platform, four critical strategies emerge for successful multi-omics data integration:&lt;/p>
+&lt;h3 id="1-rigorous-exploratory-analysis-as-foundation">1. Rigorous Exploratory Analysis as Foundation
+&lt;/h3>&lt;p>Comprehensive exploratory analysis must precede any advanced analytical techniques. This foundational step reveals data structure, identifies outliers, and guides subsequent methodological choices. Investing time in thorough exploration consistently yields more interpretable and biologically meaningful final results.&lt;/p>
+&lt;h3 id="2-interactive-analysis-workflows">2. Interactive Analysis Workflows
+&lt;/h3>&lt;p>Multi-omics analysis demands an iterative approach with continuous parameter refinement. Real-time visualization of these adjustments&amp;rsquo; impact is essential for optimal results. The R Shiny framework provides the necessary reactive environment to support this advanced analytical process.&lt;/p>
+&lt;h3 id="3-method-selection-driven-by-biological-questions">3. Method Selection Driven by Biological Questions
+&lt;/h3>&lt;p>Each analytical method serves distinct biological objectives. For general data structure understanding, PCA excels; for pairwise dataset relationships, rCCA provides optimal insights; for prediction models, standard PLS offers robust solutions; for classification tasks, PLS-DA delivers superior performance; while comprehensive integration across multiple omics layers requires DIABLO&amp;rsquo;s sophisticated approach.&lt;/p>
+&lt;h3 id="4-advanced-visualization-for-biological-interpretation">4. Advanced Visualization for Biological Interpretation
+&lt;/h3>&lt;p>Even the most sophisticated analytical results remain ineffective without appropriate visualization techniques. Strategic data visualization transforms complex statistical outputs into interpretable biological insights, facilitating both analysis and communication of findings to diverse stakeholders.&lt;/p>
+&lt;h2 id="conclusion">Conclusion
+&lt;/h2>&lt;p>The analysis of multi-omics data represents a considerable challenge in bioinformatics, but our experience with OmicsMatrix shows that a well-designed web interface can greatly facilitate this process.&lt;/p>
+&lt;p>Our solution has made it possible to effectively analyze WallOmics data and draw relevant biological conclusions about Arabidopsis thaliana&amp;rsquo;s response to different environmental conditions.&lt;/p>
+&lt;p>The explosion of high-throughput biological data continues to transform biological research, and tools like OmicsMatrix serve as critical bridges between raw data complexity and actionable biological knowledge.&lt;/p>
+&lt;hr>
+&lt;p>&lt;em>This article is based on a project carried out in collaboration with Zine-Eddine F, Mohammed I A, and Lounes M, under the supervision of Lazhar L, as part of the MLSD Master&amp;rsquo;s program at UFR Biomédical.&lt;/em>&lt;/p></description></item></channel></rss>

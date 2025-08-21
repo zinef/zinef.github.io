@@ -1,0 +1,718 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Artificial Intelligence on Zine-eddine's Blog</title><link>https://zinef.github.io/categories/artificial-intelligence/</link><description>Recent content in Artificial Intelligence on Zine-eddine's Blog</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Tue, 19 Aug 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://zinef.github.io/categories/artificial-intelligence/index.xml" rel="self" type="application/rss+xml"/><item><title>From Algorithms to Prompts: Did We Just Loop Back or Level Up?</title><link>https://zinef.github.io/p/algorithms-to-prompts-llms/</link><pubDate>Tue, 19 Aug 2025 00:00:00 +0000</pubDate><guid>https://zinef.github.io/p/algorithms-to-prompts-llms/</guid><description>&lt;img src="https://zinef.github.io/p/algorithms-to-prompts-llms/turing-m.jpeg" alt="Featured image of post From Algorithms to Prompts: Did We Just Loop Back or Level Up?" />&lt;p>A century ago we invented &lt;em>formal&lt;/em> ways to describe computations precisely because everyday language was too squishy. Now we’re steering powerful systems with… everyday language. Is that progress or a regression?&lt;/p>
+&lt;p>Short answer: it’s a step sideways and up. We didn’t abandon formalism, we pushed it down a layer. Natural language is becoming the interface, while the machinery underneath is getting more formal (APIs, schemas, tools, verifiers). Below I’ll unpack why the algorithmic formalists did what they did, how LLMs change the surface of programming, and when “English as glue” is a good idea or a trap.&lt;/p>
+&lt;h2 id="why-formalize-algorithms-in-the-first-place-">Why formalize algorithms in the first place ?
+&lt;/h2>&lt;p>Early 20th-century logicians tried to pin down what it means to compute at all. David Hilbert’s program asked whether there was a mechanical procedure to decide the truth of any statement in first-order logic (the Entscheidungsproblem). Alonzo Church (lambda calculus) and Alan Turing (Turing machines) independently answered no, but their negative answers gave us something priceless: precise models of effective procedure, what we now call algorithms. Their work, together with Post and Kleene, forms the backbone of the Church - Turing thesis and computability theory.&lt;/p>
+&lt;p>From there, computer science doubled down on precision inside programming, not just in computability theory:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Syntax&lt;/strong> got formal grammars (e.g., Backus–Naur Form) to define languages unambiguously, famously in the ALGOL 60 report.&lt;/li>
+&lt;li>&lt;strong>Semantics and correctness&lt;/strong> got axioms and proofs (e.g., Hoare logic), and structured programming discouraged ambiguous control flow.&lt;/li>
+&lt;/ul>
+&lt;p>The point was never to avoid natural language in discourse, but to ensure that what the &lt;em>machine&lt;/em> sees is crisp, verifiable, and composable.&lt;/p>
+&lt;h2 id="so-why-are-we-back-to-natural-language-now">So why are we “back” to natural language now?
+&lt;/h2>&lt;p>Because LLMs made natural language an effective &lt;strong>specification medium&lt;/strong> for many tasks. A good prompt can compress years of prior work : data, code, papers … into a short instruction that selects and adapts knowledge. But crucially, recent LLM apps don’t stop at plain text:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Function/Tool calling&lt;/strong> turns a sentence into a typed API call with guaranteed structure. What the user says is fuzzy, what the system executes is precise.&lt;/li>
+&lt;li>&lt;strong>Agents + tools&lt;/strong> (search, code execution, calculators, retrievers) let models plan in language but act through formal interfaces.&lt;/li>
+&lt;li>&lt;strong>Structured outputs&lt;/strong> (JSON Schema) and &lt;strong>constrained decoding&lt;/strong> force the model to emit data that matches a schema exactly, bridging natural prompts with machine-checkable results.&lt;/li>
+&lt;/ul>
+&lt;p>In other words, we use natural language for &lt;strong>intent capture&lt;/strong> and &lt;strong>explanation&lt;/strong>, then immediately re-enter formal territory for &lt;strong>execution&lt;/strong> and &lt;strong>interoperability&lt;/strong>.&lt;/p>
+&lt;h2 id="are-we-undoing-the-original-reasons-for-formalism">Are we undoing the original reasons for formalism?
+&lt;/h2>&lt;p>No. We’re relocating formalism to the seams where it matters.&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Ambiguity control&lt;/strong> moved from the user’s prompt to the &lt;strong>contracts at the boundary&lt;/strong> (schemas, types, tools). With structured outputs and grammar-constrained decoding, you can make the generator respect your formal spec while still letting users speak freely.&lt;/li>
+&lt;li>&lt;strong>Verification&lt;/strong> is increasingly externalized: the model proposes, specialized solvers/checkers verify. This reflects a broader trend: treat the LLM as a parser/planner and let formal tools enforce correctness downstream.&lt;/li>
+&lt;li>&lt;strong>Proven limits&lt;/strong> still apply. Church-Turing didn’t go away, undecidability and incompleteness still constrain what any program or model can guarantee. The practical response is to bound the problem and add safeguards, not to hope that prose resolves impossibility.&lt;/li>
+&lt;/ul>
+&lt;p>Think of LLMs as stochastic compilers &lt;strong>from intent to actions&lt;/strong>. We’re not programming in English, we’re &lt;strong>using English to drive formal systems&lt;/strong>.&lt;/p>
+&lt;h2 id="when-is-natural-language-a-good-programming-layer">When is natural language a good “programming layer”?
+&lt;/h2>&lt;p>&lt;strong>Great for:&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Exploration &amp;amp; orchestration.&lt;/strong> “Summarize these docs, extract entities, then call the CRM API.” The natural language plan can be translated to tool calls with structured outputs so the rest of your stack stays typed.&lt;/li>
+&lt;li>&lt;strong>End-user customization.&lt;/strong> Users don’t want DSLs, they want results. NL prompts make power accessible, while your app constrains what can actually happen via tools and schemas.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>Risky for:&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>High-assurance logic.&lt;/strong> Dijkstra warned in 1978 against “natural language programming” because ambiguity clashes with the precision that programs require. The warning is still relevant unless you couple NL with formal constraints and verification.&lt;/li>
+&lt;/ul>
+&lt;p>A pragmatic pattern is: &lt;strong>Prompt → Plan → Structured Calls → Verify → Persist&lt;/strong>. The prompt is the human-friendly layer, everything after is formal and testable.&lt;/p>
+&lt;h2 id="llms-reuse-existing-knowledge-prompts-just-query-it">LLMs reuse existing knowledge, prompts just query it
+&lt;/h2>&lt;p>LLMs are trained on existing artifacts. At inference time they compose and contextualize that knowledge. Tool use and retrieval make this even clearer: the model plans in language but leans on external knowledge bases or APIs for facts and effects. Recent surveys of LLM-based agents document this emerging architecture, language for reasoning and coordination, tools for ground truth and action.&lt;/p>
+&lt;h2 id="but-didnt-people-try-english-like-programming-before">But didn’t people try “English-like programming” before?
+&lt;/h2>&lt;p>Yes, COBOL’s Englishy syntax, HyperTalk, Inform 7, and decades of “natural language programming” experiments. The enduring critique, again from Dijkstra, is that surface readability doesn’t buy you &lt;strong>semantic guarantees&lt;/strong>. What’s new now isn’t Englishy syntax, it’s &lt;strong>learning-based intent capture + formal execution layers&lt;/strong>. The shift is closer to Andrej Karpathy’s “Software 2.0” idea, specifying behavior via data and learned models instead of only handwritten rules, now extended with a natural language interface on top.&lt;/p>
+&lt;h2 id="a-sober-take-is-this-a-step-up">A sober take: is this a step up?
+&lt;/h2>&lt;p>Yes, with guardrails. We improved the human-computer interface without discarding the computer’s need for formality. The socio-technical win is accessibility and speed, the technical debt is that ambiguity and hallucination creep back in unless you constrain, ground, and verify. The state of the art is actively addressing this with structured outputs, grammar-constrained decoding, and agent frameworks that keep LLMs honest by delegating to formal tools.&lt;/p>
+&lt;h2 id="further-reading--references">Further reading &amp;amp; references
+&lt;/h2>&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Why formalize algorithms / historical roots.&lt;/strong>
+Stanford Encyclopedia entries on the Church-Turing Thesis and Computability, Turing (1936) and Church (1936) on the Entscheidungsproblem. &lt;a class="link" href="https://plato.stanford.edu/entries/church-turing/" target="_blank" rel="noopener"
+>plato.stanford.edu&lt;/a>, &lt;a class="link" href="https://dl.acm.org/doi/10.1145/360303.360308" target="_blank" rel="noopener"
+>dl.acm.org&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Language design and correctness.&lt;/strong>
+ALGOL 60 report (BNF for syntax), Hoare’s “An Axiomatic Basis for Computer Programming”, Dijkstra’s “Go To Statement Considered Harmful.” &lt;a class="link" href="https://www.masswerk.at/algol60/report.htm" target="_blank" rel="noopener"
+>mass:werk – media environments&lt;/a>,&lt;a class="link" href="https://eli-project.sourceforge.net/a60_html/a60.html" target="_blank" rel="noopener"
+>eli-project.sourceforge.net&lt;/a>, &lt;a class="link" href="https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf" target="_blank" rel="noopener"
+>homepages.cwi.nl&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Natural language programming debate.&lt;/strong>
+Dijkstra’s &lt;em>On the foolishness of “natural language programming”&lt;/em> (1978/79), The New Yorker’s “What if natural language replaced programming?” for a modern cultural view. &lt;a class="link" href="https://www.cs.utexas.edu/~EWD/ewd06xx/EWD667.PDF" target="_blank" rel="noopener"
+>cs.utexas.edu&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>LLMs as planners with tools.&lt;/strong>
+ReAct (reasoning+acting) and Toolformer (teaching models to use tools), surveys of LLM-based agents. &lt;a class="link" href="https://arxiv.org/pdf/2210.03629" target="_blank" rel="noopener"
+>arXiv&lt;/a>, &lt;a class="link" href="https://openai.com/index/function-calling-and-other-api-updates/" target="_blank" rel="noopener"
+>openai.com&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Bridging NL to formal outputs.&lt;/strong>
+OpenAI structured outputs (JSON Schema adherence) and research on constrained/grammar-guided decoding. &lt;a class="link" href="https://openai.com/index/introducing-structured-outputs-in-the-api/" target="_blank" rel="noopener"
+>openai.com&lt;/a>, &lt;a class="link" href="https://arxiv.org/html/2403.06988v1" target="_blank" rel="noopener"
+>arXiv&lt;/a>, &lt;a class="link" href="https://aclanthology.org/2025.acl-industry.34.pdf" target="_blank" rel="noopener"
+>aclanthology.org&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ul></description></item><item><title>Building RAG and AI Agents using JavaScript: A Practical Guide with LlamaIndex.ts</title><link>https://zinef.github.io/p/llamaindex-rag-agents-javascript/</link><pubDate>Sat, 16 Aug 2025 00:00:00 +0000</pubDate><guid>https://zinef.github.io/p/llamaindex-rag-agents-javascript/</guid><description>&lt;img src="https://zinef.github.io/p/llamaindex-rag-agents-javascript/llamaindex_js.png" alt="Featured image of post Building RAG and AI Agents using JavaScript: A Practical Guide with LlamaIndex.ts" />&lt;p>The JavaScript ecosystem has evolved far beyond web development, and the AI revolution is no exception. With the rise of powerful LLMs and the growing need for intelligent applications, JavaScript developers now have robust tools to build Retrieval-Augmented Generation (RAG) systems and AI agents directly in their preferred language.&lt;/p>
+&lt;p>Today, libraries like LangChain.js and LlamaIndex.ts bring enterprise-grade AI capabilities to JavaScript, enabling developers to create sophisticated RAG systems and autonomous agents that can run in browsers, Node.js environments, or edge computing platforms.&lt;/p>
+&lt;p>For this implementation, we&amp;rsquo;ll be using locally deployed language models through Ollama, specifically lightweight models like tinyllama, llama3.2:1b … which provide a good performance for RAG and agent applications while running entirely on local hardware.&lt;/p>
+&lt;p>In this comprehensive guide, we&amp;rsquo;ll explore how to leverage LlamaIndex.ts to create both RAG systems and AI agents, complete with practical implementations and real-world use cases that demonstrate the framework&amp;rsquo;s capabilities.&lt;/p>
+&lt;h2 id="why-javascript-for-ai-development">Why JavaScript for AI Development?
+&lt;/h2>&lt;p>Before diving into implementation details, it&amp;rsquo;s worth understanding why JavaScript has become a compelling choice for AI development:&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Universal Runtime&lt;/strong>: JavaScript runs everywhere - browsers, servers, mobile apps, and edge devices. This universality means your AI applications can be deployed across diverse environments without language barriers.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Real-time Capabilities&lt;/strong>: JavaScript&amp;rsquo;s event-driven nature and WebSocket support make it ideal for building responsive AI applications that need to handle streaming responses and real-time interactions.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Ecosystem Maturity&lt;/strong>: With npm&amp;rsquo;s vast package ecosystem and mature tooling, JavaScript provides excellent developer experience and extensive third-party integrations.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Performance&lt;/strong>: Modern JavaScript engines like V8 offer impressive performance, and tools like WebAssembly bridge the gap for computationally intensive tasks.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="why-llamaindexts-for-rag-and-agents">Why LlamaIndex.ts for RAG and Agents?
+&lt;/h2>&lt;p>LlamaIndex.ts represents a paradigm shift for web developers entering the AI space. Unlike Python-centric alternatives, it integrates seamlessly with existing JavaScript infrastructures, enabling developers to build AI applications without context switching between languages.&lt;/p>
+&lt;p>The framework offers several compelling advantages:&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Native JavaScript Integration&lt;/strong>: Deploy RAG systems and agents directly within Node.js applications, Next.js projects, or even browser environments without complex language interoperability layers.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Performance Optimization&lt;/strong>: Built with modern JavaScript practices, LlamaIndex.ts leverages async/await patterns and streaming capabilities for responsive AI applications.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Ecosystem Compatibility&lt;/strong>: Integrates naturally with popular JavaScript libraries, databases, and web frameworks, reducing friction in existing development workflows.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Edge Computing Ready&lt;/strong>: The lightweight nature of JavaScript makes it ideal for edge deployments, bringing AI capabilities closer to users.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="understanding-rag-architecture">Understanding RAG Architecture
+&lt;/h2>&lt;p>Retrieval-Augmented Generation combines the power of large language models with external knowledge sources. Instead of relying solely on pre-trained knowledge, RAG systems retrieve relevant information from custom datasets and use it to generate more accurate, contextually relevant responses.&lt;/p>
+&lt;p>&lt;img src="https://zinef.github.io/p/llamaindex-rag-agents-javascript/rag.png"
+width="1342"
+height="650"
+srcset="https://zinef.github.io/p/llamaindex-rag-agents-javascript/rag_hu_c30913be13f80ade.png 480w, https://zinef.github.io/p/llamaindex-rag-agents-javascript/rag_hu_29fa24a09ce8a09d.png 1024w"
+loading="lazy"
+alt="source : https://docs.llamaindex.ai/en/stable/understanding/rag/"
+class="gallery-image"
+data-flex-grow="206"
+data-flex-basis="495px"
+>&lt;/p>
+&lt;p>The typical RAG pipeline consists of four key stages:&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>Document Ingestion&lt;/strong>: Processing and preparing source documents&lt;/li>
+&lt;li>&lt;strong>Embedding Generation&lt;/strong>: Converting text into vector representations&lt;/li>
+&lt;li>&lt;strong>Vector Storage&lt;/strong>: Storing embeddings in a searchable format&lt;/li>
+&lt;li>&lt;strong>Retrieval and Generation&lt;/strong>: Finding relevant context and generating responses&lt;/li>
+&lt;/ol>
+&lt;p>LlamaIndex.ts streamlines this entire pipeline while providing fine-grained control over each component.&lt;/p>
+&lt;h2 id="prerequisites">Prerequisites
+&lt;/h2>&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Node.js&lt;/strong> ≥ 18 (≥ 20 recommended) and &lt;strong>npm&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Ollama&lt;/strong> running locally (&lt;code>ollama serve&lt;/code>)&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Local models already pulled, e.g.:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"># choose a model you have locally (examples)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ollama pull tinyllama # or gpt-oss-20b, llama3.1:8b, mistral, etc.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ollama pull nomic-embed-text # embedding model
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>A new empty folder for each project (we’ll keep &lt;strong>RAG&lt;/strong> and &lt;strong>Agent&lt;/strong> separate).&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>&lt;strong>&lt;em>Note 1 :&lt;/em>&lt;/strong> &lt;em>We’ll use plain &lt;strong>JavaScript (ESM)&lt;/strong> to keep things frictionless. If you prefer TypeScript, just rename files to &lt;code>.ts&lt;/code> and add a &lt;code>tsconfig.json&lt;/code> , the imports stay the same.&lt;/em>&lt;/p>&lt;/blockquote>
+&lt;blockquote>
+&lt;p>&lt;strong>&lt;em>Note 2 :&lt;/em>&lt;/strong> &lt;em>The following code is intentionally kept simple and minimal so it’s easy to follow in a blog format.&lt;/em>
+&lt;em>In a real project, you’d usually want to &lt;strong>refactor&lt;/strong> it into separate modules (for example, moving the agent or RAG logic into its own file and keeping the CLI entrypoint clean).&lt;/em>
+&lt;em>This also makes it easier to add more functionality later (extra tools, different LLMs/embeddings, richer error handling, etc.). The nice thing is that the core logic stays the same. You can scale the structure as your project grows.&lt;/em>&lt;/p>&lt;/blockquote>
+&lt;h2 id="minimal-local-rag">&lt;strong>Minimal Local RAG&lt;/strong>
+&lt;/h2>&lt;h3 id="scaffold">Scaffold
+&lt;/h3>&lt;p>Create a folder : &lt;code>rag-llamaindex-js/&lt;/code>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">rag-llamaindex-js/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> package.json
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> index.js
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> data/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> your-notes.md
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> another-file.txt
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> storage/ # will be created automatically
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>package.json&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;local-rag-llamaindex&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;private&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;module&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;scripts&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;start&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;node index.js&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;clean&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;rimraf storage&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;dependencies&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;llamaindex&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;latest&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;@llamaindex/ollama&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;latest&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;@llamaindex/readers&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;latest&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;devDependencies&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;rimraf&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;latest&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>Install:&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">cd rag-llamaindex-js
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">npm i
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Put a couple of small &lt;code>.md&lt;/code> or &lt;code>.txt&lt;/code> files into &lt;code>./data&lt;/code> .&lt;/p>
+&lt;h3 id="rag">RAG
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Imports
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">Settings&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">VectorStoreIndex&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">storageContextFromDefaults&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="nx">from&lt;/span> &lt;span class="s2">&amp;#34;llamaindex&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">SimpleDirectoryReader&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="nx">from&lt;/span> &lt;span class="s2">&amp;#34;@llamaindex/readers/directory&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">ollama&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">OllamaEmbedding&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="nx">from&lt;/span> &lt;span class="s2">&amp;#34;@llamaindex/ollama&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Configure local LLM + local embeddings
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="nx">Settings&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">llm&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">ollama&lt;/span>&lt;span class="p">({&lt;/span> &lt;span class="nx">model&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">process&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">env&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">OLLAMA_LLM&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="s2">&amp;#34;tinyllama&amp;#34;&lt;/span> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">Settings&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">embedModel&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">OllamaEmbedding&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">model&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">process&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">env&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">OLLAMA_EMBED&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="s2">&amp;#34;nomic-embed-text&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">DATA_DIR&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;./data&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">PERSIST_DIR&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;./storage&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// vector + docstore persisted locally
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 1) Loading &amp;amp; ingestion
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kr">async&lt;/span> &lt;span class="kd">function&lt;/span> &lt;span class="nx">loadDocuments&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">reader&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="nx">SimpleDirectoryReader&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">reader&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">loadData&lt;/span>&lt;span class="p">({&lt;/span> &lt;span class="nx">directoryPath&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">DATA_DIR&lt;/span> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 2) Indexing &amp;amp; embedding + 3) Storing (persisted via storageContext)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kr">async&lt;/span> &lt;span class="kd">function&lt;/span> &lt;span class="nx">buildIndex&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">documents&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">storageContext&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="kr">await&lt;/span> &lt;span class="nx">storageContextFromDefaults&lt;/span>&lt;span class="p">({&lt;/span> &lt;span class="nx">persistDir&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">PERSIST_DIR&lt;/span> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">VectorStoreIndex&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">fromDocuments&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">documents&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">storageContext&lt;/span> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// (Optional) If you want to reload later without re-embedding.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// import { VectorStoreIndex } from &amp;#34;llamaindex&amp;#34;;
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// const storageContext = await storageContextFromDefaults({ persistDir: PERSIST_DIR });
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// const index = await VectorStoreIndex.init({ storageContext });
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// 4) Querying
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kr">async&lt;/span> &lt;span class="kd">function&lt;/span> &lt;span class="nx">query&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">index&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">question&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">queryEngine&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">index&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">asQueryEngine&lt;/span>&lt;span class="p">({&lt;/span> &lt;span class="nx">similarityTopK&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="mi">3&lt;/span> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">res&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="kr">await&lt;/span> &lt;span class="nx">queryEngine&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">query&lt;/span>&lt;span class="p">({&lt;/span> &lt;span class="nx">query&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">question&lt;/span> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">res&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Entrypoint
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kr">const&lt;/span> &lt;span class="nx">question&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">process&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">argv&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">slice&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">join&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34; &amp;#34;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="s2">&amp;#34;What are the key ideas in these documents?&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">docs&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="kr">await&lt;/span> &lt;span class="nx">loadDocuments&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">index&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="kr">await&lt;/span> &lt;span class="nx">buildIndex&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">docs&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">const&lt;/span> &lt;span class="nx">res&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="kr">await&lt;/span> &lt;span class="nx">query&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">index&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">question&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;\nQ:&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">question&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;\nAnswer:\n&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">res&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">response&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;\nSources:&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">for&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="kr">const&lt;/span> &lt;span class="nx">s&lt;/span> &lt;span class="k">of&lt;/span> &lt;span class="nx">res&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">sourceNodes&lt;/span> &lt;span class="o">??&lt;/span> &lt;span class="p">[])&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;-&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">node&lt;/span>&lt;span class="o">?&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">metadata&lt;/span>&lt;span class="o">?&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">file_name&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="nx">s&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">id_&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="run-it">Run it
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"># terminal 1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ollama serve
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># terminal 2 (in rag-llamaindex-js/)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">node index.js &amp;#34;Summarize the main points across these docs.&amp;#34;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>You’ll see an answer and a short list of source files like this.&lt;/p>
+&lt;p>&lt;img src="https://zinef.github.io/p/llamaindex-rag-agents-javascript/rag-res.png"
+width="1409"
+height="461"
+srcset="https://zinef.github.io/p/llamaindex-rag-agents-javascript/rag-res_hu_a689e67d1ffc9871.png 480w, https://zinef.github.io/p/llamaindex-rag-agents-javascript/rag-res_hu_5682201724270bed.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="305"
+data-flex-basis="733px"
+>&lt;/p>
+&lt;h2 id="minimal-local-agent">&lt;strong>Minimal Local Agent&lt;/strong>
+&lt;/h2>&lt;h3 id="scaffold-1">Scaffold
+&lt;/h3>&lt;p>Create a new folder : &lt;code>agent-llamaindex-js/&lt;/code> :&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">agent-llamaindex-js/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> package.json
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> index.js
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>package.json&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;local-agent-llamaindex&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;private&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;module&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;scripts&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;start&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;node index.js&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;dependencies&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;llamaindex&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;latest&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;@llamaindex/ollama&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;latest&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;@llamaindex/workflow&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;latest&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;zod&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;latest&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;strong>Install:&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="err">cd&lt;/span> &lt;span class="err">agent-llamaindex-js&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">npm&lt;/span> &lt;span class="err">i&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="agent">Agent
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Imports
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">Settings&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">tool&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="nx">from&lt;/span> &lt;span class="s2">&amp;#34;llamaindex&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">agent&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="nx">from&lt;/span> &lt;span class="s2">&amp;#34;@llamaindex/workflow&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">z&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="nx">from&lt;/span> &lt;span class="s2">&amp;#34;zod&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">import&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">ollama&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="nx">from&lt;/span> &lt;span class="s2">&amp;#34;@llamaindex/ollama&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Local LLM via Ollama
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="nx">Settings&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">llm&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">ollama&lt;/span>&lt;span class="p">({&lt;/span> &lt;span class="nx">model&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">process&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">env&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">OLLAMA_LLM&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="s2">&amp;#34;llama3.2:1b&amp;#34;&lt;/span> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// A strict calculator tool
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="kr">const&lt;/span> &lt;span class="nx">addTool&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">tool&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">name&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;sumNumbers&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">description&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;Add two numbers and return the sum as a string.&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">parameters&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">z&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">object&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">a&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">z&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">number&lt;/span>&lt;span class="p">().&lt;/span>&lt;span class="nx">describe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;First addend&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">b&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="nx">z&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">number&lt;/span>&lt;span class="p">().&lt;/span>&lt;span class="nx">describe&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;Second addend&amp;#34;&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">execute&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">({&lt;/span> &lt;span class="nx">a&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">b&lt;/span> &lt;span class="p">})&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="sb">`&lt;/span>&lt;span class="si">${&lt;/span>&lt;span class="nx">a&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="nx">b&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="sb">`&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">async&lt;/span> &lt;span class="kd">function&lt;/span> &lt;span class="nx">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">myAgent&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">agent&lt;/span>&lt;span class="p">({&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">systemPrompt&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;You are a precise assistant. Use tools when helpful. After using tools, output only the final answer.&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">tools&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="nx">addTool&lt;/span>&lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="nx">userInput&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nx">process&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">argv&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">slice&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">).&lt;/span>&lt;span class="nx">join&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34; &amp;#34;&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="s2">&amp;#34;Add 101 and 303&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kr">const&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nx">data&lt;/span> &lt;span class="p">}&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="kr">await&lt;/span> &lt;span class="nx">myAgent&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">userInput&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;\nUser:&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">userInput&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">log&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;\nAgent:&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">data&lt;/span>&lt;span class="o">?&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">result&lt;/span> &lt;span class="o">??&lt;/span> &lt;span class="nb">String&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">data&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">main&lt;/span>&lt;span class="p">().&lt;/span>&lt;span class="k">catch&lt;/span>&lt;span class="p">((&lt;/span>&lt;span class="nx">e&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">=&amp;gt;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">console&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">error&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">e&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">process&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">exit&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">});&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;blockquote>
+&lt;p>&lt;strong>&lt;em>Note :&lt;/em>&lt;/strong> &lt;em>Ensure you have a model that supports tool using, here we’re using llama3.2:1b.&lt;/em>&lt;/p>&lt;/blockquote>
+&lt;h3 id="run-it-1">Run it
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># terminal 1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">ollama&lt;/span> &lt;span class="n">serve&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># terminal 2 (in agent-llamaindex-js/)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">node&lt;/span> &lt;span class="n">index&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">js&lt;/span> &lt;span class="s2">&amp;#34;Add 11 and 99&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Agent should call the tool and print: 110&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>You’ll see an answer like this.&lt;/p>
+&lt;p>&lt;img src="https://zinef.github.io/p/llamaindex-rag-agents-javascript/agent-res.png"
+width="1418"
+height="169"
+srcset="https://zinef.github.io/p/llamaindex-rag-agents-javascript/agent-res_hu_8d626c0342613388.png 480w, https://zinef.github.io/p/llamaindex-rag-agents-javascript/agent-res_hu_e9421d36b229d19f.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="839"
+data-flex-basis="2013px"
+>&lt;/p>
+&lt;h2 id="production-considerations">Production Considerations
+&lt;/h2>&lt;p>When deploying RAG systems and agents to production, several critical factors must be addressed:&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Performance Optimization&lt;/strong>: Implement vector database caching, use connection pooling for database operations, and consider implementing response caching for frequently asked questions.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Security and Privacy&lt;/strong>: Implement proper input sanitization, use environment-specific API keys, implement rate limiting, and ensure sensitive data is properly handled and not logged.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Monitoring and Observability&lt;/strong>: Track query performance, monitor token usage and costs, implement error tracking, and maintain conversation quality metrics.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Scalability&lt;/strong>: Design for horizontal scaling, implement proper load balancing, consider edge deployments for reduced latency, and plan for data partitioning strategies.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="advanced-features-and-extensibility">Advanced Features and Extensibility
+&lt;/h2>&lt;p>LlamaIndex.ts supports numerous advanced features that can enhance your applications:&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;strong>Custom Vector Stores&lt;/strong>: Integration with specialized vector databases like Pinecone, Weaviate, or Qdrant for production-scale deployments.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Multi-modal Capabilities&lt;/strong>: Support for processing images, audio, and other media types alongside text documents.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Fine-tuning Integration&lt;/strong>: Capability to work with custom fine-tuned models for domain-specific applications.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>Real-time Updates&lt;/strong>: Implement systems for updating knowledge bases in real-time as new information becomes available.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="references--further-reading">References &amp;amp; Further Reading
+&lt;/h2>&lt;ul>
+&lt;li>&lt;a class="link" href="https://ts.llamaindex.ai/" target="_blank" rel="noopener"
+>LlamaIndex.TS (JS/TS) docs&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.notion.so/RAG-JS-2514e23683188084a34cc5c050a9ca4c?pvs=21" target="_blank" rel="noopener"
+>Loading data&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://ts.llamaindex.ai/docs/workflows" target="_blank" rel="noopener"
+>LlamaIndex Workflows / agents&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://arxiv.org/abs/2005.11401" target="_blank" rel="noopener"
+>Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://docs.llamaindex.ai/en/stable/understanding/rag/" target="_blank" rel="noopener"
+>LlamaIndex RAG blog&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://huggingface.co/blog/ngxson/make-your-own-rag" target="_blank" rel="noopener"
+>Make your own RAG - Huggingface blog&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://huggingface.co/learn/agents-course/unit0/introduction" target="_blank" rel="noopener"
+>Huggingface&amp;rsquo;s Agents Course&lt;/a>&lt;/li>
+&lt;/ul></description></item><item><title>OpenAI Goes Open Source: Introducing GPT-OSS Models</title><link>https://zinef.github.io/p/openai-gpt-oss-models/</link><pubDate>Tue, 05 Aug 2025 00:00:00 +0000</pubDate><guid>https://zinef.github.io/p/openai-gpt-oss-models/</guid><description>&lt;img src="https://zinef.github.io/p/openai-gpt-oss-models/open_ai.jpg" alt="Featured image of post OpenAI Goes Open Source: Introducing GPT-OSS Models" />&lt;p>Today marks a significant shift in OpenAI&amp;rsquo;s approach to AI democratization. The company has released their first open-weight models: GPT-OSS-120B and GPT-OSS-20B, bringing state-of-the-art reasoning capabilities directly to developers and researchers worldwide.&lt;/p>
+&lt;p>After years of keeping their most advanced models behind API walls, OpenAI is finally embracing the open-source movement that has been thriving with competitors like Meta, Mistral, and DeepSeek. This move isn&amp;rsquo;t just about catching up, it&amp;rsquo;s about making advanced AI accessible to anyone with the hardware to run it.&lt;/p>
+&lt;h2 id="what-are-gpt-oss-models">What Are GPT-OSS Models?
+&lt;/h2>&lt;p>The GPT-OSS family consists of two models designed specifically for reasoning tasks:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>GPT-OSS-120B&lt;/strong>: A 117-billion parameter model optimized for complex reasoning&lt;/li>
+&lt;li>&lt;strong>GPT-OSS-20B&lt;/strong>: A smaller 21-billion parameter model for resource-constrained environments&lt;/li>
+&lt;/ul>
+&lt;p>Both models use a mixture-of-experts (MoE) architecture with 4-bit quantization (MXFP4), enabling faster inference while maintaining performance. According to OpenAI, these models offer &amp;ldquo;state-of-the-art open-weights reasoning&amp;rdquo; with &amp;ldquo;strong real-world performance comparable to o4-mini&amp;rdquo;.&lt;/p>
+&lt;h2 id="technical-capabilities-and-performance">Technical Capabilities and Performance
+&lt;/h2>&lt;p>What sets these models apart is their focus on reasoning rather than general language modeling. OpenAI claims they outperform similarly sized models on reasoning through complex tasks, making them particularly suitable for applications requiring logical thinking and problem-solving.&lt;/p>
+&lt;p>The 4-bit quantization is particularly interesting from a practical standpoint. This compression technique allows the models to run efficiently on consumer hardware while maintaining most of their reasoning capabilities. Sam Altman noted that the smaller model can even run &amp;ldquo;on your phone&amp;rdquo;, though I&amp;rsquo;d be curious to see the actual performance metrics on mobile hardware.&lt;/p>
+&lt;h2 id="local-deployment-possibilities">Local Deployment Possibilities
+&lt;/h2>&lt;p>One of the most exciting aspects of these releases is the potential for local deployment. NVIDIA has already announced optimization for RTX GPUs, and reports suggest the models run well on Apple Silicon Macs.&lt;/p>
+&lt;p>For developers and researchers, this means:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Privacy&lt;/strong>: Sensitive data never leaves your infrastructure&lt;/li>
+&lt;li>&lt;strong>Customization&lt;/strong>: Full control over fine-tuning and adaptation&lt;/li>
+&lt;li>&lt;strong>Cost Control&lt;/strong>: No per-token API charges for high-volume applications&lt;/li>
+&lt;li>&lt;strong>Offline Operation&lt;/strong>: Models work without internet connectivity&lt;/li>
+&lt;/ul>
+&lt;p>The hardware requirements will be significant for the larger model, but the 20B version should be accessible to many developers with modern workstations or cloud instances.&lt;/p>
+&lt;h2 id="strategic-implications">Strategic Implications
+&lt;/h2>&lt;p>This release represents a notable strategy shift for OpenAI. The move positions them to compete directly with Meta, Mistral, and DeepSeek in the open-weight space, acknowledging that closed models alone aren&amp;rsquo;t sufficient to maintain market position.&lt;/p>
+&lt;p>OpenAI frames this as part of their mission &amp;ldquo;to put AI in the hands of as many people as possible&amp;rdquo;, but it&amp;rsquo;s also a practical response to the growing success of open-source alternatives. The community has demonstrated that open models can match or exceed proprietary ones in many tasks, and OpenAI seems to be adapting to this reality.&lt;/p>
+&lt;h2 id="what-this-means-for-developers">What This Means for Developers
+&lt;/h2>&lt;p>If you&amp;rsquo;ve been working exclusively with API-based models, GPT-OSS opens new possibilities:&lt;/p>
+&lt;p>&lt;strong>Agentic Applications&lt;/strong>: These reasoning models enable &amp;ldquo;agentic AI applications such as web search, in-depth research and many more&amp;rdquo;. The ability to run reasoning models locally could significantly improve the reliability and cost-effectiveness of AI agents.&lt;/p>
+&lt;p>&lt;strong>Research and Experimentation&lt;/strong>: Having full access to model weights enables deeper research into reasoning mechanisms, potential security vulnerabilities, and novel applications that aren&amp;rsquo;t possible with API-only access.&lt;/p>
+&lt;p>&lt;strong>Production Flexibility&lt;/strong>: Organizations can now deploy OpenAI-quality reasoning models in environments where API calls aren&amp;rsquo;t feasible or desirable.&lt;/p>
+&lt;h2 id="getting-started">Getting Started
+&lt;/h2>&lt;p>The models are available through standard open-source channels, and the community has already begun integrating them into popular frameworks. NVIDIA&amp;rsquo;s RTX AI Garage provides optimized versions for their hardware, which should make deployment more straightforward for developers with compatible GPUs.&lt;/p>
+&lt;p>For those interested in experimenting, I&amp;rsquo;d recommend starting with the 20B model to understand the capabilities before investing in the hardware needed for the larger version.&lt;/p>
+&lt;h2 id="looking-forward">Looking Forward
+&lt;/h2>&lt;p>This release feels like a watershed moment for AI accessibility. While OpenAI continues developing frontier models behind closed doors, opening their reasoning models to the community will likely accelerate innovation in AI applications and research.&lt;/p>
+&lt;p>The combination of state-of-the-art reasoning capabilities with local deployment flexibility creates opportunities we haven&amp;rsquo;t had before. I&amp;rsquo;m particularly excited to see how the community adapts these models for specialized reasoning tasks and what novel applications emerge.&lt;/p>
+&lt;p>As someone who has worked extensively with both open and closed models, I believe this move will ultimately benefit everyone, pushing both open-source development and proprietary research forward through increased competition and collaboration.&lt;/p>
+&lt;p>The era of truly accessible, high-quality reasoning AI has begun. The question now is what we&amp;rsquo;ll build with it.&lt;/p>
+&lt;h2 id="references">References
+&lt;/h2>&lt;ul>
+&lt;li>&lt;a class="link" href="https://openai.com/index/introducing-gpt-oss/" target="_blank" rel="noopener"
+>OpenAI&amp;rsquo;s Official GPT-OSS Announcement&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://huggingface.co/blog/welcome-openai-gpt-oss" target="_blank" rel="noopener"
+>Hugging Face Blog: Welcome GPT OSS&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://blogs.nvidia.com/blog/rtx-ai-garage-openai-oss/" target="_blank" rel="noopener"
+>NVIDIA RTX AI Garage Integration&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://openai.com/open-models/" target="_blank" rel="noopener"
+>OpenAI Open Models Page&lt;/a>&lt;/li>
+&lt;/ul></description></item><item><title>AI-Assisted 3D Design: Exploring Blender-MCP</title><link>https://zinef.github.io/p/blender-mcp/</link><pubDate>Thu, 20 Mar 2025 00:00:00 +0000</pubDate><guid>https://zinef.github.io/p/blender-mcp/</guid><description>&lt;img src="https://zinef.github.io/p/blender-mcp/blender_mcp_cover.jpg" alt="Featured image of post AI-Assisted 3D Design: Exploring Blender-MCP" />&lt;p>I&amp;rsquo;ve recently been experimenting with an exciting project at the intersection of AI and 3D design: Blender-MCP, which connects Claude Sonnet or other LLMs to Blender&amp;rsquo;s UI through an MCP server.&lt;/p>
+&lt;p>The concept is fascinating - using natural language prompts to create 3D models without touching traditional modeling tools. After seeing impressive demos circulating on social media, I had to try it myself.&lt;/p>
+&lt;h2 id="what-works-beautifully">What works beautifully
+&lt;/h2>&lt;p>Blender-MCP shines when working with basic geometric shapes. The system understands concepts like &amp;ldquo;create a sphere,&amp;rdquo; &amp;ldquo;add a cylinder,&amp;rdquo; and &amp;ldquo;position a cube&amp;rdquo; remarkably well. It can follow step-by-step instructions to build compositions of these simple elements into more complex structures.&lt;/p>
+&lt;p>In one experiment, I built a simple castle using progressive prompts, guiding the AI through the process of creating towers, walls, and architectural details. The results were promising - while not photorealistic, the AI understood the concept and executed a recognizable castle structure.&lt;/p>
+&lt;p>&lt;img src="https://zinef.github.io/p/blender-mcp/castle.png"
+width="2557"
+height="1374"
+srcset="https://zinef.github.io/p/blender-mcp/castle_hu_526c500917504314.png 480w, https://zinef.github.io/p/blender-mcp/castle_hu_3217e96eae2968b.png 1024w"
+loading="lazy"
+alt=" A simple castle built using progressive prompts"
+class="gallery-image"
+data-flex-grow="186"
+data-flex-basis="446px"
+>&lt;/p>
+&lt;p>&lt;img src="https://zinef.github.io/p/blender-mcp/mars_rover.png"
+width="2559"
+height="1377"
+srcset="https://zinef.github.io/p/blender-mcp/mars_rover_hu_3a4f530d9aca0d71.png 480w, https://zinef.github.io/p/blender-mcp/mars_rover_hu_ce0d03f03f272676.png 1024w"
+loading="lazy"
+alt=" Mars rover lego using progressive prompts"
+class="gallery-image"
+data-flex-grow="185"
+data-flex-basis="446px"
+>&lt;/p>
+&lt;h2 id="current-limitations">Current limitations
+&lt;/h2>&lt;p>Like many cutting-edge tools, Blender-MCP is still evolving. Complex organic shapes or highly detailed models remain challenging. The system works best when you break down complex ideas into smaller, manageable steps using simple geometry as building blocks.&lt;/p>
+&lt;p>I found the most success when taking an iterative approach - starting with basic shapes and gradually refining them through additional prompts, rather than expecting perfect results from a single detailed instruction.&lt;/p>
+&lt;p>&lt;img src="https://zinef.github.io/p/blender-mcp/limits.png"
+width="1681"
+height="994"
+srcset="https://zinef.github.io/p/blender-mcp/limits_hu_42eda728e8364bf8.png 480w, https://zinef.github.io/p/blender-mcp/limits_hu_dbb519721ab35f13.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="169"
+data-flex-basis="405px"
+>&lt;/p>
+&lt;h2 id="the-bigger-picture">The bigger picture
+&lt;/h2>&lt;p>What excites me most about Blender-MCP isn&amp;rsquo;t just what it can do today, but what it represents for the future of creative workflows. The project demonstrates how AI can lower barriers to 3D design, potentially making these tools accessible to those without traditional modeling expertise.&lt;/p>
+&lt;p>The open-source community has already begun enhancing the project with marketplaces for ready-to-use models and additional plugins, showing the power of collaborative innovation.&lt;/p>
+&lt;h2 id="combining-ai-tools-for-superior-results">Combining AI Tools for Superior Results
+&lt;/h2>&lt;p>What I&amp;rsquo;ve discovered is that the true power of AI-driven 3D design emerges when combining complementary tools. While Blender-MCP excels with geometric shapes and positioning, it currently struggles with complex organic forms. This is where pairing it with state-of-the-art ML models like &lt;strong>Hunyuan3D-2&lt;/strong> creates a workflow greater than the sum of its parts.&lt;/p>
+&lt;p>&lt;strong>Hunyuan3D-2: Scaling Diffusion Models for High Resolution Textured 3D Assets Generation&lt;/strong> deserves special recognition. This remarkable model can generate detailed 3D assets from simple 2D images with impressive fidelity. The results are surprisingly sophisticated for an AI-generated model, especially considering how new this technology is.&lt;/p>
+&lt;p>In a recent experiment, I tested this workflow with a figurine of Luffy. I first used Hunyuan3D-2 to generate the base 3D model from a 2D reference, then imported it into Blender. From there, I leveraged Blender-MCP&amp;rsquo;s natural language interface to enhance and smooth the results. The combined approach allowed me to achieve in minutes what would have taken hours of manual modeling.&lt;/p>
+&lt;p>This hybrid workflow represents what I believe is the future of AI-assisted creation - not replacing human creativity, but amplifying it by handling technical barriers and time-consuming tasks. By strategically combining AI tools based on their strengths, designers can save significant time while achieving higher quality results.&lt;/p>
+&lt;p>&lt;img src="https://zinef.github.io/p/blender-mcp/workflow.png"
+width="1188"
+height="1049"
+srcset="https://zinef.github.io/p/blender-mcp/workflow_hu_768c007a178de45f.png 480w, https://zinef.github.io/p/blender-mcp/workflow_hu_90fbb1d5a89cd36c.png 1024w"
+loading="lazy"
+alt=" "
+class="gallery-image"
+data-flex-grow="113"
+data-flex-basis="271px"
+>&lt;/p>
+&lt;h2 id="looking-forward">Looking forward
+&lt;/h2>&lt;p>As MCP (Model Context Protocol) technology continues to develop, we&amp;rsquo;ll likely see rapid improvements in these tools&amp;rsquo; capabilities. What requires multiple careful prompts today might be achieved with a single instruction tomorrow.&lt;/p>
+&lt;p>If you&amp;rsquo;re interested in exploring this space, I encourage you to check out the Blender-MCP project and Anthropic&amp;rsquo;s documentation on MCP. Even if you encounter limitations, contributing feedback helps advance these technologies.&lt;/p>
+&lt;h2 id="references">References
+&lt;/h2>&lt;ul>
+&lt;li>Blender-mcp : &lt;a class="link" href="https://github.com/ahujasid/blender-mcp" target="_blank" rel="noopener"
+>https://github.com/ahujasid/blender-mcp&lt;/a>&lt;/li>
+&lt;li>Model Context Protocol : &lt;a class="link" href="https://www.anthropic.com/news/model-context-protocol" target="_blank" rel="noopener"
+>https://www.anthropic.com/news/model-context-protocol&lt;/a>&lt;/li>
+&lt;li>Hunyuan3D-2 github repo: &lt;a class="link" href="https://github.com/Tencent/Hunyuan3D-2" target="_blank" rel="noopener"
+>https://github.com/Tencent/Hunyuan3D-2&lt;/a>&lt;/li>
+&lt;li>Hunyuan3D-2 HF Spaces : &lt;a class="link" href="https://huggingface.co/spaces/tencent/Hunyuan3D-2" target="_blank" rel="noopener"
+>https://huggingface.co/spaces/tencent/Hunyuan3D-2&lt;/a>&lt;/li>
+&lt;/ul></description></item></channel></rss>
