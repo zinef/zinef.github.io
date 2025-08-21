@@ -14,6 +14,8 @@ hasCJKLanguage = false
 # Change it to your Disqus shortname before using
 disqusShortname = "zinef"
 
+enableRobotsTXT = true
+
 [sitemap]
 changeFreq = 'weekly'
 
