@@ -20,3 +20,6 @@ pagerSize = 5
 [services]
 [services.googleAnalytics]
 ID = "G-NZTWCSFPM5"
+
+[sitemap]
+  changeFreq = 'weekly'
